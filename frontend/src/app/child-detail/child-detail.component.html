@@ -1,8 +1,6 @@
 <div *ngIf="child">
-  <!-- <h1>{{ child.name | uppercase }} - {{ child.age }}</h1> -->
-
   <div>
-    <form class="example-form" [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+    <form class="example-form" [formGroup]="childFormGroup">
       <h2>Criança</h2>
       <div formGroupName="child">
         <table class="example-full-width" cellspacing="0">
@@ -69,9 +67,15 @@
           </mat-form-field>
         </p>
       </div>
+    </form>
 
-      <h2>Padrinho(a)</h2>
-      <div formGroupName="godParent">
+    <form
+      class="example-form"
+      [formGroup]="godParentsFormGroup"
+      (ngSubmit)="onSubmit($event)"
+    >
+      <h2>Padrinho/Madrinha</h2>
+      <div>
         <div class="checkbox-container">
           <mat-checkbox formControlName="clothesSelected">Roupa</mat-checkbox>
           <mat-checkbox formControlName="shoeSelected">Calçado</mat-checkbox>
@@ -96,14 +100,26 @@
         </table>
       </div>
 
-      <button
-        mat-raised-button
-        color="primary"
-        type="submit"
-        [disabled]="!formGroup.valid"
-      >
-        Adicionar
-      </button>
+      <div class="form-actions">
+        <button
+          mat-raised-button
+          color="default"
+          type="button"
+          [disabled]="!godParentsFormGroup.dirty"
+          (click)="cancelGodParentAction()"
+        >
+          Cancelar
+        </button>
+
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="!godParentsFormGroup.valid"
+        >
+          {{ godParentsSubmitButtonTitle }}
+        </button>
+      </div>
     </form>
   </div>
 
@@ -116,7 +132,7 @@
           <mat-cell *matCellDef="let element">
             <mat-checkbox
               disabled="true"
-              [checked]="element.isClothesSelected"
+              [checked]="element.godParent.isClothesSelected"
             ></mat-checkbox>
           </mat-cell>
         </ng-container>
@@ -127,7 +143,7 @@
           <mat-cell *matCellDef="let element">
             <mat-checkbox
               disabled="true"
-              [checked]="element.isShoeSelected"
+              [checked]="element.godParent.isShoeSelected"
             ></mat-checkbox>
           </mat-cell>
         </ng-container>
@@ -138,7 +154,7 @@
           <mat-cell *matCellDef="let element">
             <mat-checkbox
               disabled="true"
-              [checked]="element.isGiftSelected"
+              [checked]="element.godParent.isGiftSelected"
             ></mat-checkbox>
           </mat-cell>
         </ng-container>
@@ -146,26 +162,40 @@
         <!-- Name Column -->
         <ng-container matColumnDef="name">
           <mat-header-cell *matHeaderCellDef>Nome</mat-header-cell>
-          <mat-cell *matCellDef="let element">{{ element.name }}</mat-cell>
+          <mat-cell *matCellDef="let element">{{
+            element.godParent.name
+          }}</mat-cell>
         </ng-container>
 
         <!-- Phone Column -->
         <ng-container matColumnDef="phone">
           <mat-header-cell *matHeaderCellDef>Telefone</mat-header-cell>
-          <mat-cell *matCellDef="let element">{{ element.phone }}</mat-cell>
+          <mat-cell *matCellDef="let element">{{
+            element.godParent.phone
+          }}</mat-cell>
         </ng-container>
 
         <!-- Actions Column -->
         <ng-container matColumnDef="actions">
           <mat-header-cell *matHeaderCellDef>&nbsp;</mat-header-cell>
           <mat-cell *matCellDef="let element">
-            <button>excluir</button>
+            <button
+              mat-icon-button
+              aria-label="Excluir padrinho ou madrinha"
+              (click)="deleteGodParentFromTable(element)"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
           </mat-cell>
         </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+        <mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          (click)="onRowClicked(row)"
+        ></mat-row>
       </mat-table>
     </div>
   </div>
+  <button mat-raised-button color="primary" type="button">Salvar</button>
 </div>

@@ -29,3 +29,10 @@ td {
 table {
   width: 100%;
 }
+
+.form-actions {
+  display: grid;
+  grid-template-columns: repeat(2, 140px);
+  gap: 8px;
+  padding-bottom: 16px;
+}
