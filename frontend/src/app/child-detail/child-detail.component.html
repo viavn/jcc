@@ -48,8 +48,8 @@
             </td>
             <td>
               <mat-form-field class="example-full-width" appearance="fill">
-                <mat-label>Responsável</mat-label>
-                <input matInput formControlName="responsible" />
+                <mat-label>Telefone</mat-label>
+                <input matInput formControlName="phone" />
               </mat-form-field>
             </td>
           </tr>
@@ -57,8 +57,8 @@
 
         <p>
           <mat-form-field class="example-full-width" appearance="fill">
-            <mat-label>Telefone</mat-label>
-            <input matInput formControlName="phone" />
+            <mat-label>Responsável</mat-label>
+            <input matInput formControlName="responsible" />
           </mat-form-field>
 
           <mat-form-field class="example-full-width" appearance="fill">
@@ -197,5 +197,7 @@
       </mat-table>
     </div>
   </div>
-  <button mat-raised-button color="primary" type="button">Salvar</button>
+  <button mat-raised-button color="primary" type="button" (click)="onClickSaveChildGodParents()">
+    <mat-icon class="icon">autorenew</mat-icon>
+  </button>
 </div>

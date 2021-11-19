@@ -4,17 +4,24 @@ export interface Child {
   age: string;
   clothesSize: string;
   shoeSize: string;
-  familyId: string;
-  responsible: string;
-  phone: string;
-  address: string;
+  legalResponsible: string;
+  familyAcronym: string;
+  familyPhone: string;
+  familyAddress: string;
+  godParents: GodParent[];
+}
+
+export interface DashChildModel {
+  id: string;
+  name: string;
+  legalResponsible: string;
+  familyAcronym: string;
 }
 
 export interface GodParent {
-  id: string;
+  id: string | undefined;
   name: string;
   phone: string;
-  childId: string;
   isClothesSelected: boolean;
   isShoeSelected: boolean;
   isGiftSelected: boolean;

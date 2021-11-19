@@ -12,7 +12,8 @@ table {
   width: 100%;
 }
 
-td, th {
+td,
+th {
   width: 25%;
 }
 
@@ -24,4 +25,11 @@ td, th {
 
 .mat-row:hover .mat-cell {
   border-color: currentColor;
+}
+
+.spinner-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
 }

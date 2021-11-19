@@ -5,7 +5,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { catchError, of } from 'rxjs';
 import { ChildService } from '../services/child/child.service';
-import { Child } from '../services/child/models/Child';
+import { Child, DashChildModel } from '../services/child/models/Child';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,8 +13,9 @@ import { Child } from '../services/child/models/Child';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit, AfterViewInit {
-  displayedColumns: string[] = ['familyId', 'name', 'responsible'];
-  dataSource: MatTableDataSource<Child>;
+  displayedColumns: string[] = ['familyAcronym', 'name', 'legalResponsible'];
+  dataSource = new MatTableDataSource<DashChildModel>([]);
+  showLoading = false;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -23,14 +24,15 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     private childService: ChildService,
     private router: Router
   ) {
-    this.dataSource = new MatTableDataSource<Child>([]);
+    // this.dataSource = new MatTableDataSource<DashChildModel>([]);
   }
 
   ngOnInit(): void {
+    this.showLoading = true;
     this.childService.getChildren()
-      .pipe(catchError(() => of([])))
       .subscribe(children => {
-        this.dataSource = new MatTableDataSource<Child>(children)
+        this.dataSource = new MatTableDataSource<DashChildModel>(children);
+        this.showLoading = false;
       });
   }
 

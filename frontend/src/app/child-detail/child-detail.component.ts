@@ -55,9 +55,9 @@ export class ChildDetailComponent implements OnInit {
             ...this.godParents[godParentIndex].godParent,
             name: godParentFormValues.name,
             phone: godParentFormValues.phone,
-            isGiftSelected: godParentFormValues.giftSelected,
-            isClothesSelected: godParentFormValues.clothesSelected,
-            isShoeSelected: godParentFormValues.shoeSelected,
+            isGiftSelected: !!godParentFormValues.giftSelected,
+            isClothesSelected: !!godParentFormValues.clothesSelected,
+            isShoeSelected: !!godParentFormValues.shoeSelected,
           }
         };
       }
@@ -70,6 +70,7 @@ export class ChildDetailComponent implements OnInit {
         lastId = sortedGodParents[sortedGodParents.length - 1].rowId
       }
 
+      console.log('godParentFormValues', godParentFormValues);
       this.godParents.push({
         rowId: lastId + 1,
         createdDate: new Date(),
@@ -77,10 +78,9 @@ export class ChildDetailComponent implements OnInit {
           id: '',
           name: godParentFormValues.name,
           phone: godParentFormValues.phone,
-          isGiftSelected: godParentFormValues.giftSelected,
-          isClothesSelected: godParentFormValues.clothesSelected,
-          isShoeSelected: godParentFormValues.shoeSelected,
-          childId: this.childFormGroup.value.child.id,
+          isGiftSelected: !!godParentFormValues.giftSelected,
+          isClothesSelected: !!godParentFormValues.clothesSelected,
+          isShoeSelected: !!godParentFormValues.shoeSelected,
         }
       });
     }
@@ -112,6 +112,14 @@ export class ChildDetailComponent implements OnInit {
       shoeSelected: row.godParent.isShoeSelected,
       giftSelected: row.godParent.isGiftSelected,
     });
+  }
+
+  onClickSaveChildGodParents(): void {
+    const godParents: GodParent[] = this.godParents.map(viewModel => viewModel.godParent);
+    this.childService.addOrUpdateChildGodParents(this.child!.id, godParents)
+      .subscribe(() => {
+        console.log('saved');
+      });
   }
 
   private createChildFormGroup(): FormGroup {
@@ -158,10 +166,10 @@ export class ChildDetailComponent implements OnInit {
         shoeSize: child.shoeSize,
       },
       family: {
-        id: child.familyId,
-        responsible: child.responsible,
-        phone: child.phone,
-        address: child.address,
+        id: child.familyAcronym,
+        responsible: child.legalResponsible,
+        phone: child.familyPhone,
+        address: child.familyAddress,
       },
     });
   }
