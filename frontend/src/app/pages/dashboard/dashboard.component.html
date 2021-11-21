@@ -9,7 +9,7 @@
     />
   </mat-form-field>
 
-  <div class="table-pagination-container mat-elevation-z8" *ngIf="!showLoading; else elseLoadingBlock">
+  <div class="table-pagination-container mat-elevation-z8">
     <div class="example-container">
       <mat-table [dataSource]="dataSource" matSort>
         <!-- Family Id -->
@@ -59,10 +59,4 @@
       aria-label="Select page of users"
     ></mat-paginator>
   </div>
-
-  <ng-template #elseLoadingBlock>
-    <div class="spinner-container">
-      <mat-spinner></mat-spinner>
-    </div>
-  </ng-template>
 </div>

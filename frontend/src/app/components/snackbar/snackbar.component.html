@@ -1,0 +1,16 @@
+<mat-card
+  *ngIf="systemNotification.ShowNotification"
+  class="example-card"
+  [ngClass]="getCssClassByNotificationType"
+>
+  <mat-card-content>
+    <div class="card-content">
+      <mat-icon>{{ notificationText }}</mat-icon>
+      <p>{{ systemNotification.Message }}</p>
+    </div>
+  </mat-card-content>
+  <mat-divider inset></mat-divider>
+  <mat-card-actions>
+    <button mat-button (click)="close()">Fechar</button>
+  </mat-card-actions>
+</mat-card>
