@@ -1,11 +1,15 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { catchError, of } from 'rxjs';
-import { ChildService } from '../services/child/child.service';
-import { Child, DashChildModel } from '../services/child/models/Child';
+import { catchError } from 'rxjs';
+import { SpinnerDialogComponent } from 'src/app/components/spinner-dialog/spinner-dialog.component';
+import { NotificationType } from 'src/app/services/notification/models/SystemNotification';
+import { NotificationService } from 'src/app/services/notification/notification.service';
+import { ChildService } from '../../services/child/child.service';
+import { Child, DashChildModel } from '../../services/child/models/Child';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,24 +19,37 @@ import { Child, DashChildModel } from '../services/child/models/Child';
 export class DashboardComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['familyAcronym', 'name', 'legalResponsible'];
   dataSource = new MatTableDataSource<DashChildModel>([]);
-  showLoading = false;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
     private childService: ChildService,
-    private router: Router
+    private router: Router,
+    public dialog: MatDialog,
+    private notificationService: NotificationService
   ) {
-    // this.dataSource = new MatTableDataSource<DashChildModel>([]);
   }
 
   ngOnInit(): void {
-    this.showLoading = true;
+    const spinnerDialogRef = this.dialog.open(SpinnerDialogComponent, {
+      disableClose: true,
+    });
+
     this.childService.getChildren()
       .subscribe(children => {
-        this.dataSource = new MatTableDataSource<DashChildModel>(children);
-        this.showLoading = false;
+        this.dataSource.data = [...children];
+        spinnerDialogRef.close();
+      },
+      error => {
+        spinnerDialogRef.close();
+        console.log('Erro ao obter crianças', error)
+        this.notificationService.emitMessage({
+          Message: 'Um erro ocorreu ao obter as crianças. Tente novamente!',
+          ShowNotification: true,
+          ShowtimeInMilliseconds: 5000,
+          Type: NotificationType.ERROR,
+        });
       });
   }
 

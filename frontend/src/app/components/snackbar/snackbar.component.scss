@@ -1,0 +1,29 @@
+.example-card {
+  max-width: 100%;
+
+  .card-content {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+
+    p {
+      margin: 0;
+    }
+  }
+}
+
+.error {
+  background: #b00020;
+  color: white;
+}
+
+.warning {
+  background: #f9a825;
+  color: white;
+}
+
+.informartion {
+  background: #0277bd;
+  color: white;
+}

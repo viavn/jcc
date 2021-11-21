@@ -1,10 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ChildService } from '../services/child/child.service';
-import { Child, GodParent } from '../services/child/models/Child';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatTable } from '@angular/material/table';
 import { GodParentsViewModel as GodParentViewModel } from './viewModelds/GodParentsViewModel';
+import { Child, GodParent } from 'src/app/services/child/models/Child';
+import { ChildService } from 'src/app/services/child/child.service';
+import { MatDialog } from '@angular/material/dialog';
+import { NotificationService } from 'src/app/services/notification/notification.service';
+import { SpinnerDialogComponent } from 'src/app/components/spinner-dialog/spinner-dialog.component';
+import { NotificationType } from 'src/app/services/notification/models/SystemNotification';
 
 @Component({
   selector: 'app-child-detail',
@@ -29,19 +33,45 @@ export class ChildDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private childService: ChildService,
     private fb: FormBuilder,
+    public dialog: MatDialog,
+    private notificationService: NotificationService,
   ) {
     this.childFormGroup = this.createChildFormGroup();
     this.godParentsFormGroup = this.createGodParentsFormGroup();
   }
 
   ngOnInit(): void {
+    const spinnerDialogRef = this.dialog.open(SpinnerDialogComponent, {
+      disableClose: true,
+    });
+
     this.childService.getChild(this.route.snapshot.paramMap.get('id')!)
       .subscribe(child => {
         this.child = child;
         if (child) {
           this.setValuesToChildForm(child);
+          this.godParents = child.godParents.map((gp, index) => {
+            const godParentViewModel: GodParentViewModel = {
+              createdDate: new Date(),
+              godParent: { ...gp },
+              rowId: index + 1
+            };
+            return godParentViewModel;
+          });
         }
-      });
+
+        spinnerDialogRef.close();
+      },
+        error => {
+          console.error('Erro ao obter crianças', error);
+          spinnerDialogRef.close();
+          this.notificationService.emitMessage({
+            Message: 'Um erro ocorreu ao obter os dados da criança. Tente novamente!',
+            ShowNotification: true,
+            ShowtimeInMilliseconds: 5000,
+            Type: NotificationType.ERROR,
+          });
+        });
   }
 
   onSubmit(event: any): void {
@@ -70,7 +100,6 @@ export class ChildDetailComponent implements OnInit {
         lastId = sortedGodParents[sortedGodParents.length - 1].rowId
       }
 
-      console.log('godParentFormValues', godParentFormValues);
       this.godParents.push({
         rowId: lastId + 1,
         createdDate: new Date(),
@@ -115,11 +144,31 @@ export class ChildDetailComponent implements OnInit {
   }
 
   onClickSaveChildGodParents(): void {
+    const spinnerDialogRef = this.dialog.open(SpinnerDialogComponent, {
+      disableClose: true,
+    });
+
     const godParents: GodParent[] = this.godParents.map(viewModel => viewModel.godParent);
     this.childService.addOrUpdateChildGodParents(this.child!.id, godParents)
       .subscribe(() => {
-        console.log('saved');
-      });
+        spinnerDialogRef.close();
+        this.notificationService.emitMessage({
+          Message: 'Dados salvos com sucesso!',
+          ShowNotification: true,
+          ShowtimeInMilliseconds: 5000,
+          Type: NotificationType.INFO,
+        });
+      },
+        error => {
+          console.error(`Erro ao atualizar os padrinhos e madrinha da criança ${this.child!.id}`, error);
+          spinnerDialogRef.close();
+          this.notificationService.emitMessage({
+            Message: 'Um erro ocorreu ao atualizar os padrinhos e madrinhas da criança. Tente novamente!',
+            ShowNotification: true,
+            ShowtimeInMilliseconds: 5000,
+            Type: NotificationType.ERROR,
+          });
+        });
   }
 
   private createChildFormGroup(): FormGroup {

@@ -1,7 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, EMPTY, map, Observable, of } from 'rxjs';
+import { map, Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { AuthService } from '../auth/auth.service';
 import { Child, DashChildModel, GodParent } from './models/Child';
 
 @Injectable({
@@ -14,10 +15,9 @@ export class ChildService {
   };
 
   constructor(
-    private http: HttpClient
-  ) {
-
-  }
+    private http: HttpClient,
+    private authService: AuthService,
+  ) { }
 
   getChildren(): Observable<DashChildModel[]> {
     const url = `${this.RESOURCE_URL}`;
@@ -34,7 +34,6 @@ export class ChildService {
           return dashChildModel
         });
       }),
-      catchError(this.handleError<DashChildModel[]>(`getChildren`))
     );
   }
 
@@ -66,36 +65,17 @@ export class ChildService {
         };
         return child;
       }),
-      catchError(this.handleError<Child>(`getChild`))
     );
   }
 
   addOrUpdateChildGodParents(childId: string, godParents: GodParent[]): Observable<any> {
+    const user = this.authService.getUserInSessionStorage();
+    if (!user) {
+      return throwError(() => 'Usuário não encontrado no session storage');
+    }
+
     const url = `${this.RESOURCE_URL}/${childId}`;
-    const bodyRequest: any = { godParents: godParents };
-
-    return this.http.patch<any>(url, bodyRequest, this.httpOptions).pipe(
-      catchError(this.handleError<any>('addOrUpdateChildGodParents'))
-    );
-  }
-
-  /**
- * Handle Http operation that failed.
- * Let the app continue.
- * @param operation - name of the operation that failed
- * @param result - optional value to return as the observable result
-  */
-  private handleError<T>(operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
-
-      // TODO: send the error to remote logging infrastructure
-      console.error(error); // log to console instead
-
-      // TODO: better job of transforming error for user consumption
-      console.log(`${operation} failed: ${error.message}`);
-
-      // Let the app keep running by returning an empty result.
-      return of(result as T);
-    };
+    const bodyRequest: any = { userLogin: user.login, godParents: godParents };
+    return this.http.patch<any>(url, bodyRequest, this.httpOptions);
   }
 }
