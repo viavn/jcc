@@ -13,7 +13,7 @@ services:
       - postgres-data:/var/lib/postgresql/data
     networks: 
       - db  
-      # - backend
+      - backend
 
   pgadmin:
     image: dpage/pgadmin4:latest
@@ -27,30 +27,30 @@ services:
     networks: 
       - db
 
-  # pdpApi:
-  #   image: viavn/pdp-evidences:1.0
-  #   depends_on:
-  #     - postgres
-  #   ports:
-  #     - 8080:80
-  #   environment:
-  #     - ASPNETCORE_ENVIRONMENT=Production
-  #     - ConnectionString_Db=server=postgres;port=5432;userid=postgres;database=my-db;password=d4REn0LdCH4B;
-  #   networks: 
-  #     - backend
+  jccapi:
+    image: jcc_api:1.0
+    depends_on:
+      - postgres
+    ports:
+      - 8080:80
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionString_Db=server=postgres;port=5432;userid=postgres;database=my-db;password=d4REn0LdCH4B;
+    networks: 
+      - backend
 
-  # frontend:
-  #   image: viavn/pdp-frontend:1.0
-  #   ports:
-  #     - 80:8080
-  #   depends_on:
-  #     - pdpApi
-  #   networks: 
-  #     - backend
+  frontend:
+    image: jcc_frontend:1.0
+    ports:
+      - 80:8080
+    depends_on:
+      - jccapi
+    networks: 
+      - backend
 
 volumes:
   postgres-data:
 
 networks:
   db:
-  # backend:
+  backend:

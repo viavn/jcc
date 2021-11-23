@@ -1,0 +1,10 @@
+version: '3.4'
+
+services:
+  jcc_frontend:
+    image: jcc_frontend:1.0
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 8081:80

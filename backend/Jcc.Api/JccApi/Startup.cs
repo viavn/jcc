@@ -35,6 +35,7 @@ namespace JccApi
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseMiddleware<ExceptionMiddleware>();
             //app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();

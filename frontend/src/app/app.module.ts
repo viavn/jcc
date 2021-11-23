@@ -12,6 +12,7 @@ import { SnackbarComponent } from './components/snackbar/snackbar.component';
 import { ChildDetailComponent } from './pages/child-detail/child-detail.component';
 import { SpinnerDialogComponent } from './components/spinner-dialog/spinner-dialog.component';
 import { LoginComponent } from './pages/login/login.component';
+import { NotFoundComponent } from './components/not-found/not-found.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { LoginComponent } from './pages/login/login.component';
     SnackbarComponent,
     SpinnerDialogComponent,
     LoginComponent,
+    NotFoundComponent,
   ],
   imports: [
     BrowserModule,
