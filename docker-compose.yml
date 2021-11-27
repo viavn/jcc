@@ -28,14 +28,14 @@ services:
       - db
 
   jccapi:
-    image: jcc_api:2.0
+    image: jcc_api:1.0
     depends_on:
       - postgres
     ports:
       - 8080:80
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionString_Db=server=postgres;port=5432;userid=postgres;database=my-db;password=d4REn0LdCH4B;
+      - DATABASE_URL=server=postgres;port=5432;userid=postgres;database=my-db;password=d4REn0LdCH4B;
     networks: 
       - backend
 

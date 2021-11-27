@@ -77,9 +77,9 @@
       <h2>Padrinho/Madrinha</h2>
       <div>
         <div class="checkbox-container">
-          <mat-checkbox formControlName="clothesSelected">Roupa</mat-checkbox>
-          <mat-checkbox formControlName="shoeSelected">Calçado</mat-checkbox>
-          <mat-checkbox formControlName="giftSelected">Presente</mat-checkbox>
+          <mat-checkbox formControlName="clothesSelected" id="clothes-checkbox">Roupa</mat-checkbox>
+          <mat-checkbox formControlName="shoeSelected" id="shoes-checkbox">Calçado</mat-checkbox>
+          <mat-checkbox formControlName="giftSelected" id="gift-checkbox">Presente</mat-checkbox>
         </div>
 
         <table class="example-full-width" cellspacing="0">
@@ -87,13 +87,13 @@
             <td>
               <mat-form-field class="example-full-width" appearance="fill">
                 <mat-label>Nome</mat-label>
-                <input matInput formControlName="name" />
+                <input matInput formControlName="name" id="godParentName" />
               </mat-form-field>
             </td>
             <td>
               <mat-form-field class="example-full-width" appearance="fill">
                 <mat-label>Telefone</mat-label>
-                <input matInput formControlName="phone" />
+                <input matInput formControlName="phone" id="godParentPhone" />
               </mat-form-field>
             </td>
           </tr>
@@ -197,7 +197,7 @@
       </mat-table>
     </div>
   </div>
-  <button mat-raised-button color="primary" type="button" (click)="onClickSaveChildGodParents()">
+  <button mat-raised-button id="save-info" color="primary" type="button" (click)="onClickSaveChildGodParents()">
     <mat-icon class="icon">autorenew</mat-icon>
     <span>Salvar informações</span>
   </button>
