@@ -28,7 +28,7 @@ services:
       - db
 
   jccapi:
-    image: jcc_api:1.0
+    image: jcc_api:2.0
     depends_on:
       - postgres
     ports:
