@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace JccApi.Controllers
 {
@@ -19,6 +20,12 @@ namespace JccApi.Controllers
         {
             _logger.LogInformation("Helthcheck endpoint called");
             return Ok();
+        }
+
+        [HttpGet("version")]
+        public IActionResult GetVersion()
+        {
+            return Ok(Environment.GetEnvironmentVariable("API_VERSION"));
         }
     }
 }
