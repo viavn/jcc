@@ -12,9 +12,11 @@ namespace JccApi.Extensions
     {
         public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
         {
-            string connectionString = configuration.GetConnectionString("ASPNETCORE_ENVIRONMENT") == "Development"
-                ? configuration.GetConnectionString("Db")
-                : GetHerokuConnectionString();
+            string connectionString = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development"
+               ? configuration.GetConnectionString("Db")
+               : GetHerokuConnectionString();
+
+            // string connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
 
             var builder = new NpgsqlConnectionStringBuilder(connectionString);
             services.AddDbContext<DataBaseContext>(options =>
