@@ -1,4 +1,4 @@
-<div *ngIf="child">
+<div *ngIf="child" class="child-form-container">
   <div>
     <form class="example-form" [formGroup]="childFormGroup">
       <h2>Criança</h2>
@@ -77,27 +77,33 @@
       <h2>Padrinho/Madrinha</h2>
       <div>
         <div class="checkbox-container">
-          <mat-checkbox formControlName="clothesSelected" id="clothes-checkbox">Roupa</mat-checkbox>
-          <mat-checkbox formControlName="shoeSelected" id="shoes-checkbox">Calçado</mat-checkbox>
-          <mat-checkbox formControlName="giftSelected" id="gift-checkbox">Presente</mat-checkbox>
+          <mat-checkbox formControlName="clothesSelected" id="clothes-checkbox"
+            >Roupa</mat-checkbox
+          >
+          <mat-checkbox formControlName="shoeSelected" id="shoes-checkbox"
+            >Calçado</mat-checkbox
+          >
+          <mat-checkbox formControlName="giftSelected" id="gift-checkbox"
+            >Presente</mat-checkbox
+          >
         </div>
 
-        <table class="example-full-width" cellspacing="0">
-          <tr>
-            <td>
-              <mat-form-field class="example-full-width" appearance="fill">
-                <mat-label>Nome</mat-label>
-                <input matInput formControlName="name" id="godParentName" />
-              </mat-form-field>
-            </td>
-            <td>
-              <mat-form-field class="example-full-width" appearance="fill">
-                <mat-label>Telefone</mat-label>
-                <input matInput formControlName="phone" id="godParentPhone" />
-              </mat-form-field>
-            </td>
-          </tr>
-        </table>
+        <div>
+          <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Nome</mat-label>
+            <input matInput formControlName="name" id="godParentName" />
+          </mat-form-field>
+
+          <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Telefone</mat-label>
+            <input
+              matInput
+              formControlName="phone"
+              id="godParentPhone"
+              type="tel"
+            />
+          </mat-form-field>
+        </div>
       </div>
 
       <div class="form-actions">
@@ -197,8 +203,16 @@
       </mat-table>
     </div>
   </div>
-  <button mat-raised-button id="save-info" color="primary" type="button" (click)="onClickSaveChildGodParents()">
-    <mat-icon class="icon">autorenew</mat-icon>
-    <span>Salvar informações</span>
-  </button>
+
+  <div class="fab-button-container">
+    <button
+      id="save-info"
+      mat-fab
+      aria-label="Salvar informações"
+      type="button"
+      (click)="onClickSaveChildGodParents()"
+    >
+      <mat-icon>favorite</mat-icon>
+    </button>
+  </div>
 </div>

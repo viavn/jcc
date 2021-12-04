@@ -13,6 +13,7 @@ import { ChildDetailComponent } from './pages/child-detail/child-detail.componen
 import { SpinnerDialogComponent } from './components/spinner-dialog/spinner-dialog.component';
 import { LoginComponent } from './pages/login/login.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
+import { UserDetailComponent } from './pages/user-detail/user-detail.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { NotFoundComponent } from './components/not-found/not-found.component';
     SpinnerDialogComponent,
     LoginComponent,
     NotFoundComponent,
+    UserDetailComponent,
   ],
   imports: [
     BrowserModule,

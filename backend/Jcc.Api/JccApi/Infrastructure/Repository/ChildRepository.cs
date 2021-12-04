@@ -20,6 +20,7 @@ namespace JccApi.Infrastructure.Repository
         public async Task<IEnumerable<Child>> GetAll()
         {
             return await _context.Children
+                .AsNoTracking()
                 .OrderBy(c => c.FamilyAcronym)
                 .ThenBy(c => c.Name)
                 .ToListAsync();
@@ -27,7 +28,7 @@ namespace JccApi.Infrastructure.Repository
 
         public async Task<Child> GetById(Guid id)
         {
-            return await _context.Children.Include(c => c.GodParents)
+            return await _context.Children.AsNoTracking().Include(c => c.GodParents)
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 

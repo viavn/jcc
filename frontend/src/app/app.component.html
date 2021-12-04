@@ -17,8 +17,13 @@
   </div>
 
   <div class="spacer"></div>
+
+  <div class="settings" *ngIf="showLogout">
+    <span (click)="userSettings()"><mat-icon>settings</mat-icon></span>
+  </div>
+
   <div class="logout" *ngIf="showLogout">
-    <span (click)="logout()">sair</span>
+    <span (click)="logout()"><mat-icon>logout</mat-icon></span>
   </div>
 </div>
 
