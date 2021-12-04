@@ -26,6 +26,8 @@ export class AppComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.showLogout = this.authService.isUserInSessionStorage();
+
     const messageSubject = this.notificationService.message$
       .subscribe(message => {
         this.notification = message;
@@ -48,5 +50,9 @@ export class AppComponent implements OnInit, OnDestroy {
     this.showLogout = false;
     this.authService.cleanAuthFromStorage();
     this.router.navigate(['/login']);
+  }
+
+  userSettings(): void {
+    this.router.navigate(['/user']);
   }
 }

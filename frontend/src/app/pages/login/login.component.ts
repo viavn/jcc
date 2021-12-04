@@ -35,14 +35,15 @@ export class LoginComponent {
 
     const loginFormValues = this.loginFormGroup.value;
     const user: User = {
+      id: '',
       login: loginFormValues.user,
       password: loginFormValues.password
     };
 
     this.authService.login(user)
       .subscribe(
-        () => {
-          this.authService.saveUserLoginToSessionStorage(user);
+        (userInfo) => {
+          this.authService.saveUserToSessionStorage({ ...user, id: userInfo.id });
           spinnerDialogRef.close();
           this.authService.emitUserHasLoggedIn();
           this.router.navigate(['/']);

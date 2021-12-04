@@ -60,6 +60,7 @@ namespace JccApi.Entities
         public string FamilyAcronym { get; private set; }
         public string FamilyPhone { get; private set; }
         public string FamilyAddress { get; private set; }
-        public virtual ICollection<GodParent> GodParents { get; private set; } = new List<GodParent>();
+        public ICollection<GodParent> GodParents { get; private set; } = new List<GodParent>();
+        //public List<ChildGodParentItem> ChildGodParentItems { get; set; } = new List<ChildGodParentItem>();
     }
 }

@@ -1,0 +1,52 @@
+<form
+  class="example-form"
+  [formGroup]="loginFormGroup"
+  (ngSubmit)="onSubmit()"
+>
+  <h2>Minhas informações</h2>
+  <div class="form-inputs">
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Login</mat-label>
+      <input matInput formControlName="login" />
+    </mat-form-field>
+
+    <mat-form-field class="input-full-width" appearance="fill">
+      <mat-label>Senha</mat-label>
+      <input
+        id="password"
+        matInput
+        formControlName="password"
+        [type]="hidePassword ? 'password' : 'text'"
+      />
+      <button
+        mat-icon-button
+        matSuffix
+        (click)="hidePassword = !hidePassword"
+        [attr.aria-label]="'Ocultar senha'"
+        [attr.aria-pressed]="hidePassword"
+        type="button"
+      >
+        <mat-icon>{{
+          hidePassword ? "visibility_off" : "visibility"
+        }}</mat-icon>
+      </button>
+
+      <mat-error
+        *ngIf="password?.invalid && (password?.dirty || password?.touched) && password?.errors?.['required']"
+      >
+        Senha é obrigatória
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <div class="form-actions">
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [disabled]="!loginFormGroup.valid"
+    >
+      Alterar senha
+    </button>
+  </div>
+</form>

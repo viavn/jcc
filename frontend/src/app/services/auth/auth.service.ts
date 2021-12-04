@@ -30,8 +30,12 @@ export class AuthService {
     return this.http.post<any>(url, bodyRequest, this.httpOptions);
   }
 
-  saveUserLoginToSessionStorage(user: User): void {
-    this.sessionStorageService.save(this.sessionStorageKey, JSON.stringify(user.login));
+  saveUserToSessionStorage(user: User): void {
+    const sessionUser: User = {
+      ...user,
+      password: '',
+    }
+    this.sessionStorageService.save(this.sessionStorageKey, JSON.stringify(sessionUser));
   }
 
   isUserInSessionStorage(): boolean {
@@ -42,10 +46,7 @@ export class AuthService {
   getUserInSessionStorage(): User | undefined {
     const sessionItem = this.sessionStorageService.getItem(this.sessionStorageKey);
     if (sessionItem) {
-      return {
-        login: JSON.parse(sessionItem),
-        password: '',
-      };
+      return JSON.parse(sessionItem) as User;
     }
 
     return undefined;
@@ -59,7 +60,7 @@ export class AuthService {
     return this.sessionStorageKey;
   }
 
-  emitUserHasLoggedIn(): void  {
+  emitUserHasLoggedIn(): void {
     this.loginRealized.next(true);
   }
 }

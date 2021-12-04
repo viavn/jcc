@@ -61,5 +61,6 @@ namespace JccApi.Entities
         public Child Child { get; private set; }
         public Guid UserId { get; private set; }
         public User User { get; private set; }
+        //public List<ChildGodParentItem> ChildGodParentItems { get; set; } = new List<ChildGodParentItem>();
     }
 }
