@@ -1,14 +1,29 @@
 <div class="table-container">
-  <mat-form-field appearance="standard">
-    <mat-label>Filtro</mat-label>
-    <input
-      id="filter-input"
-      matInput
-      (keyup)="applyFilter($event)"
-      placeholder="Ex. João"
-      #input
-    />
-  </mat-form-field>
+  <div class="table-header-container">
+    <div class="filter-container">
+      <mat-form-field appearance="standard">
+        <mat-label>Filtro</mat-label>
+        <input
+          id="filter-input"
+          matInput
+          (keyup)="applyFilter($event)"
+          placeholder="Ex. João"
+          #input
+        />
+      </mat-form-field>
+    </div>
+
+    <button
+      class="export-button"
+      mat-raised-button
+      color="primary"
+      type="button"
+      (click)="getReport()"
+    >
+      <mat-icon>file_download</mat-icon>
+      Obter planilha
+    </button>
+  </div>
 
   <div class="table-pagination-container mat-elevation-z8">
     <div class="example-container">

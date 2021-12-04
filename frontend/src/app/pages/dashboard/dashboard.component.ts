@@ -41,16 +41,16 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         this.dataSource.data = [...children];
         spinnerDialogRef.close();
       },
-      error => {
-        spinnerDialogRef.close();
-        console.log('Erro ao obter crianças', error)
-        this.notificationService.emitMessage({
-          Message: 'Um erro ocorreu ao obter as crianças. Tente novamente!',
-          ShowNotification: true,
-          ShowtimeInMilliseconds: 5000,
-          Type: NotificationType.ERROR,
+        error => {
+          spinnerDialogRef.close();
+          console.log('Erro ao obter crianças', error)
+          this.notificationService.emitMessage({
+            Message: 'Um erro ocorreu ao obter as crianças. Tente novamente!',
+            ShowNotification: true,
+            ShowtimeInMilliseconds: 5000,
+            Type: NotificationType.ERROR,
+          });
         });
-      });
   }
 
   ngAfterViewInit() {
@@ -69,5 +69,37 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   onRowClicked(child: Child): void {
     this.router.navigate(['detail', child.id]);
+  }
+
+  getReport() {
+    const spinnerDialogRef = this.dialog.open(SpinnerDialogComponent, {
+      disableClose: true,
+    });
+
+    this.childService.getChildrenReport()
+      .subscribe(data => {
+        spinnerDialogRef.close();
+        const blob = new Blob([data], { type: 'application/octet-stream' });
+
+        let link = document.createElement("a");
+        if (link.download !== undefined) {
+          const url = URL.createObjectURL(blob);
+          link.setAttribute("href", url);
+          link.setAttribute("download", 'crianças.xlsx');
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+      },
+        error => {
+          spinnerDialogRef.close();
+          console.log('Erro ao obter relatório', error)
+          this.notificationService.emitMessage({
+            Message: 'Um erro ocorreu ao obter o relatório. Tente novamente!',
+            ShowNotification: true,
+            ShowtimeInMilliseconds: 5000,
+            Type: NotificationType.ERROR,
+          });
+        });
   }
 }

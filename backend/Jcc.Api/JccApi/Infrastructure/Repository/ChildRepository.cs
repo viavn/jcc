@@ -25,6 +25,16 @@ namespace JccApi.Infrastructure.Repository
                 .ThenBy(c => c.Name)
                 .ToListAsync();
         }
+        
+        public async Task<IEnumerable<Child>> GetAllWithGodParents()
+        {
+            return await _context.Children
+                .AsNoTracking()
+                .Include(c => c.GodParents)
+                .OrderBy(c => c.FamilyAcronym)
+                .ThenBy(c => c.Name)
+                .ToListAsync();
+        }
 
         public async Task<Child> GetById(Guid id)
         {

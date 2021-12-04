@@ -68,6 +68,13 @@ export class ChildService {
     );
   }
 
+  getChildrenReport(): Observable<any> {
+    const url = `${this.RESOURCE_URL}/export`;
+    return this.http.get(url, {
+      responseType: 'blob'
+    });
+  }
+
   addOrUpdateChildGodParents(childId: string, godParents: GodParent[]): Observable<any> {
     const user = this.authService.getUserInSessionStorage();
     if (!user) {
