@@ -26,3 +26,17 @@ th {
 .mat-row:hover .mat-cell {
   border-color: currentColor;
 }
+
+.table-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .filter-container {
+    width: 50%;
+  }
+
+  .export-button {
+    height: 36px;
+  }
+}
