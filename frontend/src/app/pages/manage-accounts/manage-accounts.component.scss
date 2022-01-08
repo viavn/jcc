@@ -1,0 +1,42 @@
+.example-container {
+  height: 400px;
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+}
+
+.mat-form-field {
+  font-size: 14px;
+  width: 100%;
+}
+
+td,
+th {
+  width: 25%;
+}
+
+.mat-row .mat-cell {
+  border-bottom: 1px solid transparent;
+  border-top: 1px solid transparent;
+  cursor: pointer;
+}
+
+.mat-row:hover .mat-cell {
+  border-color: currentColor;
+}
+
+.table-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .filter-container {
+    width: 50%;
+  }
+
+  .export-button {
+    height: 36px;
+  }
+}

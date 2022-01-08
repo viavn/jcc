@@ -1,8 +1,10 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { AuthService } from '../auth/auth.service';
+import { User } from '../auth/models/User';
+import { CreateUserModel } from './models/CreateUserModel';
+import { GetUsersModel } from './models/GetUsersModel';
 
 @Injectable({
   providedIn: 'root'
@@ -15,12 +17,54 @@ export class UserService {
 
   constructor(
     private http: HttpClient,
-    private authService: AuthService,
   ) { }
 
-  changeUserPassword(userId: string, newPassword: string): Observable<any> {
-    const url = `${this.RESOURCE_URL}/${userId}/password`;
+  changeUserPassword(id: string, newPassword: string): Observable<any> {
+    const url = `${this.RESOURCE_URL}/${id}/password`;
     const bodyRequest: any = { newpassword: newPassword };
     return this.http.patch<any>(url, bodyRequest, this.httpOptions);
+  }
+
+  createUser(user: CreateUserModel): Observable<any> {
+    const url = `${this.RESOURCE_URL}`;
+    const bodyRequest: any = {
+      login: user.login,
+      name: user.name,
+      password: user.password,
+      userType: user.userType
+    };
+    return this.http.post<any>(url, bodyRequest, this.httpOptions);
+  }
+
+  disableUser(id: string): Observable<any> {
+    const url = `${this.RESOURCE_URL}/${id}`;
+    return this.http.delete(url, this.httpOptions);
+  }
+
+  getUsers(): Observable<GetUsersModel[]> {
+    const url = `${this.RESOURCE_URL}`;
+    return this.http.get<any>(url)
+      .pipe(map(users => {
+        return users.map((u: any) => ({
+          id: u.id,
+          login: u.login,
+          name: u.name,
+          isDeleted: u.isDeleted,
+          userType: u.userType,
+        } as GetUsersModel));
+      }));
+  }
+
+  getUserById(id: string): Observable<GetUsersModel> {
+    const url = `${this.RESOURCE_URL}/${id}`;
+    return this.http.get<any>(url)
+      .pipe(map(user => ({
+        id: user.id,
+        login: user.login,
+        name: user.name,
+        isDeleted: user.isDeleted,
+        userType: user.userType,
+      } as GetUsersModel
+      )));
   }
 }

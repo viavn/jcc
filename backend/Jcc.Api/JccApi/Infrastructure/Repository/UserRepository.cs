@@ -2,6 +2,7 @@
 using JccApi.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace JccApi.Infrastructure.Repository
@@ -13,6 +14,11 @@ namespace JccApi.Infrastructure.Repository
         public UserRepository(DataBaseContext context)
         {
             _context = context;
+        }
+
+        public async Task<IEnumerable<User>> GetUsers()
+        {
+            return await _context.Users.AsNoTracking().ToListAsync();
         }
 
         public async Task<User> GetUserById(Guid id)

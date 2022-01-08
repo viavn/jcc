@@ -1,0 +1,88 @@
+<div class="table-container">
+  <div class="table-header-container">
+    <div class="filter-container">
+      <mat-form-field appearance="standard">
+        <mat-label>Filtro</mat-label>
+        <input
+          id="filter-input"
+          matInput
+          (keyup)="applyFilter($event)"
+          placeholder="Ex. João"
+          #input
+        />
+      </mat-form-field>
+    </div>
+
+    <button
+      class="export-button"
+      mat-raised-button
+      color="primary"
+      type="button"
+      (click)="createUser()"
+    >
+      <mat-icon>perm_identity</mat-icon>
+      Novo usuário
+    </button>
+  </div>
+
+  <div class="table-pagination-container mat-elevation-z8">
+    <div class="example-container">
+      <mat-table [dataSource]="dataSource" matSort>
+        <!-- Login -->
+        <ng-container matColumnDef="login">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            Login
+          </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            {{ element.login }}
+          </mat-cell>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            Nome
+          </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{ element.name }} </mat-cell>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="isAdmin">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            Admin?
+          </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            {{ isUserAdmin(element.userType) | booleanToStringConverter }}
+          </mat-cell>
+        </ng-container>
+
+        <!-- Is Deleted Column -->
+        <ng-container matColumnDef="isDeleted">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            Inativo?
+          </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            {{ element.isDeleted | booleanToStringConverter }}
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row
+          *matHeaderRowDef="displayedColumns; sticky: true"
+        ></mat-header-row>
+        <mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          (click)="onRowClicked(row)"
+        ></mat-row>
+
+        <!-- Row shown when there is no matching data. -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" colspan="4">Nenhum registro encontrado</td>
+        </tr>
+      </mat-table>
+    </div>
+    <mat-paginator
+      [pageSizeOptions]="[10, 25, 50, 100]"
+      aria-label="Select page of users"
+    ></mat-paginator>
+  </div>
+</div>

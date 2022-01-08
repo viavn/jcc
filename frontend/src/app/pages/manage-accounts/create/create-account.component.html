@@ -1,0 +1,58 @@
+<form
+  class="example-form"
+  [formGroup]="accountFormGroup"
+  (ngSubmit)="onCreateUser()"
+>
+  <h2>Usuário</h2>
+  <div>
+    <div>
+      <mat-form-field class="example-full-width" appearance="outline">
+        <mat-label>Login</mat-label>
+        <input matInput formControlName="login" id="account_login" />
+      </mat-form-field>
+    </div>
+
+    <div>
+      <mat-form-field class="example-full-width" appearance="outline">
+        <mat-label>Nome</mat-label>
+        <input matInput formControlName="name" id="account_name" />
+      </mat-form-field>
+    </div>
+
+    <div>
+      <mat-form-field class="example-full-width" appearance="outline">
+        <mat-label>Senha</mat-label>
+        <input matInput formControlName="password" id="account_password" />
+      </mat-form-field>
+    </div>
+
+    <div>
+      <mat-label>Tipo Usuário</mat-label>
+      <mat-radio-group formControlName="userType" class="example-radio-group">
+        <mat-radio-button
+          class="example-margin"
+          [value]="1"
+          class="example-radio-button"
+          >Admin</mat-radio-button
+        >
+        <mat-radio-button
+          class="example-margin"
+          [value]="2"
+          class="example-radio-button"
+          >Normal</mat-radio-button
+        >
+      </mat-radio-group>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [disabled]="!accountFormGroup.valid"
+    >
+      Criar
+    </button>
+  </div>
+</form>

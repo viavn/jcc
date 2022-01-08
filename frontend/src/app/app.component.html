@@ -18,13 +18,19 @@
 
   <div class="spacer"></div>
 
-  <div class="settings" *ngIf="showLogout">
-    <span (click)="userSettings()"><mat-icon>settings</mat-icon></span>
-  </div>
+  <ng-container *ngIf="showLogout">
+    <div class="manage_accounts" *ngIf="showManageAccounts">
+      <span (click)="manageAccounts()"><mat-icon>manage_accounts</mat-icon></span>
+    </div>
 
-  <div class="logout" *ngIf="showLogout">
-    <span (click)="logout()"><mat-icon>logout</mat-icon></span>
-  </div>
+    <div class="settings">
+      <span (click)="userSettings()"><mat-icon>settings</mat-icon></span>
+    </div>
+
+    <div class="logout">
+      <span (click)="logout()"><mat-icon>logout</mat-icon></span>
+    </div>
+  </ng-container>
 </div>
 
 <div class="content" role="main">
