@@ -4,6 +4,7 @@ import { SystemNotification } from './services/notification/models/SystemNotific
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthService } from './services/auth/auth.service';
+import { UserType } from './services/auth/enums/UserType';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +16,7 @@ export class AppComponent implements OnInit, OnDestroy {
   homeLink = '/';
   notification!: SystemNotification;
   showLogout = false;
+  showManageAccounts = false;
 
   private notificationSubject = new Subscription();
   private loginSubject = new Subscription();
@@ -37,6 +39,11 @@ export class AppComponent implements OnInit, OnDestroy {
     const loginSubject = this.authService.loginRealized$
       .subscribe(value => {
         this.showLogout = value;
+
+        const user = this.authService.getUserInSessionStorage();
+        if (user) {
+          this.showManageAccounts = user.userType === UserType.ADMIN;
+        }
       })
     this.loginSubject.add(loginSubject);
   }
@@ -54,5 +61,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
   userSettings(): void {
     this.router.navigate(['/user']);
+  }
+
+  manageAccounts(): void {
+    this.router.navigate(['/manage-accounts']);
   }
 }

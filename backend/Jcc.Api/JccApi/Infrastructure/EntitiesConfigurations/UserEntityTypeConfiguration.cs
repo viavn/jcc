@@ -28,6 +28,16 @@ namespace JccApi.Infrastructure.EntitiesConfigurations
                 .HasColumnName("password")
                 .HasMaxLength(500)
                 .IsRequired();
+            
+            builder.Property(ev => ev.IsDeleted)
+                .HasColumnName("is_deleted")
+                .HasColumnType("boolean")
+                .IsRequired();
+
+            builder.Property(ev => ev.UserType)
+                .HasColumnName("user_type_id")
+                .HasConversion<int>()
+                .IsRequired();
         }
     }
 }

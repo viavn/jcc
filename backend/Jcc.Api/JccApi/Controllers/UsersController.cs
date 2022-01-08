@@ -3,6 +3,7 @@ using JccApi.Infrastructure.Repository;
 using JccApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace JccApi.Controllers
@@ -18,10 +19,45 @@ namespace JccApi.Controllers
             _userRepository = userRepository;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var users = await _userRepository.GetUsers();
+            var usersResponse = users.Select(user => new GetUsersResponse
+            {
+                Id = user.Id,
+                Login = user.Login,
+                Name = user.Name,
+                UserType = user.UserType,
+                IsDeleted = user.IsDeleted,
+            });
+
+            return Ok(usersResponse);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAll(Guid id)
+        {
+            var user = await _userRepository.GetUserById(id);
+            if (user is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(new GetUsersResponse
+            {
+                Id = user.Id,
+                Login = user.Login,
+                Name = user.Name,
+                UserType = user.UserType,
+                IsDeleted = user.IsDeleted,
+            });
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserRequestModel request)
         {
-            var user = new User(request.Login, request.Name, request.Password);
+            var user = new User(request.Login, request.Name, request.Password, request.UserType);
             await _userRepository.Create(user);
             return Ok();
         }
@@ -35,12 +71,18 @@ namespace JccApi.Controllers
                 return NotFound();
             }
 
-            if (user.Password != request.Password)
+            if (user.Password != request.Password || user.IsDeleted)
             {
                 return Unauthorized();
             }
 
-            return Ok(user);
+            return Ok(new AuthenticateUserResponse
+            {
+                Id = user.Id,
+                Login = user.Login,
+                Name = user.Name,
+                UserType = user.UserType,
+            });
         }
 
         [HttpPatch("{id}/password")]
@@ -56,6 +98,21 @@ namespace JccApi.Controllers
             await _userRepository.Update(user);
 
             return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(Guid id)
+        {
+            var user = await _userRepository.GetUserById(id);
+            if (user is null)
+            {
+                return NotFound();
+            }
+
+            user.MarkAsDeleted();
+            await _userRepository.Update(user);
+
+            return NoContent();
         }
     }
 }

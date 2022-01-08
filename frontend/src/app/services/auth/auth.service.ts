@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { SessionStorageService } from '../sessionStorage/session-storage.service';
 import { User } from './models/User';
+import { UserLoginModel } from './models/UserLoginModel';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +25,7 @@ export class AuthService {
     private sessionStorageService: SessionStorageService,
   ) { }
 
-  login(user: User) {
+  login(user: UserLoginModel) {
     const url = `${this.RESOURCE_URL}/login`;
     const bodyRequest: any = { ...user };
     return this.http.post<any>(url, bodyRequest, this.httpOptions);

@@ -12,6 +12,14 @@ const routes: Routes = [
   { path: 'home', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'user', component: UserDetailComponent, canActivate: [AuthGuard] },
+
+  {
+    path: 'manage-accounts',
+    loadChildren: () => import('./pages/manage-accounts/manage-accounts.module')
+      .then(m => m.ManageAccountsModule),
+    canActivate: [AuthGuard]
+  },
+
   { path: 'detail/:id', component: ChildDetailComponent, canActivate: [AuthGuard] },
   { path: '**', component: NotFoundComponent },
 ];
