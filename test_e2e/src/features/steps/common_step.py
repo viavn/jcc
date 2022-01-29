@@ -1,14 +1,16 @@
-# from behave import given, when, then
-#
-# from web_app import webapp
-# from data.config import webapp_url
-#
-#
-# @when(u'Eu navego para a pagina {page}')
-# def step_impl(context, page):
-#     webapp.goto_page(page)
-#
-#
-# @then(u'Fecho o navegador')
-# def step_impl(context):
-#     webapp.close()
+from time import sleep
+
+from behave import then
+
+
+@then(u'deve aparecer uma mensagem de erro')
+def step_impl(context):
+    result = context.messages_popup.is_error_message_visible()
+    assert result, True
+
+
+@then(u'a mensagem de erro deve desaparecer')
+def step_impl(context):
+    sleep(5)
+    result = context.messages_popup.is_error_message_hidden()
+    assert result, True
