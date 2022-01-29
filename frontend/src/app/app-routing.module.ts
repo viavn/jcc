@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { NotFoundComponent } from './components/not-found/not-found.component';
+import { AdminAuthGuard } from './guards/admin/admin.guard';
 import { AuthGuard } from './guards/auth/auth.guard';
 import { ChildDetailComponent } from './pages/child-detail/child-detail.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
@@ -17,7 +18,7 @@ const routes: Routes = [
     path: 'manage-accounts',
     loadChildren: () => import('./pages/manage-accounts/manage-accounts.module')
       .then(m => m.ManageAccountsModule),
-    canActivate: [AuthGuard]
+    canActivate: [AdminAuthGuard]
   },
 
   { path: 'detail/:id', component: ChildDetailComponent, canActivate: [AuthGuard] },

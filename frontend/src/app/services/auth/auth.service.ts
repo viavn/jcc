@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { SessionStorageService } from '../sessionStorage/session-storage.service';
+import { UserType } from './enums/UserType';
 import { User } from './models/User';
 import { UserLoginModel } from './models/UserLoginModel';
 
@@ -42,6 +43,15 @@ export class AuthService {
   isUserInSessionStorage(): boolean {
     const sessionItem = this.sessionStorageService.getItem(this.sessionStorageKey);
     return sessionItem && JSON.parse(sessionItem);
+  }
+
+  isUserAdmin(): boolean {
+    const user = this.getUserInSessionStorage();
+    if (!user) {
+      return false
+    }
+
+    return user.userType === UserType.ADMIN;
   }
 
   getUserInSessionStorage(): User | undefined {
