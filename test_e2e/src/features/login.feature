@@ -46,4 +46,3 @@ Feature: Login
     And clicar no botao entrar
     Given acesso a pagina de mudanca de senha
     And altero a senha do usuario regular para "123"
-
