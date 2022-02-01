@@ -1,7 +1,8 @@
 from selenium.common.exceptions import NoSuchElementException
 
 from features.helpers.helper_webapp import webapp
-from features.pages.base_page import LoginPage, MessagesResultPage, DashboardPage, ManageAccountsPage, SettingsPage
+from features.pages.base_page import LoginPage, MessagesResultPage, DashboardPage, ManageAccountsPage, SettingsPage, \
+    ChildDetailsPage
 
 
 def before_all(context):
@@ -12,6 +13,7 @@ def before_all(context):
     context.dashboard_page = DashboardPage(webapp.driver)
     context.manage_accounts_page = ManageAccountsPage(webapp.driver)
     context.settings_page = SettingsPage(webapp.driver)
+    context.child_details_page = ChildDetailsPage(webapp.driver)
 
 
 def after_scenario(context, scenario):

@@ -26,6 +26,16 @@ def step_impl(context, filter_query):
     context.manage_accounts_page.send_keys_to_filter(filter_query)
 
 
+@given(u'visualizo o detalhe do usuario')
+def step_impl(context):
+    context.manage_accounts_page.click_on_table_row()
+
+
+@given(u'clico no botao inativar usuario')
+def step_impl(context):
+    context.manage_accounts_page.click_on_disable_user_button()
+
+
 @then(u'linha filtrada deve conter')
 def step_impl(context):
     row = context.table[0]
