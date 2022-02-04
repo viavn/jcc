@@ -79,3 +79,24 @@ def delete_user(user_login):
             cursor.close()
             connection.close()
             print("PostgreSQL connection is closed")
+
+
+def reset_user_password(user_login):
+    try:
+        # Connect to an existing database
+        connection = open_connection()
+
+        # Create a cursor to perform database operations
+        cursor = connection.cursor()
+        cursor.execute("UPDATE users SET password = %s WHERE login = %s;", ('123', user_login,))
+        connection.commit()
+        count = cursor.rowcount
+        print(count, "Record updated successfully ")
+
+    except (Exception, Error) as error:
+        print("Error while connecting to PostgreSQL", error)
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+            print("PostgreSQL connection is closed")

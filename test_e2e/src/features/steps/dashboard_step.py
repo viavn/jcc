@@ -1,4 +1,14 @@
-from behave import when, then
+from behave import given, when, then
+
+from login_step import step_impl_login_as_admin, step_impl_login_as_regular
+
+
+@given(u'acesso o sistema com usuario "{user_type}"')
+def step_impl_login_by_user_type(context, user_type):
+    if user_type == 'admin':
+        step_impl_login_as_admin(context)
+    else:
+        step_impl_login_as_regular(context)
 
 
 @when(u'pesquiso por "{filter_query}" na tabela de criancas')
