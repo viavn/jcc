@@ -15,6 +15,7 @@ Feature: Crianca
     Examples:
       | filter_query | godparent_name    | godparent_phone |
       | nogueira     | Vinicius Avansini | (19) 98119-2732 |
+      # TODO: adicionar mais algum exemplo ou remover
 
 
   Scenario Outline: Altera presente
