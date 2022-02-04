@@ -3,6 +3,7 @@ from selenium.common.exceptions import NoSuchElementException
 from features.helpers.helper_webapp import webapp
 from features.pages.base_page import LoginPage, MessagesResultPage, DashboardPage, ManageAccountsPage, SettingsPage, \
     ChildDetailsPage
+from repository import queries
 
 
 def before_all(context):
@@ -18,6 +19,11 @@ def before_all(context):
 
 def after_scenario(context, scenario):
     try:
+        if 'changeRegularUserPassword' in scenario.tags:
+            queries.reset_user_password('test')
+        elif 'newRegularUser' in scenario.tags:
+            queries.delete_user('user-e2e-1')
+
         context.dashboard_page.click_logout_button()
         context.webapp.wait(3)
     except NoSuchElementException:
