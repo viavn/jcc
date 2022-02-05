@@ -1,5 +1,5 @@
-from features.pages.base_page import BasePage
-from features.pages.locators import DashboardPageLocators
+from pages.base_page import BasePage
+from pages.locators import DashboardPageLocators
 
 
 class DashboardPage(BasePage):

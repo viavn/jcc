@@ -1,12 +1,12 @@
 from selenium.common.exceptions import NoSuchElementException
 
-from features.helpers.helper_webapp import webapp
-from features.pages.child_details_page import ChildDetailsPage
-from features.pages.dashboard_page import DashboardPage
-from features.pages.login_page import LoginPage
-from features.pages.manage_accounts_page import ManageAccountsPage
-from features.pages.message_result_page import MessagesResultPage
-from features.pages.settings_page import SettingsPage
+from helpers.helper_webapp import webapp
+from pages.child_details_page import ChildDetailsPage
+from pages.dashboard_page import DashboardPage
+from pages.login_page import LoginPage
+from pages.manage_accounts_page import ManageAccountsPage
+from pages.message_result_page import MessagesResultPage
+from pages.settings_page import SettingsPage
 from repository import queries
 
 
