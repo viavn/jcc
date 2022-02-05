@@ -2,7 +2,7 @@ from time import sleep
 
 from behave import given, when, then
 
-from features.steps.dashboard_step import step_impl_search_for_child, step_impl_login_by_user_type
+from steps.dashboard_step import step_impl_search_for_child, step_impl_login_by_user_type
 
 
 @given(u'que uma crianca eh apadrinhada com usuario "{user_type}"')
