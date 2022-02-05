@@ -1,4 +1,4 @@
-Feature: Dashboard/Home
+Feature: Dashboard
 
   Scenario Outline: Filtro de tabela das criancas
     Given acesso o sistema com usuario "<user_type>"
