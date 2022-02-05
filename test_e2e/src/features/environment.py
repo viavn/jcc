@@ -1,12 +1,19 @@
 from selenium.common.exceptions import NoSuchElementException
 
 from features.helpers.helper_webapp import webapp
-from features.pages.base_page import LoginPage, MessagesResultPage, DashboardPage, ManageAccountsPage, SettingsPage, \
-    ChildDetailsPage
+from features.pages.child_details_page import ChildDetailsPage
+from features.pages.dashboard_page import DashboardPage
+from features.pages.login_page import LoginPage
+from features.pages.manage_accounts_page import ManageAccountsPage
+from features.pages.message_result_page import MessagesResultPage
+from features.pages.settings_page import SettingsPage
 from repository import queries
 
 
 def before_all(context):
+    queries.insert_user('admin-test', 'Test E2E', '123', 1)
+    queries.insert_user('test', 'Test E2E - Regular', '123', 2)
+
     context.webapp = webapp
     context.webapp.maximize()
     context.login_page = LoginPage(webapp.driver)
@@ -23,6 +30,9 @@ def after_scenario(context, scenario):
             queries.reset_user_password('test')
         elif 'newRegularUser' in scenario.tags:
             queries.delete_user('user-e2e-1')
+        elif 'child' in scenario.tags:
+            child = queries.get_child_by_name('Jhonatan')
+            queries.delete_godparent(child[0])
 
         context.dashboard_page.click_logout_button()
         context.webapp.wait(3)
@@ -31,4 +41,6 @@ def after_scenario(context, scenario):
 
 
 def after_all(context):
+    queries.delete_user('admin-test')
+    queries.delete_user('test')
     context.webapp.close()
