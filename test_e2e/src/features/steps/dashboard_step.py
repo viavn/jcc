@@ -5,6 +5,7 @@ from login_step import step_impl_login_as_admin, step_impl_login_as_regular
 
 @given(u'acesso o sistema com usuario "{user_type}"')
 def step_impl_login_by_user_type(context, user_type):
+    context.webapp.load_page('login')
     if user_type == 'admin':
         step_impl_login_as_admin(context)
     else:
@@ -12,7 +13,7 @@ def step_impl_login_by_user_type(context, user_type):
 
 
 @when(u'pesquiso por "{filter_query}" na tabela de criancas')
-def step_impl(context, filter_query):
+def step_impl_search_for_child(context, filter_query):
     context.dashboard_page.send_keys_to_filter(filter_query)
 
 
