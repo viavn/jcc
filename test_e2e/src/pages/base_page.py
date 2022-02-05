@@ -1,6 +1,6 @@
 from selenium.common.exceptions import NoSuchElementException
 
-from features.pages.locators import BaseLocators
+from pages.locators import BaseLocators
 
 
 class BasePage(object):

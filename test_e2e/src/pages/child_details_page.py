@@ -1,5 +1,5 @@
-from features.pages.base_page import BasePage
-from features.pages.locators import ChildDetailsPageLocators, BaseLocators
+from pages.base_page import BasePage
+from pages.locators import ChildDetailsPageLocators, BaseLocators
 
 
 class ChildDetailsPage(BasePage):
