@@ -1,18 +1,20 @@
-Feature: Gerencia conta de usuarios
+# language: pt
+
+Funcionalidade: Gerencia conta de usuarios
 
   @newRegularUser
-  Scenario: Criar novo usuario do sistema
-    Given acesso o sistema como usuario admin
-    When crio um novo usuario
-    And pesquiso por "user-e2e-1" na tabela de usuarios
-    Then linha filtrada deve conter informacoes do usuario criado
+  Cenario: Criar novo usuario do sistema
+    Dado acesso o sistema como usuario admin
+    Quando crio um novo usuario
+    E pesquiso por "user-e2e-1" na tabela de usuarios
+    Entao linha filtrada deve conter informacoes do usuario criado
 
   @newRegularUser
-  Scenario: Ao inativar um usuario do sistema, este nao deve consegui entrar
-    Given inativo um usuario
-    And faco logout do sistema
-    When preencho o campo de login com valor "user-e2e-1"
-    And preencho o campo de senha com valor "123"
-    And clicar no botao entrar
-    Then deve aparecer uma mensagem de erro
-    And a mensagem de erro deve desaparecer
+  Cenario: Ao inativar um usuario do sistema, este nao deve consegui entrar
+    Dado inativo um usuario
+    E faco logout do sistema
+    Quando preencho o campo de login com valor "user-e2e-1"
+    E preencho o campo de senha com valor "123"
+    E clicar no botao entrar
+    Entao deve aparecer uma mensagem de erro
+    E a mensagem de erro deve desaparecer
