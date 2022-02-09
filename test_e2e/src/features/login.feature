@@ -1,29 +1,31 @@
-Feature: Login
+# language: pt
 
-  Scenario: Exibir mensagem de erro quando login ou senha sao invalidos
-    Given que tento entrar no sistema com login invalido
-    Then deve aparecer uma mensagem de erro
+Funcionalidade: Login
 
-  Scenario: Exibir Dashboard com botoes apenas para admin
-    Given acesso o sistema como usuario admin
-    Then deve aparecer os botões disponiveis para usuario admin
+  Cenario: Exibir mensagem de erro quando login ou senha sao invalidos
+    Dado que tento entrar no sistema com login invalido
+    Entao deve aparecer uma mensagem de erro
 
-  Scenario: Exibir Dashboard com botoes para usuario regular
-    Given acesso o sistema como usuario regular
-    Then deve aparecer apenas os botões disponiveis para usuario regular
+  Cenario: Exibir Dashboard com botoes apenas para admin
+    Dado acesso o sistema como usuario admin
+    Entao deve aparecer os botões disponiveis para usuario admin
 
-  Scenario: Usuario regular nao deve ter acesso a rota de gerenciar contas
-    Given acesso o sistema como usuario regular
-    When tento acessar a pagina de gerenciar contas
-    Then devo retornar para pagina de dashboard
+  Cenario: Exibir Dashboard com botoes para usuario regular
+    Dado acesso o sistema como usuario regular
+    Entao deve aparecer apenas os botões disponiveis para usuario regular
 
-  Scenario: Usuario nao deve ter acesso a dashboard quando nao estiver logado
-    Given acesso a pagina de dashboard
-    Then devo retornar para pagina de login
+  Cenario: Usuario regular nao deve ter acesso a rota de gerenciar contas
+    Dado acesso o sistema como usuario regular
+    Quando tento acessar a pagina de gerenciar contas
+    Entao devo retornar para pagina de dashboard
+
+  Cenario: Usuario nao deve ter acesso a dashboard quando nao estiver logado
+    Dado acesso a pagina de dashboard
+    Entao devo retornar para pagina de login
 
   @changeRegularUserPassword
-  Scenario: Ao mudar senha de um usuario do sistema, devo entrar com a nova senha
-    Given altero a senha do usuario regular
-    And faco logout do sistema
-    When preencher os campos de login com a nova senha
-    Then deve aparecer apenas os botões disponiveis para usuario regular
+  Cenario: Ao mudar senha de um usuario do sistema, devo entrar com a nova senha
+    Dado altero a senha do usuario regular
+    E faco logout do sistema
+    Quando preencher os campos de login com a nova senha
+    Entao deve aparecer apenas os botões disponiveis para usuario regular
