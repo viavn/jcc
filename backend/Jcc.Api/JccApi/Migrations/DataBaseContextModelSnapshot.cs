@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
+#nullable disable
+
 namespace JccApi.Migrations
 {
     [DbContext(typeof(DataBaseContext))]
@@ -15,108 +17,109 @@ namespace JccApi.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Npgsql:PostgresExtension:uuid-ossp", ",,")
-                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "3.1.21")
+                .HasAnnotation("ProductVersion", "6.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "uuid-ossp");
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("JccApi.Entities.Child", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("id")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<string>("Age")
                         .IsRequired()
-                        .HasColumnName("age")
+                        .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
-                        .HasMaxLength(50);
+                        .HasColumnName("age");
 
                     b.Property<string>("ClothesSize")
                         .IsRequired()
-                        .HasColumnName("clothes_size")
+                        .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
-                        .HasMaxLength(50);
+                        .HasColumnName("clothes_size");
 
                     b.Property<string>("FamilyAcronym")
                         .IsRequired()
-                        .HasColumnName("family_acronym")
+                        .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
-                        .HasMaxLength(50);
+                        .HasColumnName("family_acronym");
 
                     b.Property<string>("FamilyAddress")
                         .IsRequired()
-                        .HasColumnName("family_address")
+                        .HasMaxLength(500)
                         .HasColumnType("character varying(500)")
-                        .HasMaxLength(500);
+                        .HasColumnName("family_address");
 
                     b.Property<string>("FamilyPhone")
                         .IsRequired()
-                        .HasColumnName("family_phone")
+                        .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
-                        .HasMaxLength(50);
+                        .HasColumnName("family_phone");
 
                     b.Property<string>("LegalResponsible")
                         .IsRequired()
-                        .HasColumnName("legal_responsible")
+                        .HasMaxLength(500)
                         .HasColumnType("character varying(500)")
-                        .HasMaxLength(500);
+                        .HasColumnName("legal_responsible");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnName("name")
+                        .HasMaxLength(500)
                         .HasColumnType("character varying(500)")
-                        .HasMaxLength(500);
+                        .HasColumnName("name");
 
                     b.Property<string>("ShoesSize")
                         .IsRequired()
-                        .HasColumnName("shoes_size")
+                        .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
-                        .HasMaxLength(50);
+                        .HasColumnName("shoes_size");
 
                     b.HasKey("Id");
 
-                    b.ToTable("children");
+                    b.ToTable("children", (string)null);
                 });
 
             modelBuilder.Entity("JccApi.Entities.GodParent", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("id")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("ChildId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnName("created_date")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_date");
 
                     b.Property<bool>("IsClothesSelected")
-                        .HasColumnName("is_clothes_selected")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_clothes_selected");
 
                     b.Property<bool>("IsGiftSelected")
-                        .HasColumnName("is_gift_selected")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_gift_selected");
 
                     b.Property<bool>("IsShoesSelected")
-                        .HasColumnName("is_shoes_selected")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_shoes_selected");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnName("name")
+                        .HasMaxLength(500)
                         .HasColumnType("character varying(500)")
-                        .HasMaxLength(500);
+                        .HasColumnName("name");
 
                     b.Property<string>("Phone")
                         .IsRequired()
-                        .HasColumnName("phone")
+                        .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
-                        .HasMaxLength(50);
+                        .HasColumnName("phone");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
@@ -127,64 +130,65 @@ namespace JccApi.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("god_parents");
+                    b.ToTable("god_parents", (string)null);
                 });
 
             modelBuilder.Entity("JccApi.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("id")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnName("is_deleted")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<string>("Login")
                         .IsRequired()
-                        .HasColumnName("login")
+                        .HasMaxLength(500)
                         .HasColumnType("character varying(500)")
-                        .HasMaxLength(500);
+                        .HasColumnName("login");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnName("name")
+                        .HasMaxLength(500)
                         .HasColumnType("character varying(500)")
-                        .HasMaxLength(500);
+                        .HasColumnName("name");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnName("password")
+                        .HasMaxLength(500)
                         .HasColumnType("character varying(500)")
-                        .HasMaxLength(500);
+                        .HasColumnName("password");
 
                     b.Property<int>("UserType")
-                        .HasColumnName("user_type_id")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("user_type_id");
 
                     b.HasKey("Id");
 
-                    b.ToTable("users");
+                    b.ToTable("users", (string)null);
                 });
 
             modelBuilder.Entity("JccApi.Entities.UserType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("id")
                         .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnName("description")
+                        .HasMaxLength(20)
                         .HasColumnType("character varying(20)")
-                        .HasMaxLength(20);
+                        .HasColumnName("description");
 
                     b.HasKey("Id");
 
-                    b.ToTable("user_types");
+                    b.ToTable("user_types", (string)null);
                 });
 
             modelBuilder.Entity("JccApi.Entities.GodParent", b =>
@@ -200,6 +204,15 @@ namespace JccApi.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Child");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("JccApi.Entities.Child", b =>
+                {
+                    b.Navigation("GodParents");
                 });
 #pragma warning restore 612, 618
         }
