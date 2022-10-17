@@ -16,8 +16,6 @@ namespace JccApi.Extensions
                ? configuration.GetConnectionString("Db")
                : GetHerokuConnectionString();
 
-            // string connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
-
             var builder = new NpgsqlConnectionStringBuilder(connectionString);
             services.AddDbContext<DataBaseContext>(options =>
                 options.UseNpgsql(builder.ConnectionString)
