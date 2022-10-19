@@ -7,9 +7,9 @@ namespace JccApi.Infrastructure.Repository
 {
     public interface IChildRepository
     {
-        Task<IEnumerable<Child>> GetAll();
-        Task<IEnumerable<Child>> GetAllWithGodParents();
-        Task<Child> GetById(Guid id);
-        Task Create(Child child);
+        Task<IEnumerable<Child_Old>> GetAll();
+        Task<IEnumerable<Child_Old>> GetAllWithGodParents();
+        Task<Child_Old> GetById(Guid id);
+        Task Create(Child_Old child);
     }
 }

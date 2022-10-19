@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 namespace JccApi.Entities
 {
-    public class Child
+    public class Child_Old
     {
-        public Child() { }
+        public Child_Old() { }
 
-        public Child(
+        public Child_Old(
             Guid id,
             string name,
             string age,
@@ -30,7 +30,7 @@ namespace JccApi.Entities
             FamilyAddress = familyAddress;
         }
 
-        public Child(
+        public Child_Old(
             string name,
             string age,
             string clothesSize,
@@ -60,7 +60,25 @@ namespace JccApi.Entities
         public string FamilyAcronym { get; private set; }
         public string FamilyPhone { get; private set; }
         public string FamilyAddress { get; private set; }
-        public ICollection<GodParent> GodParents { get; private set; } = new List<GodParent>();
+        public ICollection<GodParent_Old> GodParents { get; private set; } = new List<GodParent_Old>();
         //public List<ChildGodParentItem> ChildGodParentItems { get; set; } = new List<ChildGodParentItem>();
+    }
+
+    public class Child
+    {
+        protected Child() { }
+
+        public Guid Id { get; private set; }
+        public string Name { get; private set; }
+        public string Age { get; private set; }
+        public string ClotheSize { get; private set; }
+        public string ShoeSize { get; private set; }
+
+        public int GenreTypeId { get; private set; }
+        public GenreType GenreType { get; private set; }
+
+        public Guid FamilyId { get; private set; }
+        public Family Family { get; private set; }
+        public ICollection<Gift> Gifts { get; private set; }
     }
 }

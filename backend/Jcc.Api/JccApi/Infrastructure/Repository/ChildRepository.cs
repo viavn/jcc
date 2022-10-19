@@ -17,7 +17,7 @@ namespace JccApi.Infrastructure.Repository
             _context = context;
         }
 
-        public async Task<IEnumerable<Child>> GetAll()
+        public async Task<IEnumerable<Child_Old>> GetAll()
         {
             return await _context.Children
                 .AsNoTracking()
@@ -26,7 +26,7 @@ namespace JccApi.Infrastructure.Repository
                 .ToListAsync();
         }
         
-        public async Task<IEnumerable<Child>> GetAllWithGodParents()
+        public async Task<IEnumerable<Child_Old>> GetAllWithGodParents()
         {
             return await _context.Children
                 .AsNoTracking()
@@ -36,13 +36,13 @@ namespace JccApi.Infrastructure.Repository
                 .ToListAsync();
         }
 
-        public async Task<Child> GetById(Guid id)
+        public async Task<Child_Old> GetById(Guid id)
         {
             return await _context.Children.AsNoTracking().Include(c => c.GodParents)
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        public async Task Create(Child child)
+        public async Task Create(Child_Old child)
         {
             _context.Children.Add(child);
             await _context.SaveChangesAsync();

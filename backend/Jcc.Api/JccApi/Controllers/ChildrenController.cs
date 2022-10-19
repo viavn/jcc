@@ -251,7 +251,7 @@ namespace JccApi.Controllers
         [HttpPost]
         public async Task<IActionResult> AddChild([FromBody] ChildModel request)
         {
-            var child = new Child(request.Name, request.Age, request.ClothesSize, request.ShoeSize, request.LegalResponsible,
+            var child = new Child_Old(request.Name, request.Age, request.ClothesSize, request.ShoeSize, request.LegalResponsible,
                 request.FamilyAcronym, request.FamilyPhone, request.FamilyAddress);
 
             await _childRepository.Create(child);
@@ -264,7 +264,7 @@ namespace JccApi.Controllers
         {
             foreach (var request in requests)
             {
-                var child = new Child(request.Name, request.Age, request.ClothesSize, request.ShoeSize, request.LegalResponsible,
+                var child = new Child_Old(request.Name, request.Age, request.ClothesSize, request.ShoeSize, request.LegalResponsible,
                 request.FamilyAcronym, request.FamilyPhone, request.FamilyAddress);
 
                 await _childRepository.Create(child);
@@ -285,7 +285,7 @@ namespace JccApi.Controllers
             }
 
             var newGodParents = request.GodParents.Select(gp =>
-                new GodParent(gp.Name, gp.Phone,
+                new GodParent_Old(gp.Name, gp.Phone,
                     gp.IsClothesSelected, gp.IsShoeSelected, gp.IsGiftSelected, DateTime.Now, user.Id, childId)
                 ).ToList();
 

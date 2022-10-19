@@ -6,7 +6,7 @@ namespace JccApi.Infrastructure.Repository
 {
     public interface IGodParentRepository
     {
-        Task DeleteOldThenCreateNewGodParents(IEnumerable<GodParent> godParentsToBeDeleted, IEnumerable<GodParent> newGodParents);
-        Task Delete(GodParent godParent);
+        Task DeleteOldThenCreateNewGodParents(IEnumerable<GodParent_Old> godParentsToBeDeleted, IEnumerable<GodParent_Old> newGodParents);
+        Task Delete(GodParent_Old godParent);
     }
 }

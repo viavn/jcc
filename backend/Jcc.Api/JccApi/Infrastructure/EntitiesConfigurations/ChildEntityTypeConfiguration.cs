@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace JccApi.Infrastructure.EntitiesConfigurations
 {
-    public class ChildEntityTypeConfiguration : IEntityTypeConfiguration<Child>
+    public class ChildEntityTypeConfiguration : IEntityTypeConfiguration<Child_Old>
     {
-        public void Configure(EntityTypeBuilder<Child> builder)
+        public void Configure(EntityTypeBuilder<Child_Old> builder)
         {
             builder.ToTable("children")
                 .HasKey(ev => ev.Id);

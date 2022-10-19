@@ -1,8 +1,10 @@
-﻿namespace JccApi.Entities
+﻿using System.Collections.Generic;
+
+namespace JccApi.Entities
 {
-    public class UserType
+    public class UserType : TypeEntityBase<int>
     {
-        public UserType() { }
+        protected UserType() { }
 
         public UserType(int id, string description)
         {
@@ -10,7 +12,6 @@
             Description = description;
         }
 
-        public int Id { get; private set; }
-        public string Description { get; private set; }
+        public ICollection<User> Users { get; private set; }
     }
 }

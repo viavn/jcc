@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace JccApi.Infrastructure.EntitiesConfigurations
 {
-    public class GodParentEntityTypeConfiguration : IEntityTypeConfiguration<GodParent>
+    public class GodParentEntityTypeConfiguration : IEntityTypeConfiguration<GodParent_Old>
     {
-        public void Configure(EntityTypeBuilder<GodParent> builder)
+        public void Configure(EntityTypeBuilder<GodParent_Old> builder)
         {
             builder.ToTable("god_parents")
                 .HasKey(ev => ev.Id);

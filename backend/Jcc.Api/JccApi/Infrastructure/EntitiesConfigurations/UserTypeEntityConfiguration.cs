@@ -8,7 +8,7 @@ namespace JccApi.Infrastructure.EntitiesConfigurations
     {
         public void Configure(EntityTypeBuilder<UserType> builder)
         {
-            builder.ToTable("user_types")
+            builder.ToTable("user_type")
                 .HasKey(ev => ev.Id);
 
             builder.Property(ev => ev.Id)

@@ -15,19 +15,19 @@ namespace JccApi.Infrastructure.Repository
             _context = context;
         }
 
-        public async Task BatchCreate(IEnumerable<GodParent> godParents)
+        public async Task BatchCreate(IEnumerable<GodParent_Old> godParents)
         {
             _context.GodParents.AddRange(godParents);
             await _context.SaveChangesAsync();
         }
 
-        public async Task Delete(GodParent godParent)
+        public async Task Delete(GodParent_Old godParent)
         {
             _context.Entry(godParent).State = EntityState.Deleted;
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteOldThenCreateNewGodParents(IEnumerable<GodParent> godParentsToBeDeleted, IEnumerable<GodParent> newGodParents)
+        public async Task DeleteOldThenCreateNewGodParents(IEnumerable<GodParent_Old> godParentsToBeDeleted, IEnumerable<GodParent_Old> newGodParents)
         {
             _context.GodParents.RemoveRange(godParentsToBeDeleted);
             _context.GodParents.AddRange(newGodParents);
