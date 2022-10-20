@@ -1,5 +1,5 @@
 ﻿using JccApi.Entities;
-using JccApi.Infrastructure.Repository;
+using JccApi.Infrastructure.Repository.Abstractions;
 using JccApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -28,7 +28,7 @@ namespace JccApi.Controllers
                 Id = user.Id,
                 Login = user.Login,
                 Name = user.Name,
-                UserType = user.UserType,
+                UserType = (Enums.UserType)user.UserTypeId,
                 IsDeleted = user.IsDeleted,
             });
 
@@ -49,7 +49,7 @@ namespace JccApi.Controllers
                 Id = user.Id,
                 Login = user.Login,
                 Name = user.Name,
-                UserType = user.UserType,
+                UserType = (Enums.UserType)user.UserTypeId,
                 IsDeleted = user.IsDeleted,
             });
         }
@@ -81,7 +81,7 @@ namespace JccApi.Controllers
                 Id = user.Id,
                 Login = user.Login,
                 Name = user.Name,
-                UserType = user.UserType,
+                UserType = (Enums.UserType)user.UserTypeId,
             });
         }
 

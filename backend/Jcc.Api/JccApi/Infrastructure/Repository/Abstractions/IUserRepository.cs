@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace JccApi.Infrastructure.Repository
+namespace JccApi.Infrastructure.Repository.Abstractions
 {
     public interface IUserRepository
     {

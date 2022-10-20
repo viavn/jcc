@@ -1,4 +1,4 @@
-﻿using JccApi.Entities;
+using JccApi.Entities;
 using JccApi.Infrastructure.Context;
 using JccApi.Infrastructure.Repository.Abstractions;
 using Microsoft.EntityFrameworkCore;
@@ -8,41 +8,41 @@ using System.Threading.Tasks;
 
 namespace JccApi.Infrastructure.Repository
 {
-    public class ChildRepository : IChildRepository
+    public class FamilyRepository : IFamilyRepository
     {
         private readonly DataBaseContext _context;
 
-        public ChildRepository(DataBaseContext context)
+        public FamilyRepository(DataBaseContext context)
         {
             _context = context;
         }
 
-        public async Task Create(Child child)
+        public async Task Create(Family family)
         {
-            _context.Children.Add(child);
+            _context.Families.Add(family);
             await _context.SaveChangesAsync();
         }
 
-        public async Task Delete(Child child)
+        public async Task Delete(Family family)
         {
-            _context.Children.Remove(child);
+            _context.Families.Remove(family);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Child>> GetAll()
+        public async Task<IEnumerable<Family>> GetAll()
         {
-            return await _context.Children.AsNoTracking().ToListAsync();
+            return await _context.Families.AsNoTracking().ToListAsync();
         }
 
-        public async Task<Child> GetById(Guid id)
+        public async Task<Family> GetById(Guid id)
         {
-            return await _context.Children.AsNoTracking()
+            return await _context.Families.AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        public async Task Update(Child child)
+        public async Task Update(Family family)
         {
-            _context.Children.Update(child);
+            _context.Families.Update(family);
             await _context.SaveChangesAsync();
         }
     }

@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using JccApi.Extensions;
-using JccApi.Infrastructure.Repository;
+using JccApi.Infrastructure.Extensions;
 
 public class Startup
 {
@@ -18,9 +18,7 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddDatabase(Configuration);
-        services.AddTransient<IChildRepository, ChildRepository>();
-        services.AddTransient<IGodParentRepository, GodParentRepository>();
-        services.AddTransient<IUserRepository, UserRepository>();
+        services.AddDependencyGroup();
         services.AddControllers();
         services.AddSwaggerGen();
     }

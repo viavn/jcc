@@ -1,5 +1,6 @@
 ﻿using JccApi.Entities;
 using JccApi.Infrastructure.Context;
+using JccApi.Infrastructure.Repository.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
