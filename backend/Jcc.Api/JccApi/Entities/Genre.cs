@@ -1,12 +1,13 @@
 using System.Collections.Generic;
+using JccApi.Entities.Base;
 
 namespace JccApi.Entities
 {
-    public class GenreType : TypeEntityBase<int>
+    public class Genre : TypeEntity<int>
     {
-        protected GenreType() { }
+        protected Genre() { }
 
-        public GenreType(int id, string description)
+        public Genre(int id, string description)
         {
             Id = id;
             Description = description;

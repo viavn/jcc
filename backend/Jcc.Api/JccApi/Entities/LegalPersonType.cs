@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using JccApi.Entities.Base;
 
 namespace JccApi.Entities
 {
-    public class LegalPersonType : TypeEntityBase<int>
+    public class LegalPersonType : TypeEntity<int>
     {
         protected LegalPersonType() { }
 

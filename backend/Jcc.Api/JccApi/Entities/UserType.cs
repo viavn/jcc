@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using JccApi.Entities.Base;
 
 namespace JccApi.Entities
 {
-    public class UserType : TypeEntityBase<int>
+    public class UserType : TypeEntity<int>
     {
         protected UserType() { }
 

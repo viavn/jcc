@@ -1,6 +1,8 @@
+using JccApi.Entities.Base;
+
 namespace JccApi.Entities
 {
-    public class GiftType : TypeEntityBase<int>
+    public class GiftType : TypeEntity<int>
     {
         protected GiftType() { }
 

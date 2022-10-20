@@ -9,13 +9,12 @@ namespace JccApi.Infrastructure.EntitiesConfigurations
         public void Configure(EntityTypeBuilder<UserType> builder)
         {
             builder.ToTable("user_type")
-                .HasKey(ev => ev.Id);
+                .HasKey(ut => ut.Id);
 
-            builder.Property(ev => ev.Id)
-                .HasColumnName("id")
-                .HasColumnType("integer");
+            builder.Property(ut => ut.Id)
+                .HasColumnName("id");
 
-            builder.Property(ev => ev.Description)
+            builder.Property(ut => ut.Description)
                 .HasColumnName("description")
                 .HasMaxLength(20)
                 .IsRequired();

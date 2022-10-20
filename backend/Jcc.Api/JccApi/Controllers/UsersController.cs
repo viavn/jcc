@@ -1,5 +1,5 @@
 ﻿using JccApi.Entities;
-using JccApi.Infrastructure.Repository;
+using JccApi.Infrastructure.Repository.Abstractions;
 using JccApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;

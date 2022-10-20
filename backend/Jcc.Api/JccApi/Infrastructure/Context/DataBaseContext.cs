@@ -1,5 +1,4 @@
 ﻿using JccApi.Entities;
-using JccApi.Infrastructure.EntitiesConfigurations;
 using Microsoft.EntityFrameworkCore;
 
 namespace JccApi.Infrastructure.Context
@@ -8,18 +7,21 @@ namespace JccApi.Infrastructure.Context
     {
         public DataBaseContext(DbContextOptions options) : base(options) { }
 
-        public DbSet<GodParent_Old> GodParents { get; set; }
-        public DbSet<Child_Old> Children { get; set; }
+        public DbSet<Child> Children { get; set; }
+        public DbSet<Family> Families { get; set; }
+        public DbSet<FamilyMember> FamilyMembers { get; set; }
+        public DbSet<Genre> Genres { get; set; }
+        public DbSet<Gift> Gifts { get; set; }
+        public DbSet<GiftType> GiftTypes { get; set; }
+        public DbSet<GodParent> GodParents { get; set; }
+        public DbSet<LegalPersonType> LegalPersonTypes { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<UserType> UserTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasPostgresExtension("uuid-ossp");
-            new ChildEntityTypeConfiguration().Configure(modelBuilder.Entity<Child_Old>());
-            new GodParentEntityTypeConfiguration().Configure(modelBuilder.Entity<GodParent_Old>());
-            new UserEntityConfiguration().Configure(modelBuilder.Entity<User>());
-            new UserTypeEntityConfiguration().Configure(modelBuilder.Entity<UserType>());
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(User).Assembly);
         }
     }
 }
