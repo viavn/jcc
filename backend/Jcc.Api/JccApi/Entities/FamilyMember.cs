@@ -6,6 +6,11 @@ namespace JccApi.Entities
     {
         protected FamilyMember() { }
 
+        public FamilyMember(Guid id)
+        {
+            Id = id;
+        }
+
         public FamilyMember(Guid id, string name, int legalPersonTypeId, Guid familyId)
         {
             Id = id;

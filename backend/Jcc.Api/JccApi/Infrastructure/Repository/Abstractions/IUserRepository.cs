@@ -11,6 +11,6 @@ namespace JccApi.Infrastructure.Repository.Abstractions
         Task<User> GetUserById(Guid id);
         Task<User> GetUserByLogin(string login);
         Task Create(User user);
-        Task Update(User user);
+        Task Update(User updatedUser);
     }
 }

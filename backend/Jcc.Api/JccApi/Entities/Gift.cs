@@ -6,6 +6,12 @@ namespace JccApi.Entities
     {
         protected Gift() { }
 
+        public Gift(Guid childId, Guid godParentId)
+        {
+            ChildId = childId;
+            GodParentId = GodParentId;
+        }
+
         public Gift(Guid childId, Guid godParentId, int typeId, DateTime createdDate, DateTime updatedDate, bool isDelivered, Guid userId)
         {
             ChildId = childId;

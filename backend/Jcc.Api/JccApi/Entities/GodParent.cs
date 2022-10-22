@@ -7,6 +7,11 @@ namespace JccApi.Entities
     {
         protected GodParent() { }
 
+        public GodParent(Guid id)
+        {
+            Id = id;
+        }
+
         public GodParent(Guid id, string name, string contactNumber, string address)
         {
             Id = id;

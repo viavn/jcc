@@ -5,6 +5,13 @@ namespace JccApi.Entities
 {
     public class Child
     {
+        protected Child() { }
+
+        public Child(Guid id)
+        {
+            Id = id;
+        }
+
         public Child(Guid id, string name, string age, string clotheSize, string shoeSize, int genreTypeId, Guid familyId)
         {
             Id = id;
@@ -14,8 +21,6 @@ namespace JccApi.Entities
             ShoeSize = shoeSize;
             GenreTypeId = genreTypeId;
         }
-
-        protected Child() { }
 
         public Guid Id { get; private set; }
         public string Name { get; private set; }

@@ -40,9 +40,11 @@ namespace JccApi.Infrastructure.Repository
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        public async Task Update(Family family)
+        public async Task Update(Family updatedFamily)
         {
-            _context.Families.Update(family);
+            var family = new Family(updatedFamily.Id);
+            _context.Attach(family);
+            _context.Entry(family).CurrentValues.SetValues(updatedFamily);
             await _context.SaveChangesAsync();
         }
     }
