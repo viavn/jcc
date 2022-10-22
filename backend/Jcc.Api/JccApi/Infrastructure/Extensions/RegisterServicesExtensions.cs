@@ -10,13 +10,14 @@ namespace JccApi.Infrastructure.Extensions
         {
             services.AddScoped<IChildRepository, ChildRepository>();
             services.AddScoped<IFamilyMemberRepository, FamilyMemberRepository>();
-            services.AddScoped<IFamilyRepository, IFamilyRepository>();
+            services.AddScoped<IFamilyRepository, FamilyRepository>();
             services.AddScoped<IGenreRepository, GenreRepository>();
-            services.AddScoped<IGiftRepository, IGiftRepository>();
-            services.AddScoped<IGiftTypeRepository, IGiftTypeRepository>();
+            services.AddScoped<IGiftRepository, GiftRepository>();
+            services.AddScoped<IGiftTypeRepository, GiftTypeRepository>();
+            services.AddScoped<IGodParentRepository, GodParentRepository>();
             services.AddScoped<ILegalPersonTypeRepository, LegalPersonTypeRepository>();
-            services.AddScoped<IUserRepository, IUserRepository>();
-            services.AddScoped<IUserTypeRepository, IUserTypeRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserTypeRepository, UserTypeRepository>();
 
             return services;
         }
