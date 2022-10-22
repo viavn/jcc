@@ -7,6 +7,11 @@ namespace JccApi.Entities
     {
         protected User() { }
 
+        public User(Guid id)
+        {
+            Id = id;
+        }
+
         public User(Guid id, string login, string name, string password, Enums.UserType userType)
         {
             Id = id;

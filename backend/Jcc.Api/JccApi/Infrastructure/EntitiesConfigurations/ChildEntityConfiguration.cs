@@ -39,7 +39,7 @@ namespace JccApi.Infrastructure.EntitiesConfigurations
                 .IsRequired();
 
             builder.HasOne(c => c.GenreType)
-                .WithMany(g => g.Children)
+                .WithMany()
                 .HasForeignKey(c => c.GenreTypeId)
                 .IsRequired();
 

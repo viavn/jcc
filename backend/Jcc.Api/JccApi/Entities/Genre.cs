@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using JccApi.Entities.Base;
 
 namespace JccApi.Entities
@@ -12,7 +11,5 @@ namespace JccApi.Entities
             Id = id;
             Description = description;
         }
-
-        public ICollection<Child> Children { get; private set; }
     }
 }

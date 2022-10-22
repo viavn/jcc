@@ -39,7 +39,7 @@ namespace JccApi.Infrastructure.EntitiesConfigurations
                 .IsRequired();
 
             builder.HasOne(u => u.UserType)
-                .WithMany(ut => ut.Users)
+                .WithMany()
                 .HasForeignKey(u => u.UserTypeId)
                 .IsRequired();
 

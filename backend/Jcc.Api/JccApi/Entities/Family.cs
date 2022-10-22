@@ -7,6 +7,11 @@ namespace JccApi.Entities
     {
         protected Family() { }
 
+        public Family(Guid id)
+        {
+            Id = id;
+        }
+
         public Family(Guid id, string code, string contactNumber, string address, string comment)
         {
             Id = id;

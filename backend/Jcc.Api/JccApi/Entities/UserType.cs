@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using JccApi.Entities.Base;
+﻿using JccApi.Entities.Base;
 
 namespace JccApi.Entities
 {
@@ -12,7 +11,5 @@ namespace JccApi.Entities
             Id = id;
             Description = description;
         }
-
-        public ICollection<User> Users { get; private set; }
     }
 }

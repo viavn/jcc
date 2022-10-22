@@ -6,11 +6,17 @@ namespace JccApi.Entities
     {
         protected Gift() { }
 
-        public Gift(Guid childId, Guid godParentId, Guid giftTypeId, DateTime createdDate, DateTime updatedDate, bool isDelivered, Guid userId)
+        public Gift(Guid childId, Guid godParentId)
+        {
+            ChildId = childId;
+            GodParentId = GodParentId;
+        }
+
+        public Gift(Guid childId, Guid godParentId, int typeId, DateTime createdDate, DateTime updatedDate, bool isDelivered, Guid userId)
         {
             ChildId = childId;
             GodParentId = godParentId;
-            GiftTypeId = giftTypeId;
+            TypeId = typeId;
             CreatedDate = createdDate;
             UpdatedDate = updatedDate;
             IsDelivered = isDelivered;
@@ -19,7 +25,7 @@ namespace JccApi.Entities
 
         public Guid ChildId { get; private set; }
         public Guid GodParentId { get; private set; }
-        public Guid GiftTypeId { get; private set; }
+        public int TypeId { get; private set; }
         public DateTime CreatedDate { get; private set; }
         public DateTime UpdatedDate { get; private set; }
         public bool IsDelivered { get; private set; }

@@ -10,7 +10,7 @@ namespace JccApi.Infrastructure.Repository.Abstractions
         Task<IEnumerable<GodParent>> GetAll();
         Task<GodParent> GetById(Guid id);
         Task Create(GodParent godParent);
-        Task Update(GodParent godParent);
+        Task Update(GodParent updatedGodParent);
         Task Delete(GodParent godParent);
     }
 }

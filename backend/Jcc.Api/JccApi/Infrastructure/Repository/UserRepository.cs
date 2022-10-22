@@ -38,9 +38,11 @@ namespace JccApi.Infrastructure.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task Update(User user)
+        public async Task Update(User updatedUser)
         {
-            _context.Users.Update(user);
+            var user = new User(updatedUser.Id);
+            _context.Attach(user);
+            _context.Entry(user).CurrentValues.SetValues(updatedUser);
             await _context.SaveChangesAsync();
         }
     }
