@@ -24,11 +24,11 @@ namespace JccApi.Infrastructure.EntitiesConfigurations
                 .IsRequired();
 
             builder.HasOne(fm => fm.LegalPersonType)
-                .WithMany(lp => lp.Members)
+                .WithMany()
                 .HasForeignKey(fm => fm.LegalPersonTypeId)
                 .IsRequired();
 
-            builder.Property(fm => fm.Family)
+            builder.Property(fm => fm.FamilyId)
                 .HasColumnName("family_id")
                 .IsRequired();
 

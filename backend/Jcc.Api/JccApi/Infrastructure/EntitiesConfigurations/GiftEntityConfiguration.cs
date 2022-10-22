@@ -35,6 +35,10 @@ namespace JccApi.Infrastructure.EntitiesConfigurations
                 .HasColumnName("user_id")
                 .IsRequired();
 
+            builder.Property(g => g.TypeId)
+                .HasColumnName("gif_type_id")
+                .IsRequired();
+
             builder.HasOne(g => g.User)
                 .WithMany(u => u.Gifts)
                 .HasForeignKey(g => g.UserId)
@@ -48,6 +52,11 @@ namespace JccApi.Infrastructure.EntitiesConfigurations
             builder.HasOne(g => g.GodParent)
                 .WithMany(gp => gp.Gifts)
                 .HasForeignKey(g => g.GodParentId)
+                .IsRequired();
+
+            builder.HasOne(g => g.Type)
+                .WithMany()
+                .HasForeignKey(g => g.TypeId)
                 .IsRequired();
         }
     }
