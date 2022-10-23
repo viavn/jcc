@@ -12,9 +12,9 @@ namespace JccApi.Entities
             Id = id;
         }
 
-        public Family(Guid id, string code, string contactNumber, string address, string comment)
+        public Family(string code, string contactNumber, string address, string comment)
         {
-            Id = id;
+            Id = Guid.NewGuid();
             Code = code;
             ContactNumber = contactNumber;
             Address = address;
@@ -28,5 +28,10 @@ namespace JccApi.Entities
         public string Comment { get; private set; }
         public ICollection<FamilyMember> Members { get; private set; }
         public ICollection<Child> Children { get; private set; }
+
+        public void AddMember(FamilyMember member)
+        {
+            Members.Add(member);
+        }
     }
 }

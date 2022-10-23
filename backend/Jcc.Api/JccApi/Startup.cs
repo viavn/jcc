@@ -18,7 +18,9 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddDatabase(Configuration);
-        services.AddDependencyGroup();
+        services.AddRepositoryDependencyGroup();
+        services.AddUseCaseDependencyGroup();
+        services.AddValidatorDependecyGroup();
         services.AddControllers();
         services.AddSwaggerGen();
     }
