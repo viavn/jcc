@@ -6,4 +6,14 @@ namespace JccApi.Application.UseCases.Abstractions.Base
     {
         Task<TResponse> Execute(TRequest request);
     }
+
+    public interface IUseCaseAsync<TResponse>
+    {
+        Task<TResponse> Execute();
+    }
+
+    public interface IUseCaseRequestAsync<TRequest>
+    {
+        Task Execute(TRequest request);
+    }
 }

@@ -26,7 +26,7 @@ namespace JccApi.Application
             var family = new Family(request.Code, request.ContactNumber, request.Address, request.Comment);
             request.Members.ForEach(m =>
             {
-                family.AddMember(new FamilyMember(m.Name, m.LegalPersonTypeId, family.Id));
+                family.AddMember(new FamilyMember(m.Name, (int)m.Type, family.Id));
             });
 
             await _familyRepository.Create(family);

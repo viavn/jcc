@@ -30,6 +30,9 @@ namespace JccApi.Infrastructure.Extensions
         public static IServiceCollection AddUseCaseDependencyGroup(this IServiceCollection services)
         {
             services.AddScoped<ICreateFamilyUseCaseAsync, CreateFamilyUseCaseAsync>();
+            services.AddScoped<IUpdateFamilyUseCaseAsync, UpdateFamilyUseCaseAsync>();
+            services.AddScoped<IGetFamiliesUseCaseAsync, GetFamiliesUseCaseAsync>();
+            services.AddScoped<IGetFamilyUseCaseAsync, GetFamilyUseCaseAsync>();
 
             return services;
         }
@@ -37,6 +40,7 @@ namespace JccApi.Infrastructure.Extensions
         public static IServiceCollection AddValidatorDependecyGroup(this IServiceCollection services)
         {
             services.AddScoped<IValidator<CreateFamilyRequest>, CreateFamilyValidator>();
+            services.AddScoped<IValidator<UpdateFamilyRequest>, UpdateFamilyValidator>();
 
             return services;
         }

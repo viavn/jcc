@@ -1,9 +1,11 @@
 using JccApi.Entities;
+using JccApi.Entities.Dtos;
 using JccApi.Infrastructure.Context;
 using JccApi.Infrastructure.Repository.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace JccApi.Infrastructure.Repository
@@ -29,6 +31,11 @@ namespace JccApi.Infrastructure.Repository
             await _context.SaveChangesAsync();
         }
 
+        public async Task<bool> Exists(Guid id)
+        {
+            return await _context.Families.AsNoTracking().AnyAsync(f => f.Id == id);
+        }
+
         public async Task<IEnumerable<Family>> GetAll()
         {
             return await _context.Families.AsNoTracking().ToListAsync();
@@ -37,7 +44,17 @@ namespace JccApi.Infrastructure.Repository
         public async Task<Family> GetById(Guid id)
         {
             return await _context.Families.AsNoTracking()
+                .Include(f => f.Members)
+                .ThenInclude(m => m.LegalPersonType)
+                .Include(f => f.Children)
                 .FirstOrDefaultAsync(c => c.Id == id);
+        }
+
+        public async Task<IEnumerable<FamilyWithMember>> GetFamiliesWithSingleMember()
+        {
+            return await _context.Families.Include(f => f.Members).AsNoTracking()
+                .Select(f => new FamilyWithMember(f.Id, f.Code, f.Address, f.Members.FirstOrDefault().Name))
+                .ToListAsync();
         }
 
         public async Task Update(Family updatedFamily)
