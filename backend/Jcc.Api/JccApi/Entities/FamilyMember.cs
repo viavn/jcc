@@ -11,9 +11,9 @@ namespace JccApi.Entities
             Id = id;
         }
 
-        public FamilyMember(Guid id, string name, int legalPersonTypeId, Guid familyId)
+        public FamilyMember(string name, int legalPersonTypeId, Guid familyId)
         {
-            Id = id;
+            Id = Guid.NewGuid();
             Name = name;
             LegalPersonTypeId = legalPersonTypeId;
             FamilyId = familyId;
