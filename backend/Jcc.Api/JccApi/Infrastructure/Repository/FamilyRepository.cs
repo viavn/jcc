@@ -50,6 +50,11 @@ namespace JccApi.Infrastructure.Repository
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 
+        public async Task<Family> Find(Guid id)
+        {
+            return await _context.Families.FindAsync(id);
+        }
+
         public async Task<IEnumerable<FamilyWithMember>> GetFamiliesWithSingleMember()
         {
             return await _context.Families.Include(f => f.Members).AsNoTracking()
@@ -63,6 +68,11 @@ namespace JccApi.Infrastructure.Repository
             _context.Attach(family);
             _context.Entry(family).CurrentValues.SetValues(updatedFamily);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<int> MembersQuantity(Guid id)
+        {
+            return await _context.Families.AsNoTracking().SelectMany(f => f.Members).CountAsync();
         }
     }
 }

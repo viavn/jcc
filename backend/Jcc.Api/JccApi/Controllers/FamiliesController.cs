@@ -1,3 +1,4 @@
+using FluentValidation;
 using JccApi.Application.Abstractions.UseCases;
 using JccApi.Exceptions;
 using JccApi.Models;
@@ -16,19 +17,31 @@ namespace JccApi.Controllers
     {
         private readonly ICreateFamilyUseCaseAsync _createFamilyUseCase;
         private readonly IUpdateFamilyUseCaseAsync _updateFamilyUseCaseAsync;
+        private readonly IDeleteFamilyUseCaseAsync _deleteFamilyUseCaseAsync;
         private readonly IGetFamiliesUseCaseAsync _getFamiliesUseCaseAsync;
         private readonly IGetFamilyUseCaseAsync _getFamilyUseCaseAsync;
+        private readonly ICreateFamilyMemberUseCaseAsync _createFamilyMemberUseCaseAsync;
+        private readonly IUpdateFamilyMemberUseCaseAsync _updateFamilyMemberUseCaseAsync;
+        private readonly IDeleteFamilyMemberUseCaseAsync _deleteFamilyMemberUseCaseAsync;
 
         public FamiliesController(
             ICreateFamilyUseCaseAsync createFamilyUseCase,
             IUpdateFamilyUseCaseAsync updateFamilyUseCaseAsync,
+            IDeleteFamilyUseCaseAsync deleteFamilyUseCaseAsync,
             IGetFamiliesUseCaseAsync getFamiliesUseCaseAsync,
-            IGetFamilyUseCaseAsync getFamilyUseCaseAsync)
+            IGetFamilyUseCaseAsync getFamilyUseCaseAsync,
+            ICreateFamilyMemberUseCaseAsync createFamilyMemberUseCaseAsync,
+            IUpdateFamilyMemberUseCaseAsync updateFamilyMemberUseCaseAsync,
+            IDeleteFamilyMemberUseCaseAsync deleteFamilyMemberUseCaseAsync)
         {
             _createFamilyUseCase = createFamilyUseCase;
             _updateFamilyUseCaseAsync = updateFamilyUseCaseAsync;
+            _deleteFamilyUseCaseAsync = deleteFamilyUseCaseAsync;
             _getFamiliesUseCaseAsync = getFamiliesUseCaseAsync;
             _getFamilyUseCaseAsync = getFamilyUseCaseAsync;
+            _createFamilyMemberUseCaseAsync = createFamilyMemberUseCaseAsync;
+            _updateFamilyMemberUseCaseAsync = updateFamilyMemberUseCaseAsync;
+            _deleteFamilyMemberUseCaseAsync = deleteFamilyMemberUseCaseAsync;
         }
 
         [HttpGet]
@@ -65,8 +78,7 @@ namespace JccApi.Controllers
             }
             catch (FluentValidation.ValidationException ex)
             {
-                var error = new ApiResult<IEnumerable<string>>(ex.Errors.Select(e => e.ErrorMessage).Distinct());
-                return BadRequest(error);
+                return BadRequest(GetValidationErrors(ex));
             }
         }
 
@@ -79,6 +91,7 @@ namespace JccApi.Controllers
             {
                 request.Id = id;
                 await _updateFamilyUseCaseAsync.Execute(request);
+
                 return NoContent();
             }
             catch (JccException)
@@ -87,9 +100,99 @@ namespace JccApi.Controllers
             }
             catch (FluentValidation.ValidationException ex)
             {
-                var error = new ApiResult<IEnumerable<string>>(ex.Errors.Select(e => e.ErrorMessage).Distinct());
-                return BadRequest(error);
+                return BadRequest(GetValidationErrors(ex));
             }
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> DeleteFamily([FromRoute] Guid id)
+        {
+            try
+            {
+                await _deleteFamilyUseCaseAsync.Execute(id);
+                return NoContent();
+            }
+            catch (JccException)
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpPost("{id}/members")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ApiResult<IEnumerable<string>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateMember(Guid id, [FromBody] MemberRequest request)
+        {
+            try
+            {
+                request.FamilyId = id;
+                request.IsCreating = true;
+                request.Id = await _createFamilyMemberUseCaseAsync.Execute(request);
+                
+                return CreatedAtAction(
+                    nameof(GetFamily),
+                    new { id = request.Id },
+                    new { request.Id, request.FamilyId, request.Name, request.Type }
+                );
+            }
+            catch (FluentValidation.ValidationException ex)
+            {
+                return BadRequest(GetValidationErrors(ex));
+            }
+        }
+
+        [HttpPut("{id}/members/{memberId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiResult<IEnumerable<string>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateMember(Guid id, Guid memberId, [FromBody] MemberRequest request)
+        {
+            try
+            {
+                request.FamilyId = id;
+                request.Id = memberId;
+                request.IsCreating = false;
+                await _updateFamilyMemberUseCaseAsync.Execute(request);
+
+                return NoContent();
+            }
+            catch (JccException)
+            {
+                return NotFound();
+            }
+            catch (FluentValidation.ValidationException ex)
+            {
+                return BadRequest(GetValidationErrors(ex));
+            }
+        }
+
+        [HttpDelete("{id}/members/{memberId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> DeleteMember([FromRoute] Guid id, [FromRoute] Guid memberId)
+        {
+            try
+            {
+                await _deleteFamilyMemberUseCaseAsync.Execute(new DeleteMemberRequest
+                {
+                    FamilyId = id,
+                    MemberId = memberId
+                });
+                return NoContent();
+            }
+            catch (InvalidOperationException ex)
+            {
+                var errs = new ApiResult<IEnumerable<string>>(new List<string> { ex.Message });
+                return BadRequest(errs);
+            }
+            catch (JccException)
+            {
+                return NotFound();
+            }
+        }
+
+        private ApiResult<IEnumerable<string>> GetValidationErrors(ValidationException ex)
+        {
+            return new ApiResult<IEnumerable<string>>(ex.Errors.Select(e => e.ErrorMessage).Distinct());
         }
     }
 }

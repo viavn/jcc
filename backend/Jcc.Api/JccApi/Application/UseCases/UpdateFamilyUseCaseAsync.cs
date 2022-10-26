@@ -21,6 +21,8 @@ namespace JccApi.Application
 
         public async Task Execute(UpdateFamilyRequest request)
         {
+            _validator.ValidateAndThrow(request);
+
             if (!await _familyRepository.Exists(request.Id))
             {
                 throw new JccException("Família inválida");

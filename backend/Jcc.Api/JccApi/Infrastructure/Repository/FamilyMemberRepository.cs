@@ -29,6 +29,16 @@ namespace JccApi.Infrastructure.Repository
             await _context.SaveChangesAsync();
         }
 
+        public async Task<bool> Exists(Guid id)
+        {
+            return await _context.FamilyMembers.AsNoTracking().AnyAsync(f => f.Id == id);
+        }
+
+        public async Task<FamilyMember> Find(Guid id)
+        {
+            return await _context.FamilyMembers.FindAsync(id);
+        }
+
         public async Task<IEnumerable<FamilyMember>> GetAll()
         {
             return await _context.FamilyMembers.AsNoTracking().ToListAsync();

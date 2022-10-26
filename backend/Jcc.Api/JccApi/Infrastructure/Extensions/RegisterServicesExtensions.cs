@@ -31,8 +31,12 @@ namespace JccApi.Infrastructure.Extensions
         {
             services.AddScoped<ICreateFamilyUseCaseAsync, CreateFamilyUseCaseAsync>();
             services.AddScoped<IUpdateFamilyUseCaseAsync, UpdateFamilyUseCaseAsync>();
+            services.AddScoped<IDeleteFamilyUseCaseAsync, DeleteFamilyUseCaseAsync>();
             services.AddScoped<IGetFamiliesUseCaseAsync, GetFamiliesUseCaseAsync>();
             services.AddScoped<IGetFamilyUseCaseAsync, GetFamilyUseCaseAsync>();
+            services.AddScoped<ICreateFamilyMemberUseCaseAsync, CreateFamilyMemberUseCaseAsync>();
+            services.AddScoped<IUpdateFamilyMemberUseCaseAsync, UpdateFamilyMemberUseCaseAsync>();
+            services.AddScoped<IDeleteFamilyMemberUseCaseAsync, DeleteFamilyMemberUseCaseAsync>();
 
             return services;
         }
@@ -41,6 +45,8 @@ namespace JccApi.Infrastructure.Extensions
         {
             services.AddScoped<IValidator<CreateFamilyRequest>, CreateFamilyValidator>();
             services.AddScoped<IValidator<UpdateFamilyRequest>, UpdateFamilyValidator>();
+            services.AddScoped<IValidator<MemberRequest>, FamilyMemberRequestValidator>();
+            services.AddScoped<IValidator<DeleteMemberRequest>, DeleteMemberRequestValidator>();
 
             return services;
         }

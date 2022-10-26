@@ -11,6 +11,8 @@ namespace JccApi.Infrastructure.Repository.Abstractions
         Task<IEnumerable<Family>> GetAll();
         Task<IEnumerable<FamilyWithMember>> GetFamiliesWithSingleMember();
         Task<Family> GetById(Guid id);
+        Task<Family> Find(Guid id);
+        Task<int> MembersQuantity(Guid id);
         Task<bool> Exists(Guid id);
         Task Create(Family family);
         Task Update(Family updatedFamily);
