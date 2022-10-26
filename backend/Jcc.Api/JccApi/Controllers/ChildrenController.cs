@@ -21,6 +21,7 @@ namespace JccApi.Controllers
         private readonly ILogger<ChildrenController> _logger;
         private readonly ICreateChildUseCaseAsync _createChildUseCaseAsync;
         private readonly IChildRepository _childRepository;
+        private readonly IGiftRepository _giftRepository;
         private readonly IGodParentRepository _godParentRepository;
         private readonly IUserRepository _userRepository;
 
@@ -29,13 +30,48 @@ namespace JccApi.Controllers
             IChildRepository childRepository,
             IGodParentRepository godParentRepository,
             IUserRepository userRepository,
-            ICreateChildUseCaseAsync createChildUseCaseAsync)
+            ICreateChildUseCaseAsync createChildUseCaseAsync,
+            IGiftRepository giftRepository)
         {
             _logger = logger;
             _childRepository = childRepository;
             _godParentRepository = godParentRepository;
             _userRepository = userRepository;
             _createChildUseCaseAsync = createChildUseCaseAsync;
+            _giftRepository = giftRepository;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            // await _giftRepository.Create(new Entities.Gift(
+            //     Guid.Parse("cda68544-b0ba-4dbe-8c33-2debd4c65ccb"),
+            //     Guid.Parse("28c97317-c024-41d4-8304-0e2d48b6e6df"),
+            //     1,
+            //     DateTime.Now,
+            //     DateTime.Now,
+            //     true,
+            //     Guid.Parse("b7ef15a1-c30d-40e3-bc0b-b8ca875373e6")));
+           
+            // await _giftRepository.Create(new Entities.Gift(
+            //     Guid.Parse("cda68544-b0ba-4dbe-8c33-2debd4c65ccb"),
+            //     Guid.Parse("28c97317-c024-41d4-8304-0e2d48b6e6df"),
+            //     2,
+            //     DateTime.Now,
+            //     DateTime.Now,
+            //     false,
+            //     Guid.Parse("b7ef15a1-c30d-40e3-bc0b-b8ca875373e6")));
+           
+            // await _giftRepository.Create(new Entities.Gift(
+            //     Guid.Parse("cda68544-b0ba-4dbe-8c33-2debd4c65ccb"),
+            //     Guid.Parse("28c97317-c024-41d4-8304-0e2d48b6e6df"),
+            //     3,
+            //     DateTime.Now,
+            //     DateTime.Now,
+            //     false,
+            //     Guid.Parse("b7ef15a1-c30d-40e3-bc0b-b8ca875373e6")));
+            var result = await _childRepository.GetAllWithInformation();
+            return Ok(result);
         }
 
         [HttpGet("{id}")]

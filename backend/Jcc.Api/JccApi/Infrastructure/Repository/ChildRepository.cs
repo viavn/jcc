@@ -4,6 +4,7 @@ using JccApi.Infrastructure.Repository.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace JccApi.Infrastructure.Repository
@@ -33,12 +34,30 @@ namespace JccApi.Infrastructure.Repository
         {
             return await _context.Children.AsNoTracking().ToListAsync();
         }
-        
-        // public async Task<IEnumerable<Child>> GetAllWithInformation()
-        // {
-        //     var query = _context.Children.AsNoTracking().Include(c => c.Gifts).Include;
-        //     return await _context.Children.AsNoTracking().ToListAsync();
-        // }
+
+        public async Task<IEnumerable<Child>> GetAllWithInformation()
+        {
+            var giftTypes = new List<int> {
+                (int)JccApi.Enums.GiftType.Clothe,
+                (int)JccApi.Enums.GiftType.Shoe,
+                (int)JccApi.Enums.GiftType.Toy,
+            };
+            var query = from child in _context.Children.AsNoTracking()
+                        select new
+                        {
+                            child.Id,
+                            child.Name,
+                            child.ClotheSize,
+                            child.ShoeSize,
+                            child.GenreType,
+                            child.Family.Code,
+                            GiftsDelivered = child.Gifts.Where(g => g.IsDelivered).Count(),
+                            RemainingToBeInserted = giftTypes.Except(child.Gifts.Select(g => g.TypeId)).Count()
+                        };
+            var result = await query.ToListAsync();
+
+            return await _context.Children.AsNoTracking().ToListAsync();
+        }
 
         public async Task<Child> GetById(Guid id)
         {

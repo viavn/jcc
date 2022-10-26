@@ -9,7 +9,7 @@ namespace JccApi.Infrastructure.EntitiesConfigurations
         public void Configure(EntityTypeBuilder<Gift> builder)
         {
             builder.ToTable("gift")
-                .HasKey(g => new { g.ChildId, g.GodParentId });
+                .HasKey(g => new { g.ChildId, g.GodParentId, g.TypeId });
 
             builder.Property(g => g.ChildId)
                 .HasColumnName("child_id")
@@ -21,10 +21,12 @@ namespace JccApi.Infrastructure.EntitiesConfigurations
 
             builder.Property(g => g.CreatedDate)
                 .HasColumnName("created_date")
+                .HasColumnType("timestamp without time zone")
                 .IsRequired();
 
             builder.Property(g => g.UpdatedDate)
                 .HasColumnName("updated_date")
+                .HasColumnType("timestamp without time zone")
                 .IsRequired();
 
             builder.Property(g => g.IsDelivered)
