@@ -33,6 +33,12 @@ namespace JccApi.Infrastructure.Repository
         {
             return await _context.Children.AsNoTracking().ToListAsync();
         }
+        
+        // public async Task<IEnumerable<Child>> GetAllWithInformation()
+        // {
+        //     var query = _context.Children.AsNoTracking().Include(c => c.Gifts).Include;
+        //     return await _context.Children.AsNoTracking().ToListAsync();
+        // }
 
         public async Task<Child> GetById(Guid id)
         {

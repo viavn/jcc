@@ -12,6 +12,17 @@ namespace JccApi.Entities
             Id = id;
         }
 
+         public Child(string name, string age, string clotheSize, string shoeSize, int genreTypeId, Guid familyId)
+        {
+            Id = Guid.NewGuid();
+            Name = name;
+            Age = age;
+            ClotheSize = clotheSize;
+            ShoeSize = shoeSize;
+            GenreTypeId = genreTypeId;
+            FamilyId = familyId;
+        }
+
         public Child(Guid id, string name, string age, string clotheSize, string shoeSize, int genreTypeId, Guid familyId)
         {
             Id = id;
@@ -20,6 +31,7 @@ namespace JccApi.Entities
             ClotheSize = clotheSize;
             ShoeSize = shoeSize;
             GenreTypeId = genreTypeId;
+            FamilyId = familyId;
         }
 
         public Guid Id { get; private set; }
