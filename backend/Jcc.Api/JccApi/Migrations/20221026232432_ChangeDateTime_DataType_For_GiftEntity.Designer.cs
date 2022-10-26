@@ -3,6 +3,7 @@ using System;
 using JccApi.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace JccApi.Migrations
 {
     [DbContext(typeof(DataBaseContext))]
-    partial class DataBaseContextModelSnapshot : ModelSnapshot
+    [Migration("20221026232432_ChangeDateTime_DataType_For_GiftEntity")]
+    partial class ChangeDateTime_DataType_For_GiftEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -165,10 +167,6 @@ namespace JccApi.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("god_parent_id");
 
-                    b.Property<int>("TypeId")
-                        .HasColumnType("integer")
-                        .HasColumnName("gif_type_id");
-
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("created_date");
@@ -176,6 +174,10 @@ namespace JccApi.Migrations
                     b.Property<bool>("IsDelivered")
                         .HasColumnType("boolean")
                         .HasColumnName("is_delivered");
+
+                    b.Property<int>("TypeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("gif_type_id");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp without time zone")
@@ -185,7 +187,7 @@ namespace JccApi.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("user_id");
 
-                    b.HasKey("ChildId", "GodParentId", "TypeId");
+                    b.HasKey("ChildId", "GodParentId");
 
                     b.HasIndex("GodParentId");
 
