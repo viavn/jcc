@@ -26,7 +26,7 @@ namespace JccApi.Application.Validators
             RuleFor(c => c.Genre)
                 .IsInEnum().WithMessage("Sexo inválido.");
 
-            RuleFor(mem => mem.FamilyId)
+            RuleFor(c => c.FamilyId)
                 .NotEmpty().WithMessage("Identificador da Família é obrigatório");
         }
     }

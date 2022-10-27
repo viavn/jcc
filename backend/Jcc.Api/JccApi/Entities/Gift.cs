@@ -12,15 +12,15 @@ namespace JccApi.Entities
             GodParentId = GodParentId;
         }
 
-        public Gift(Guid childId, Guid godParentId, int typeId, DateTime createdDate, DateTime updatedDate, bool isDelivered, Guid userId)
+        public Gift(Guid childId, Guid godParentId, int typeId, DateTime createdDate, DateTime updatedDate, Guid userId)
         {
             ChildId = childId;
             GodParentId = godParentId;
             TypeId = typeId;
             CreatedDate = createdDate;
             UpdatedDate = updatedDate;
-            IsDelivered = isDelivered;
             UserId = userId;
+            IsDelivered = false;
         }
 
         public Guid ChildId { get; private set; }
@@ -35,5 +35,10 @@ namespace JccApi.Entities
         public GodParent GodParent { get; private set; }
         public GiftType Type { get; private set; }
         public User User { get; private set; }
+
+        public void Update()
+        {
+            UpdatedDate = DateTime.Now;
+        }
     }
 }

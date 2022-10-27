@@ -11,7 +11,8 @@ namespace JccApi.Infrastructure.Repository.Abstractions
         Task<IEnumerable<Child>> GetAll();
         Task<IEnumerable<ChildGiftDto>> GetAllWithDeliveredInformation();
         Task<Child> GetById(Guid id);
-        Child Find(Guid id);
+        Task<Child> Find(Guid id);
+        Task<bool> Exists(Guid id);
         Task Create(Child child);
         Task Update(Child updatedChild);
         Task Delete(Child child);

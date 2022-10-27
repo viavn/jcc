@@ -20,6 +20,7 @@ namespace JccApi.Controllers
         private readonly ICreateChildUseCaseAsync _createChildUseCaseAsync;
         private readonly IUpdateChildUseCaseAsync _updateChildUseCaseAsync;
         private readonly IDeleteChildUseCaseAsync _deleteChildUseCaseAsync;
+        private readonly ICreateGiftUseCaseAsync _createGiftUseCaseAsync;
         private readonly IChildRepository _childRepository;
 
         public ChildrenController(
@@ -30,12 +31,14 @@ namespace JccApi.Controllers
             IChildRepository childRepository,
             IGodParentRepository godParentRepository,
             IUserRepository userRepository,
+            ICreateGiftUseCaseAsync createGiftUseCaseAsync,
             IGiftRepository giftRepository)
         {
             _logger = logger;
             _createChildUseCaseAsync = createChildUseCaseAsync;
             _updateChildUseCaseAsync = updateChildUseCaseAsync;
             _deleteChildUseCaseAsync = deleteChildUseCaseAsync;
+            _createGiftUseCaseAsync = createGiftUseCaseAsync;
             _childRepository = childRepository;
         }
 
@@ -117,6 +120,59 @@ namespace JccApi.Controllers
                 return NotFound();
             }
         }
+
+        [HttpPost("{id}/gifts")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<IActionResult> AddGift([FromRoute] Guid id, [FromBody] CreateGiftRequest request)
+        {
+            try
+            {
+                request.ChildId = id;
+                var godParentId = await _createGiftUseCaseAsync.Execute(request);
+
+                return CreatedAtAction(
+                    // TODO: GetGift
+                    nameof(GetChild), new { request.ChildId },
+                    new { request.ChildId, GodParentId = godParentId, request.GodParent, request.Type, request.UserId }
+                );
+            }
+            catch (JccException)
+            {
+                return NotFound();
+            }
+            catch (FluentValidation.ValidationException ex)
+            {
+                return BadRequest(GetValidationErrors(ex));
+            }
+        }
+        
+        [HttpPut("{id}/gifts/{giftId}")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<IActionResult> UpdateGift([FromRoute] Guid id, [FromRoute] Guid giftId, [FromBody] CreateGiftRequest request)
+        {
+            try
+            {
+                request.ChildId = id;
+                var godParentId = await _createGiftUseCaseAsync.Execute(request);
+
+                return CreatedAtAction(
+                    // TODO: GetGift
+                    nameof(GetChild), new { request.ChildId },
+                    new { request.ChildId, GodParentId = godParentId, request.GodParent, request.Type, request.UserId }
+                );
+            }
+            catch (JccException)
+            {
+                return NotFound();
+            }
+            catch (FluentValidation.ValidationException ex)
+            {
+                return BadRequest(GetValidationErrors(ex));
+            }
+        }
+
+
+
 
         // [HttpGet("export")]
         // public async Task<IActionResult> GetChildrenReport()

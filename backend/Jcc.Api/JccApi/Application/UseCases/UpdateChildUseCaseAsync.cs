@@ -22,7 +22,7 @@ namespace JccApi.Application
         {
             _validator.ValidateAndThrow(request);
 
-            var child = _childRepository.Find(request.Id);
+            var child = await _childRepository.Find(request.Id);
             if (child is null)
             {
                 throw new JccException("Criança inválida");

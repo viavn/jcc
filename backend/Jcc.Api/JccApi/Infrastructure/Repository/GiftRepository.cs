@@ -29,15 +29,26 @@ namespace JccApi.Infrastructure.Repository
             await _context.SaveChangesAsync();
         }
 
+        public async Task<Gift> Find(Guid childId, Guid godParentId, int giftType)
+        {
+            return await _context.Gifts.FindAsync(childId, godParentId, giftType);
+        }
+
         public async Task<IEnumerable<Gift>> GetAll()
         {
             return await _context.Gifts.AsNoTracking().ToListAsync();
         }
 
-        public async Task<Gift> GetById(Guid childId, Guid godParentId)
+        public async Task<Gift> GetById(Guid childId, Guid godParentId, int giftType)
         {
             return await _context.Gifts.AsNoTracking()
-                .FirstOrDefaultAsync(g => g.ChildId == childId && g.GodParentId == godParentId);
+                .FirstOrDefaultAsync(g => g.ChildId == childId && g.GodParentId == godParentId && g.TypeId == giftType);
+        }
+
+        public async Task<bool> IsGiftCreated(Guid childId, int giftType)
+        {
+            return await _context.Gifts.AsNoTracking()
+                .AnyAsync(g => g.ChildId == childId && g.TypeId == giftType);
         }
 
         public async Task Update(Gift updatedGift)
