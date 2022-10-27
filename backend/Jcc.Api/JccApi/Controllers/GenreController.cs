@@ -10,7 +10,7 @@ namespace JccApi.Controllers
 {
     [ApiController]
     [Route("api/v1/genres")]
-    public class GenreController : ControllerBase
+    public class GenreController : JccBaseController
     {
         private readonly IGenreRepository _genreRepository;
 

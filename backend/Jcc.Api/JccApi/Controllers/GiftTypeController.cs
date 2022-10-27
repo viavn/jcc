@@ -10,7 +10,7 @@ namespace JccApi.Controllers
 {
     [ApiController]
     [Route("api/v1/gift-types")]
-    public class GiftTypeController : ControllerBase
+    public class GiftTypeController : JccBaseController
     {
         private readonly IGiftTypeRepository _giftTypeRepository;
 

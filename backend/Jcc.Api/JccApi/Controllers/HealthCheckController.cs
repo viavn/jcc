@@ -6,7 +6,7 @@ namespace JccApi.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
-    public class HealthCheckController : ControllerBase
+    public class HealthCheckController : JccBaseController
     {
         private readonly ILogger<HealthCheckController> _logger;
 

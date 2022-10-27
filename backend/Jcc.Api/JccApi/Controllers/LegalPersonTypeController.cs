@@ -10,7 +10,7 @@ namespace JccApi.Controllers
 {
     [ApiController]
     [Route("api/v1/legal-person-types")]
-    public class LegalPersonTypeController : ControllerBase
+    public class LegalPersonTypeController : JccBaseController
     {
         private readonly ILegalPersonTypeRepository _legalPersonTypeRepository;
 

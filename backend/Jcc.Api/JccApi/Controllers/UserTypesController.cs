@@ -10,7 +10,7 @@ namespace JccApi.Controllers
 {
     [ApiController]
     [Route("api/v1/user-types")]
-    public class UserTypesController : ControllerBase
+    public class UserTypesController : JccBaseController
     {
         private readonly IUserTypeRepository _userTypeRepository;
 

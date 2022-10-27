@@ -12,7 +12,7 @@ namespace JccApi.Entities
             Id = id;
         }
 
-         public Child(string name, string age, string clotheSize, string shoeSize, int genreTypeId, Guid familyId)
+        public Child(string name, string age, string clotheSize, string shoeSize, int genreTypeId, Guid familyId)
         {
             Id = Guid.NewGuid();
             Name = name;
@@ -45,5 +45,14 @@ namespace JccApi.Entities
         public Genre GenreType { get; private set; }
         public Family Family { get; private set; }
         public ICollection<Gift> Gifts { get; private set; }
+
+        public void Update(string name, string age, string clotheSize, string shoeSize, int genreTypeId)
+        {
+            Name = name;
+            Age = age;
+            ClotheSize = clotheSize;
+            ShoeSize = shoeSize;
+            GenreTypeId = genreTypeId;
+        }
     }
 }

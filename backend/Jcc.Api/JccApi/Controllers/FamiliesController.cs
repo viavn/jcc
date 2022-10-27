@@ -1,4 +1,3 @@
-using FluentValidation;
 using JccApi.Application.Abstractions.UseCases;
 using JccApi.Exceptions;
 using JccApi.Models;
@@ -6,14 +5,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace JccApi.Controllers
 {
     [ApiController]
     [Route("api/v1/families")]
-    public class FamiliesController : ControllerBase
+    public class FamiliesController : JccBaseController
     {
         private readonly ICreateFamilyUseCaseAsync _createFamilyUseCase;
         private readonly IUpdateFamilyUseCaseAsync _updateFamilyUseCaseAsync;
@@ -129,7 +127,7 @@ namespace JccApi.Controllers
                 request.FamilyId = id;
                 request.IsCreating = true;
                 request.Id = await _createFamilyMemberUseCaseAsync.Execute(request);
-                
+
                 return CreatedAtAction(
                     nameof(GetFamily),
                     new { id = request.Id },
@@ -188,11 +186,6 @@ namespace JccApi.Controllers
             {
                 return NotFound();
             }
-        }
-
-        private ApiResult<IEnumerable<string>> GetValidationErrors(ValidationException ex)
-        {
-            return new ApiResult<IEnumerable<string>>(ex.Errors.Select(e => e.ErrorMessage).Distinct());
         }
     }
 }

@@ -1,86 +1,78 @@
-﻿using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Spreadsheet;
-using JccApi.Application.Abstractions.UseCases;
+﻿using JccApi.Application.Abstractions.UseCases;
+using JccApi.Entities.Dtos;
+using JccApi.Exceptions;
 using JccApi.Infrastructure.Repository.Abstractions;
 using JccApi.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace JccApi.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
-    public class ChildrenController : ControllerBase
+    public class ChildrenController : JccBaseController
     {
         private readonly ILogger<ChildrenController> _logger;
         private readonly ICreateChildUseCaseAsync _createChildUseCaseAsync;
+        private readonly IUpdateChildUseCaseAsync _updateChildUseCaseAsync;
+        private readonly IDeleteChildUseCaseAsync _deleteChildUseCaseAsync;
         private readonly IChildRepository _childRepository;
-        private readonly IGiftRepository _giftRepository;
-        private readonly IGodParentRepository _godParentRepository;
-        private readonly IUserRepository _userRepository;
 
         public ChildrenController(
             ILogger<ChildrenController> logger,
+            ICreateChildUseCaseAsync createChildUseCaseAsync,
+            IUpdateChildUseCaseAsync updateChildUseCaseAsync,
+            IDeleteChildUseCaseAsync deleteChildUseCaseAsync,
             IChildRepository childRepository,
             IGodParentRepository godParentRepository,
             IUserRepository userRepository,
-            ICreateChildUseCaseAsync createChildUseCaseAsync,
             IGiftRepository giftRepository)
         {
             _logger = logger;
-            _childRepository = childRepository;
-            _godParentRepository = godParentRepository;
-            _userRepository = userRepository;
             _createChildUseCaseAsync = createChildUseCaseAsync;
-            _giftRepository = giftRepository;
+            _updateChildUseCaseAsync = updateChildUseCaseAsync;
+            _deleteChildUseCaseAsync = deleteChildUseCaseAsync;
+            _childRepository = childRepository;
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(ApiResult<IEnumerable<ChildGiftDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
         {
-            // await _giftRepository.Create(new Entities.Gift(
-            //     Guid.Parse("cda68544-b0ba-4dbe-8c33-2debd4c65ccb"),
-            //     Guid.Parse("28c97317-c024-41d4-8304-0e2d48b6e6df"),
-            //     1,
-            //     DateTime.Now,
-            //     DateTime.Now,
-            //     true,
-            //     Guid.Parse("b7ef15a1-c30d-40e3-bc0b-b8ca875373e6")));
-           
-            // await _giftRepository.Create(new Entities.Gift(
-            //     Guid.Parse("cda68544-b0ba-4dbe-8c33-2debd4c65ccb"),
-            //     Guid.Parse("28c97317-c024-41d4-8304-0e2d48b6e6df"),
-            //     2,
-            //     DateTime.Now,
-            //     DateTime.Now,
-            //     false,
-            //     Guid.Parse("b7ef15a1-c30d-40e3-bc0b-b8ca875373e6")));
-           
-            // await _giftRepository.Create(new Entities.Gift(
-            //     Guid.Parse("cda68544-b0ba-4dbe-8c33-2debd4c65ccb"),
-            //     Guid.Parse("28c97317-c024-41d4-8304-0e2d48b6e6df"),
-            //     3,
-            //     DateTime.Now,
-            //     DateTime.Now,
-            //     false,
-            //     Guid.Parse("b7ef15a1-c30d-40e3-bc0b-b8ca875373e6")));
-            var result = await _childRepository.GetAllWithInformation();
-            return Ok(result);
+            var children = await _childRepository.GetAllWithDeliveredInformation();
+            return Ok(new ApiResult<IEnumerable<ChildGiftDto>>(children));
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(ApiResult<GetChildrenByIdResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetChild(Guid id)
         {
-            return Ok(id);
+            var child = await _childRepository.GetById(id);
+            if (child is null)
+            {
+                return NotFound();
+            }
+
+            var childResponse = new GetChildrenByIdResponse
+            {
+                Id = child.Id,
+                Name = child.Name,
+                Age = child.Age,
+                ClotheSize = child.ClotheSize,
+                ShoeSize = child.ShoeSize,
+                FamilyCode = child.Family.Code,
+                Genre = new(child.GenreTypeId, child.GenreType.Description)
+            };
+            return Ok(new ApiResult<GetChildrenByIdResponse>(childResponse));
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateChild([FromBody] CreateChildRequest request)
         {
             var id = await _createChildUseCaseAsync.Execute(request);
@@ -91,57 +83,40 @@ namespace JccApi.Controllers
             );
         }
 
-        // [HttpGet]
-        // public async Task<IActionResult> GetChildren()
-        // {
-        //     var childEntities = await _childRepository.GetAll();
-        //     var dashboardChildModel = childEntities
-        //         .Select(child => new DashboardChildModel
-        //         {
-        //             Id = child.Id,
-        //             FamilyAcronym = child.FamilyAcronym,
-        //             Name = child.Name,
-        //             LegalResponsible = child.LegalResponsible,
-        //         })
-        //         .ToList();
+        [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> UpdateChild([FromRoute] Guid id, [FromBody] UpdateChildRequest request)
+        {
+            try
+            {
+                request.Id = id;
+                await _updateChildUseCaseAsync.Execute(request);
+                return NoContent();
+            }
+            catch (JccException)
+            {
+                return NotFound();
+            }
+            catch (FluentValidation.ValidationException ex)
+            {
+                return BadRequest(GetValidationErrors(ex));
+            }
+        }
 
-        //     return Ok(dashboardChildModel);
-        // }
-
-        // [HttpGet("{id}")]
-        // public async Task<IActionResult> GetChild(Guid id)
-        // {
-        //     var child = await _childRepository.GetById(id);
-        //     if (child is null)
-        //     {
-        //         return NotFound();
-        //     }
-
-        //     var childModel = new ChildModel
-        //     {
-        //         Id = child.Id,
-        //         Name = child.Name,
-        //         Age = child.Age,
-        //         LegalResponsible = child.LegalResponsible,
-        //         ClothesSize = child.ClothesSize,
-        //         ShoeSize = child.ShoesSize,
-        //         FamilyPhone = child.FamilyPhone,
-        //         FamilyAddress = child.FamilyAddress,
-        //         FamilyAcronym = child.FamilyAcronym,
-        //         GodParents = child.GodParents.Select(
-        //             godParent => new GodParentModel
-        //             {
-        //                 Id = godParent.Id,
-        //                 Name = godParent.Name,
-        //                 Phone = godParent.Phone,
-        //                 IsClothesSelected = godParent.IsClothesSelected,
-        //                 IsGiftSelected = godParent.IsGiftSelected,
-        //                 IsShoeSelected = godParent.IsShoesSelected,
-        //             }).ToList(),
-        //     };
-
-        //     return Ok(childModel);
-        // }
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> DeleteChild([FromRoute] Guid id)
+        {
+            try
+            {
+                await _deleteChildUseCaseAsync.Execute(new DeleteChildRequest(id));
+                return NoContent();
+            }
+            catch (JccException)
+            {
+                return NotFound();
+            }
+        }
 
         // [HttpGet("export")]
         // public async Task<IActionResult> GetChildrenReport()

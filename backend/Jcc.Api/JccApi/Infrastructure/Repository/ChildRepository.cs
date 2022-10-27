@@ -1,4 +1,5 @@
 ﻿using JccApi.Entities;
+using JccApi.Entities.Dtos;
 using JccApi.Infrastructure.Context;
 using JccApi.Infrastructure.Repository.Abstractions;
 using Microsoft.EntityFrameworkCore;
@@ -30,12 +31,17 @@ namespace JccApi.Infrastructure.Repository
             await _context.SaveChangesAsync();
         }
 
+        public Child Find(Guid id)
+        {
+            return _context.Children.Find(id);
+        }
+
         public async Task<IEnumerable<Child>> GetAll()
         {
             return await _context.Children.AsNoTracking().ToListAsync();
         }
 
-        public async Task<IEnumerable<Child>> GetAllWithInformation()
+        public async Task<IEnumerable<ChildGiftDto>> GetAllWithDeliveredInformation()
         {
             var giftTypes = new List<int> {
                 (int)JccApi.Enums.GiftType.Clothe,
@@ -43,33 +49,24 @@ namespace JccApi.Infrastructure.Repository
                 (int)JccApi.Enums.GiftType.Toy,
             };
             var query = from child in _context.Children.AsNoTracking()
-                        select new
-                        {
-                            child.Id,
-                            child.Name,
-                            child.ClotheSize,
-                            child.ShoeSize,
-                            child.GenreType,
-                            child.Family.Code,
-                            GiftsDelivered = child.Gifts.Where(g => g.IsDelivered).Count(),
-                            RemainingToBeInserted = giftTypes.Except(child.Gifts.Select(g => g.TypeId)).Count()
-                        };
-            var result = await query.ToListAsync();
+                        let giftsDelivered = child.Gifts.Where(g => g.IsDelivered).Count()
+                        let remainingToBeInserted = giftTypes.Except(child.Gifts.Select(g => g.TypeId)).Count()
+                        select new ChildGiftDto(child.Id, child.Name, child.Family.Code, giftsDelivered, remainingToBeInserted);
 
-            return await _context.Children.AsNoTracking().ToListAsync();
+            return await query.ToListAsync();
         }
 
         public async Task<Child> GetById(Guid id)
         {
             return await _context.Children.AsNoTracking()
+                .Include(c => c.GenreType)
+                .Include(c => c.Family)
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task Update(Child updatedChild)
         {
-            var child = new Child(updatedChild.Id);
-            _context.Attach(child);
-            _context.Entry(child).CurrentValues.SetValues(updatedChild);
+            _context.Entry(updatedChild).CurrentValues.SetValues(updatedChild);
             await _context.SaveChangesAsync();
         }
     }
