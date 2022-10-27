@@ -29,6 +29,11 @@ namespace JccApi.Infrastructure.Repository
             await _context.SaveChangesAsync();
         }
 
+        public async Task<GodParent> Find(Guid id)
+        {
+            return await _context.GodParents.FindAsync(id);
+        }
+
         public async Task<IEnumerable<GodParent>> GetAll()
         {
             return await _context.GodParents.AsNoTracking().ToListAsync();
