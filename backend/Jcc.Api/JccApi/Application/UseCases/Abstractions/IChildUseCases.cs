@@ -8,4 +8,5 @@ namespace JccApi.Application.Abstractions.UseCases
     public interface IUpdateChildUseCaseAsync : IUseCaseRequestAsync<UpdateChildRequest> { }
     public interface IDeleteChildUseCaseAsync : IUseCaseRequestAsync<DeleteChildRequest> { }
     public interface ICreateGiftUseCaseAsync : IUseCaseAsync<CreateGiftRequest, Guid> { }
+    public interface IUpdateGiftUseCaseAsync : IUseCaseRequestAsync<UpdateGiftRequest> { }
 }

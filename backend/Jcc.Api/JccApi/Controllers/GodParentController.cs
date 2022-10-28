@@ -19,7 +19,7 @@ namespace JccApi.Controllers
             _updateGodParentUseCaseAsync = updateGodParentUseCaseAsync;
         }
 
-        [HttpPost("{id}")]
+        [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateGodParentRequest request)
         {

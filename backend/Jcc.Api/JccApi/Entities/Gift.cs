@@ -40,5 +40,11 @@ namespace JccApi.Entities
         {
             UpdatedDate = DateTime.Now;
         }
+
+        public void MaskAsDelivered()
+        {
+            IsDelivered = true;
+            this.Update();
+        }
     }
 }

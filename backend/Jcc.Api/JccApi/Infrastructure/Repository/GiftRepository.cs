@@ -53,9 +53,7 @@ namespace JccApi.Infrastructure.Repository
 
         public async Task Update(Gift updatedGift)
         {
-            var gift = new Gift(updatedGift.ChildId, updatedGift.GodParentId);
-            _context.Attach(gift);
-            _context.Entry(gift).CurrentValues.SetValues(updatedGift);
+            _context.Entry(updatedGift).CurrentValues.SetValues(updatedGift);
             await _context.SaveChangesAsync();
         }
     }

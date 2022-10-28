@@ -32,7 +32,7 @@ namespace JccApi.Application
                 throw new JccException("Criança inválida");
             }
 
-            if (!await _giftRepository.IsGiftCreated(request.ChildId, (int)request.Type))
+            if (await _giftRepository.IsGiftCreated(request.ChildId, (int)request.Type))
             {
                 throw new JccException("Este tipo de presente já foi cadastrado");
             }

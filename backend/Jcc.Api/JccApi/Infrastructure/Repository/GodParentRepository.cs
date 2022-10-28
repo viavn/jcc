@@ -29,6 +29,11 @@ namespace JccApi.Infrastructure.Repository
             await _context.SaveChangesAsync();
         }
 
+        public async Task<bool> Exists(Guid id)
+        {
+            return await _context.GodParents.AsNoTracking().AnyAsync(g => g.Id == id);
+        }
+
         public async Task<GodParent> Find(Guid id)
         {
             return await _context.GodParents.FindAsync(id);
@@ -47,9 +52,7 @@ namespace JccApi.Infrastructure.Repository
 
         public async Task Update(GodParent updatedGodParent)
         {
-            var godParent = new GodParent(updatedGodParent.Id);
-            _context.Attach(godParent);
-            _context.Entry(godParent).CurrentValues.SetValues(updatedGodParent);
+            _context.Entry(updatedGodParent).CurrentValues.SetValues(updatedGodParent);
             await _context.SaveChangesAsync();
         }
 

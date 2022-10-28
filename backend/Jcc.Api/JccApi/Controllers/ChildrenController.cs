@@ -21,6 +21,7 @@ namespace JccApi.Controllers
         private readonly IUpdateChildUseCaseAsync _updateChildUseCaseAsync;
         private readonly IDeleteChildUseCaseAsync _deleteChildUseCaseAsync;
         private readonly ICreateGiftUseCaseAsync _createGiftUseCaseAsync;
+        private readonly IUpdateGiftUseCaseAsync _updateGiftUseCaseAsync;
         private readonly IChildRepository _childRepository;
 
         public ChildrenController(
@@ -28,17 +29,16 @@ namespace JccApi.Controllers
             ICreateChildUseCaseAsync createChildUseCaseAsync,
             IUpdateChildUseCaseAsync updateChildUseCaseAsync,
             IDeleteChildUseCaseAsync deleteChildUseCaseAsync,
-            IChildRepository childRepository,
-            IGodParentRepository godParentRepository,
-            IUserRepository userRepository,
             ICreateGiftUseCaseAsync createGiftUseCaseAsync,
-            IGiftRepository giftRepository)
+            IUpdateGiftUseCaseAsync updateGiftUseCaseAsync,
+            IChildRepository childRepository)
         {
             _logger = logger;
             _createChildUseCaseAsync = createChildUseCaseAsync;
             _updateChildUseCaseAsync = updateChildUseCaseAsync;
             _deleteChildUseCaseAsync = deleteChildUseCaseAsync;
             _createGiftUseCaseAsync = createGiftUseCaseAsync;
+            _updateGiftUseCaseAsync = updateGiftUseCaseAsync;
             _childRepository = childRepository;
         }
 
@@ -131,8 +131,7 @@ namespace JccApi.Controllers
                 var godParentId = await _createGiftUseCaseAsync.Execute(request);
 
                 return CreatedAtAction(
-                    // TODO: GetGift
-                    nameof(GetChild), new { request.ChildId },
+                    nameof(GetChild), new { id = request.ChildId },
                     new { request.ChildId, GodParentId = godParentId, request.GodParent, request.Type, request.UserId }
                 );
             }
@@ -145,21 +144,18 @@ namespace JccApi.Controllers
                 return BadRequest(GetValidationErrors(ex));
             }
         }
-        
-        [HttpPut("{id}/gifts/{giftId}")]
+
+        [HttpPatch("{id}/gifts/{giftTypetId}")]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<IActionResult> UpdateGift([FromRoute] Guid id, [FromRoute] Guid giftId, [FromBody] CreateGiftRequest request)
+        public async Task<IActionResult> DeliverGift([FromRoute] Guid id, [FromRoute] int giftTypetId, [FromBody] UpdateGiftRequest request)
         {
             try
             {
                 request.ChildId = id;
-                var godParentId = await _createGiftUseCaseAsync.Execute(request);
+                request.GiftType = (Enums.GiftType)giftTypetId;
+                await _updateGiftUseCaseAsync.Execute(request);
 
-                return CreatedAtAction(
-                    // TODO: GetGift
-                    nameof(GetChild), new { request.ChildId },
-                    new { request.ChildId, GodParentId = godParentId, request.GodParent, request.Type, request.UserId }
-                );
+                return NoContent();
             }
             catch (JccException)
             {
@@ -170,9 +166,6 @@ namespace JccApi.Controllers
                 return BadRequest(GetValidationErrors(ex));
             }
         }
-
-
-
 
         // [HttpGet("export")]
         // public async Task<IActionResult> GetChildrenReport()

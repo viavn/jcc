@@ -42,6 +42,7 @@ namespace JccApi.Infrastructure.Extensions
             services.AddScoped<IDeleteChildUseCaseAsync, DeleteChildUseCaseAsync>();
             services.AddScoped<IUpdateGodParentUseCaseAsync, UpdateGodParentUseCaseAsync>();
             services.AddScoped<ICreateGiftUseCaseAsync, CreateGiftUseCaseAsync>();
+            services.AddScoped<IUpdateGiftUseCaseAsync, UpdateGiftUseCaseAsync>();
 
             return services;
         }
@@ -56,6 +57,7 @@ namespace JccApi.Infrastructure.Extensions
             services.AddScoped<IValidator<UpdateChildRequest>, UpdateChildValidator>();
             services.AddScoped<IValidator<UpdateGodParentRequest>, UpdateGodParentValidator>();
             services.AddScoped<IValidator<CreateGiftRequest>, CreateGiftValidator>();
+            services.AddScoped<IValidator<UpdateGiftRequest>, UpdateGiftValidator>();
 
             return services;
         }
