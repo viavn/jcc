@@ -341,26 +341,5 @@ namespace JccApi.Controllers
 
         //         return CreatedAtAction(nameof(GetChildren), null);
         //     }
-
-        //     [HttpPatch("{childId}")]
-        //     public async Task<IActionResult> AddOrUpdateChildGodParents(Guid childId, [FromBody] AddOrUpdateChildGodParentsRequest request)
-        //     {
-        //         var child = await _childRepository.GetById(childId);
-        //         var user = await _userRepository.GetUserByLogin(request.UserLogin);
-
-        //         if (child is null || user is null)
-        //         {
-        //             return NotFound();
-        //         }
-
-        //         var newGodParents = request.GodParents.Select(gp =>
-        //             new GodParent_Old(gp.Name, gp.Phone,
-        //                 gp.IsClothesSelected, gp.IsShoeSelected, gp.IsGiftSelected, DateTime.Now, user.Id, childId)
-        //             ).ToList();
-
-        //         await _godParentRepository.DeleteOldThenCreateNewGodParents(child.GodParents, newGodParents);
-
-        //         return Ok();
-        //     }
     }
 }
