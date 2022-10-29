@@ -42,6 +42,11 @@ namespace JccApi.Application
                 throw new JccException("Presente inválido");
             }
 
+            if (gift.IsDelivered)
+            {
+                throw new JccException("Presente já entregue");
+            }
+
             await _giftRepository.Delete(gift);
         }
     }
