@@ -2,6 +2,7 @@
 using JccApi.Entities.Dtos;
 using JccApi.Infrastructure.Context;
 using JccApi.Infrastructure.Repository.Abstractions;
+using JccApi.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -61,11 +62,40 @@ namespace JccApi.Infrastructure.Repository
             return await query.ToListAsync();
         }
 
-        public async Task<Child> GetById(Guid id)
+        public async Task<GetChildrenByIdResponse> GetById(Guid id)
         {
             return await _context.Children.AsNoTracking()
-                .Include(c => c.GenreType)
-                .Include(c => c.Family)
+                .Select(c => new GetChildrenByIdResponse
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Age = c.Age,
+                    ClotheSize = c.ClotheSize,
+                    ShoeSize = c.ShoeSize,
+                    Family = new FamilyChildResponse
+                    {
+                        Id = c.FamilyId,
+                        Address = c.Family.Address,
+                        Code = c.Family.Code,
+                        ContactNumber = c.Family.ContactNumber,
+                        Member = c.Family.Members
+                            .Select(m => $"{m.LegalPersonType.Description} - {m.Name}")
+                            .FirstOrDefault()
+                    },
+                    Genre = new TypeResponse(c.GenreType.Id, c.GenreType.Description),
+                    Gifts = c.Gifts.Select(g => new GiftResponse
+                    {
+                        IsDelivered = g.IsDelivered,
+                        GiftType = new TypeResponse(g.Type.Id, g.Type.Description),
+                        GodParent = new GodParentResponse
+                        {
+                            Id = g.GodParentId,
+                            Name = g.GodParent.Name,
+                            Address = g.GodParent.Address,
+                            ContactNumber = g.GodParent.ContactNumber
+                        }
+                    }),
+                })
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 

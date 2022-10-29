@@ -22,6 +22,7 @@ namespace JccApi.Controllers
         private readonly IDeleteChildUseCaseAsync _deleteChildUseCaseAsync;
         private readonly ICreateGiftUseCaseAsync _createGiftUseCaseAsync;
         private readonly IUpdateGiftUseCaseAsync _updateGiftUseCaseAsync;
+        private readonly IDeleteGiftUseCaseAsync _deleteGiftUseCaseAsync;
         private readonly IChildRepository _childRepository;
 
         public ChildrenController(
@@ -31,6 +32,7 @@ namespace JccApi.Controllers
             IDeleteChildUseCaseAsync deleteChildUseCaseAsync,
             ICreateGiftUseCaseAsync createGiftUseCaseAsync,
             IUpdateGiftUseCaseAsync updateGiftUseCaseAsync,
+            IDeleteGiftUseCaseAsync deleteGiftUseCaseAsync,
             IChildRepository childRepository)
         {
             _logger = logger;
@@ -39,6 +41,7 @@ namespace JccApi.Controllers
             _deleteChildUseCaseAsync = deleteChildUseCaseAsync;
             _createGiftUseCaseAsync = createGiftUseCaseAsync;
             _updateGiftUseCaseAsync = updateGiftUseCaseAsync;
+            _deleteGiftUseCaseAsync = deleteGiftUseCaseAsync;
             _childRepository = childRepository;
         }
 
@@ -61,17 +64,7 @@ namespace JccApi.Controllers
                 return NotFound();
             }
 
-            var childResponse = new GetChildrenByIdResponse
-            {
-                Id = child.Id,
-                Name = child.Name,
-                Age = child.Age,
-                ClotheSize = child.ClotheSize,
-                ShoeSize = child.ShoeSize,
-                FamilyCode = child.Family.Code,
-                Genre = new(child.GenreTypeId, child.GenreType.Description)
-            };
-            return Ok(new ApiResult<GetChildrenByIdResponse>(childResponse));
+            return Ok(new ApiResult<GetChildrenByIdResponse>(child));
         }
 
         [HttpPost]
@@ -146,7 +139,7 @@ namespace JccApi.Controllers
         }
 
         [HttpPatch("{id}/gifts/{giftTypetId}")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeliverGift([FromRoute] Guid id, [FromRoute] int giftTypetId, [FromBody] UpdateGiftRequest request)
         {
             try
@@ -154,6 +147,32 @@ namespace JccApi.Controllers
                 request.ChildId = id;
                 request.GiftType = (Enums.GiftType)giftTypetId;
                 await _updateGiftUseCaseAsync.Execute(request);
+
+                return NoContent();
+            }
+            catch (JccException)
+            {
+                return NotFound();
+            }
+            catch (FluentValidation.ValidationException ex)
+            {
+                return BadRequest(GetValidationErrors(ex));
+            }
+        }
+
+        [HttpDelete("{id}/god-parents/{godParentId}/gifts/{giftTypetId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> DeleteGift([FromRoute] Guid id, [FromRoute] int giftTypetId, [FromRoute] Guid godParentId)
+        {
+            try
+            {
+                var request = new UpdateGiftRequest
+                {
+                    ChildId = id,
+                    GiftType = (Enums.GiftType)giftTypetId,
+                    GodParentId = godParentId
+                };
+                await _deleteGiftUseCaseAsync.Execute(request);
 
                 return NoContent();
             }

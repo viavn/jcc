@@ -43,6 +43,7 @@ namespace JccApi.Infrastructure.Extensions
             services.AddScoped<IUpdateGodParentUseCaseAsync, UpdateGodParentUseCaseAsync>();
             services.AddScoped<ICreateGiftUseCaseAsync, CreateGiftUseCaseAsync>();
             services.AddScoped<IUpdateGiftUseCaseAsync, UpdateGiftUseCaseAsync>();
+            services.AddScoped<IDeleteGiftUseCaseAsync, DeleteGiftUseCaseAsync>();
 
             return services;
         }
