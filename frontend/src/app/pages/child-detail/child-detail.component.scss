@@ -20,12 +20,6 @@ td {
   padding-right: 8px;
 }
 
-.checkbox-container {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 8px;
-}
-
 .table-pagination-container {
   margin-top: 8px;
   margin-bottom: 8px;
@@ -40,10 +34,4 @@ table {
   grid-template-columns: repeat(2, 140px);
   gap: 8px;
   padding-bottom: 16px;
-}
-
-.fab-button-container {
-  padding-top: 16px;
-  display: flex;
-  justify-content: flex-end;
 }

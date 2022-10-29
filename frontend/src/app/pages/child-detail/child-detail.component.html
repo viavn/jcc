@@ -23,7 +23,7 @@
             <td>
               <mat-form-field class="example-full-width" appearance="fill">
                 <mat-label>Tamanho roupa</mat-label>
-                <input matInput formControlName="clothesSize" />
+                <input matInput formControlName="clotheSize" />
               </mat-form-field>
             </td>
             <td>
@@ -43,13 +43,13 @@
             <td>
               <mat-form-field class="example-full-width" appearance="fill">
                 <mat-label>Identificação</mat-label>
-                <input matInput formControlName="id" />
+                <input matInput formControlName="code" />
               </mat-form-field>
             </td>
             <td>
               <mat-form-field class="example-full-width" appearance="fill">
-                <mat-label>Telefone</mat-label>
-                <input matInput formControlName="phone" />
+                <mat-label>Nro. Contato</mat-label>
+                <input matInput formControlName="contactNumber" />
               </mat-form-field>
             </td>
           </tr>
@@ -58,7 +58,7 @@
         <p>
           <mat-form-field class="example-full-width" appearance="fill">
             <mat-label>Responsável</mat-label>
-            <input matInput formControlName="responsible" />
+            <input matInput formControlName="member" />
           </mat-form-field>
 
           <mat-form-field class="example-full-width" appearance="fill">
@@ -71,39 +71,48 @@
 
     <form
       class="example-form"
-      [formGroup]="godParentsFormGroup"
-      (ngSubmit)="onSubmit($event)"
+      [formGroup]="giftsFormGroup"
+      (ngSubmit)="onSubmit(giftFormElement)"
+      #giftFormElement="ngForm"
     >
-      <h2>Padrinho/Madrinha</h2>
+      <h2>Apadrinhar</h2>
       <div>
-        <div class="checkbox-container">
-          <mat-checkbox formControlName="clothesSelected" id="clothes-checkbox"
-            >Roupa</mat-checkbox
+        <mat-form-field class="example-full-width" appearance="outline">
+          <mat-label>Tipo presente</mat-label>
+          <mat-select formControlName="giftType" name="Tipo presente">
+            <mat-option>&nbsp;</mat-option>
+            <mat-option
+              *ngFor="let type of giftTypes$ | async"
+              [value]="type.id"
+            >
+              {{ type.description }}
+            </mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="giftsFormGroup.get('giftType')?.hasError('required')"
+            >Selecione um tipo de presente</mat-error
           >
-          <mat-checkbox formControlName="shoeSelected" id="shoes-checkbox"
-            >Calçado</mat-checkbox
-          >
-          <mat-checkbox formControlName="giftSelected" id="gift-checkbox"
-            >Presente</mat-checkbox
-          >
-        </div>
+        </mat-form-field>
 
-        <div>
-          <mat-form-field class="example-full-width" appearance="outline">
-            <mat-label>Nome</mat-label>
-            <input matInput formControlName="name" id="godParentName" />
-          </mat-form-field>
+        <mat-form-field class="example-full-width" appearance="outline">
+          <mat-label>Nome</mat-label>
+          <input matInput formControlName="name" id="godParentName" />
+        </mat-form-field>
 
-          <mat-form-field class="example-full-width" appearance="outline">
-            <mat-label>Telefone</mat-label>
-            <input
-              matInput
-              formControlName="phone"
-              id="godParentPhone"
-              type="tel"
-            />
-          </mat-form-field>
-        </div>
+        <mat-form-field class="example-full-width" appearance="outline">
+          <mat-label>Endereço</mat-label>
+          <input matInput formControlName="address" id="godParentAddress" />
+        </mat-form-field>
+
+        <mat-form-field class="example-full-width" appearance="outline">
+          <mat-label>Telefone</mat-label>
+          <input
+            matInput
+            formControlName="phone"
+            id="godParentPhone"
+            type="tel"
+          />
+        </mat-form-field>
       </div>
 
       <div class="form-actions">
@@ -111,8 +120,7 @@
           mat-raised-button
           color="default"
           type="button"
-          [disabled]="!godParentsFormGroup.dirty"
-          (click)="cancelGodParentAction()"
+          (click)="cancelGodParentAction(giftFormElement)"
         >
           Cancelar
         </button>
@@ -121,7 +129,7 @@
           mat-raised-button
           color="primary"
           type="submit"
-          [disabled]="!godParentsFormGroup.valid"
+          [disabled]="!giftsFormGroup.valid"
         >
           {{ godParentsSubmitButtonTitle }}
         </button>
@@ -131,53 +139,47 @@
 
   <div class="table-pagination-container mat-elevation-z8">
     <div class="example-container">
-      <mat-table [dataSource]="godParents">
-        <!-- Clothes -->
-        <ng-container matColumnDef="clothes">
-          <mat-header-cell *matHeaderCellDef>Roupa?</mat-header-cell>
+      <mat-table [dataSource]="gifts">
+        <!-- Is Delivered -->
+        <ng-container matColumnDef="isDelivered">
+          <mat-header-cell *matHeaderCellDef>Entregue?</mat-header-cell>
           <mat-cell *matCellDef="let element">
             <mat-checkbox
               disabled="true"
-              [checked]="element.godParent.isClothesSelected"
+              [checked]="element.gift.isDelivered"
             ></mat-checkbox>
           </mat-cell>
         </ng-container>
 
-        <!-- Shoes -->
-        <ng-container matColumnDef="shoes">
-          <mat-header-cell *matHeaderCellDef>Calçado?</mat-header-cell>
-          <mat-cell *matCellDef="let element">
-            <mat-checkbox
-              disabled="true"
-              [checked]="element.godParent.isShoeSelected"
-            ></mat-checkbox>
-          </mat-cell>
-        </ng-container>
-
-        <!-- Gifts -->
-        <ng-container matColumnDef="gift">
-          <mat-header-cell *matHeaderCellDef>Presente?</mat-header-cell>
-          <mat-cell *matCellDef="let element">
-            <mat-checkbox
-              disabled="true"
-              [checked]="element.godParent.isGiftSelected"
-            ></mat-checkbox>
-          </mat-cell>
+        <!-- Gift Type -->
+        <ng-container matColumnDef="giftType">
+          <mat-header-cell *matHeaderCellDef>Tipo</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{
+            element.gift.giftType.description
+          }}</mat-cell>
         </ng-container>
 
         <!-- Name Column -->
         <ng-container matColumnDef="name">
-          <mat-header-cell *matHeaderCellDef>Nome</mat-header-cell>
+          <mat-header-cell *matHeaderCellDef>Quem apadrinhou</mat-header-cell>
           <mat-cell *matCellDef="let element">{{
-            element.godParent.name
+            element.gift.godParent.name
           }}</mat-cell>
         </ng-container>
 
-        <!-- Phone Column -->
-        <ng-container matColumnDef="phone">
-          <mat-header-cell *matHeaderCellDef>Telefone</mat-header-cell>
+        <!-- Contact Number Column -->
+        <ng-container matColumnDef="contactNumber">
+          <mat-header-cell *matHeaderCellDef>Nro. Contato</mat-header-cell>
           <mat-cell *matCellDef="let element">{{
-            element.godParent.phone
+            element.gift.godParent.contactNumber
+          }}</mat-cell>
+        </ng-container>
+
+        <!-- Address Column -->
+        <ng-container matColumnDef="address">
+          <mat-header-cell *matHeaderCellDef>Endereço</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{
+            element.gift.godParent.address
           }}</mat-cell>
         </ng-container>
 
@@ -187,10 +189,19 @@
           <mat-cell *matCellDef="let element">
             <button
               mat-icon-button
-              aria-label="Excluir padrinho ou madrinha"
-              (click)="deleteGodParentFromTable(element)"
+              aria-label="Excluir"
+              (click)="deleteGift($event, element)"
             >
               <mat-icon>delete</mat-icon>
+            </button>
+
+            <button
+              mat-icon-button
+              [disabled]="element.gift.isDelivered"
+              aria-label="Presente entregue"
+              (click)="markGiftAsDelivered($event, element)"
+            >
+              <mat-icon>celebration</mat-icon>
             </button>
           </mat-cell>
         </ng-container>
@@ -202,17 +213,5 @@
         ></mat-row>
       </mat-table>
     </div>
-  </div>
-
-  <div class="fab-button-container">
-    <button
-      id="save-info"
-      mat-fab
-      aria-label="Salvar informações"
-      type="button"
-      (click)="onClickSaveChildGodParents()"
-    >
-      <mat-icon>favorite</mat-icon>
-    </button>
   </div>
 </div>

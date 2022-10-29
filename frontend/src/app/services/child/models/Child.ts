@@ -11,13 +11,6 @@ export interface Child {
   godParents: GodParent[];
 }
 
-export interface DashChildModel {
-  id: string;
-  name: string;
-  legalResponsible: string;
-  familyAcronym: string;
-}
-
 export interface GodParent {
   id: string | undefined;
   name: string;
@@ -25,4 +18,55 @@ export interface GodParent {
   isClothesSelected: boolean;
   isShoeSelected: boolean;
   isGiftSelected: boolean;
+}
+
+export interface DashChildModel {
+  id: string;
+  name: string;
+  familyCode: string;
+  deliveredGifts: number;
+  remainingGifts: number;
+}
+
+export interface TypeResponse {
+  id: number;
+  description: string;
+}
+
+export interface GodParentResponse {
+  id: string;
+  name: string;
+  contactNumber: string;
+  address: string;
+}
+
+export interface FamilyChildResponse {
+  id: string;
+  code: string;
+  contactNumber: string;
+  address: string;
+  member: string;
+}
+
+export interface GiftResponse {
+  isDelivered: boolean;
+  giftType: TypeResponse;
+  godParent: GodParentResponse;
+}
+
+export interface GetChildrenByIdResponse {
+  id: string;
+  name: string;
+  age: string;
+  clotheSize: string;
+  shoeSize: string;
+  family: FamilyChildResponse;
+  genre: TypeResponse;
+  gifts: GiftResponse[];
+}
+
+export interface CreateGiftRequest {
+  childId: string;
+  typeId: number;
+  godParent: Partial<GodParentResponse>;
 }

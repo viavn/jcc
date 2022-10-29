@@ -2,7 +2,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { User } from '../auth/models/User';
 import { CreateUserModel } from './models/CreateUserModel';
 import { GetUsersModel } from './models/GetUsersModel';
 
@@ -44,8 +43,8 @@ export class UserService {
   getUsers(): Observable<GetUsersModel[]> {
     const url = `${this.RESOURCE_URL}`;
     return this.http.get<any>(url)
-      .pipe(map(users => {
-        return users.map((u: any) => ({
+      .pipe(map(request => {
+        return request.data.map((u: any) => ({
           id: u.id,
           login: u.login,
           name: u.name,
@@ -58,12 +57,12 @@ export class UserService {
   getUserById(id: string): Observable<GetUsersModel> {
     const url = `${this.RESOURCE_URL}/${id}`;
     return this.http.get<any>(url)
-      .pipe(map(user => ({
-        id: user.id,
-        login: user.login,
-        name: user.name,
-        isDeleted: user.isDeleted,
-        userType: user.userType,
+      .pipe(map(({ data }) => ({
+        id: data.id,
+        login: data.login,
+        name: data.name,
+        isDeleted: data.isDeleted,
+        userType: data.userType,
       } as GetUsersModel
       )));
   }

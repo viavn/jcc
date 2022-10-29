@@ -3,7 +3,10 @@ import { Injectable } from '@angular/core';
 import { map, Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { AuthService } from '../auth/auth.service';
-import { Child, DashChildModel, GodParent } from './models/Child';
+import { CreateGiftRequest, DashChildModel, GetChildrenByIdResponse } from './models/Child';
+
+type GetChildrenResponse = { data: DashChildModel[] };
+type GetByIdResponse = { data: GetChildrenByIdResponse };
 
 @Injectable({
   providedIn: 'root'
@@ -21,50 +24,15 @@ export class ChildService {
 
   getChildren(): Observable<DashChildModel[]> {
     const url = `${this.RESOURCE_URL}`;
-    return this.http.get<any[]>(url).pipe(
-      map(dataFromApi => {
-        return dataFromApi.map(item => {
-          const dashChildModel: DashChildModel = {
-            id: item.id,
-            name: item.name,
-            legalResponsible: item.legalResponsible,
-            familyAcronym: item.familyAcronym
-          };
-
-          return dashChildModel
-        });
-      }),
+    return this.http.get<GetChildrenResponse>(url).pipe(
+      map(response => response.data),
     );
   }
 
-  getChild(id: string): Observable<Child> {
+  getChild(id: string): Observable<GetChildrenByIdResponse> {
     const url = `${this.RESOURCE_URL}/${id}`;
-    return this.http.get<any>(url).pipe(
-      map(dataFromApi => {
-        const child: Child = {
-          id: dataFromApi.id,
-          name: dataFromApi.name,
-          age: dataFromApi.age,
-          clothesSize: dataFromApi.clothesSize,
-          shoeSize: dataFromApi.shoeSize,
-          legalResponsible: dataFromApi.legalResponsible,
-          familyAcronym: dataFromApi.familyAcronym,
-          familyPhone: dataFromApi.familyPhone,
-          familyAddress: dataFromApi.familyAddress,
-          godParents: dataFromApi.godParents.map((gp: any) => {
-            const godParent: GodParent = {
-              id: gp.id,
-              name: gp.name,
-              phone: gp.phone,
-              isClothesSelected: gp.isClothesSelected,
-              isShoeSelected: gp.isShoeSelected,
-              isGiftSelected: gp.isGiftSelected,
-            };
-            return godParent;
-          }),
-        };
-        return child;
-      }),
+    return this.http.get<GetByIdResponse>(url).pipe(
+      map(response => response.data),
     );
   }
 
@@ -75,14 +43,32 @@ export class ChildService {
     });
   }
 
-  addOrUpdateChildGodParents(childId: string, godParents: GodParent[]): Observable<any> {
+  deliverGift(childId: string, godParentId: string, gifTypeId: number): Observable<any> {
+    const url = `${this.RESOURCE_URL}/${childId}/gifts/${gifTypeId}`;
+    return this.http.patch<any>(url, { godParentId }, this.httpOptions);
+  }
+
+  addGift(request: CreateGiftRequest): Observable<any> {
     const user = this.authService.getUserInSessionStorage();
     if (!user) {
-      return throwError(() => 'Usuário não encontrado no session storage');
+      return throwError(() => 'Usuário não encontrado');
     }
 
-    const url = `${this.RESOURCE_URL}/${childId}`;
-    const bodyRequest: any = { userLogin: user.login, godParents: godParents };
-    return this.http.patch<any>(url, bodyRequest, this.httpOptions);
+    const url = `${this.RESOURCE_URL}/${request.childId}/gifts`;
+    const bodyRequest: any = {
+      userId: user.id,
+      type: request.typeId,
+      godParent: {
+        name: request.godParent.name,
+        contactNumber: request.godParent.contactNumber,
+        address: request.godParent.address
+      }
+    };
+    return this.http.post<any>(url, bodyRequest, this.httpOptions);
+  }
+
+  removeGift(childId: string, godParentId: string, giftTypeId: number): Observable<any> {
+    const url = `${this.RESOURCE_URL}/${childId}/god-parents/${godParentId}/gifts/${giftTypeId}`;
+    return this.http.delete<any>(url, this.httpOptions);
   }
 }

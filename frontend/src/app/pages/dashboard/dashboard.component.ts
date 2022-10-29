@@ -1,24 +1,27 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { catchError } from 'rxjs';
+import { catchError, of, Subject, takeUntil } from 'rxjs';
 import { SpinnerDialogComponent } from 'src/app/components/spinner-dialog/spinner-dialog.component';
 import { NotificationType } from 'src/app/services/notification/models/SystemNotification';
 import { NotificationService } from 'src/app/services/notification/notification.service';
 import { ChildService } from '../../services/child/child.service';
-import { Child, DashChildModel } from '../../services/child/models/Child';
+import { DashChildModel } from '../../services/child/models/Child';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit, AfterViewInit {
-  displayedColumns: string[] = ['familyAcronym', 'name', 'legalResponsible'];
+export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
+  displayedColumns: string[] = ['familyCode', 'name', 'deliveredGifts', 'remainingGifts'];
   dataSource = new MatTableDataSource<DashChildModel>([]);
+
+  private destroySubject = new Subject<void>();
+  private destroy$ = this.destroySubject.asObservable();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -37,12 +40,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     });
 
     this.childService.getChildren()
-      .subscribe(children => {
-        this.dataSource.data = [...children];
-        spinnerDialogRef.close();
-      },
-        error => {
-          spinnerDialogRef.close();
+      .pipe(
+        takeUntil(this.destroy$),
+        catchError((error: any) => {
           console.log('Erro ao obter crianças', error)
           this.notificationService.emitMessage({
             Message: 'Um erro ocorreu ao obter as crianças. Tente novamente!',
@@ -50,7 +50,13 @@ export class DashboardComponent implements OnInit, AfterViewInit {
             ShowtimeInMilliseconds: 5000,
             Type: NotificationType.ERROR,
           });
-        });
+          return of([]);
+        }),
+      )
+      .subscribe(children => {
+        this.dataSource.data = [...children];
+        spinnerDialogRef.close();
+      });
   }
 
   ngAfterViewInit() {
@@ -58,7 +64,12 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.dataSource.sort = this.sort;
   }
 
-  applyFilter(event: Event) {
+  ngOnDestroy(): void {
+    this.destroySubject.next();
+    this.destroySubject.complete();
+  }
+
+  applyFilter(event: any) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
 
@@ -67,8 +78,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onRowClicked(child: Child): void {
-    this.router.navigate(['detail', child.id]);
+  onRowClicked({ id }: DashChildModel): void {
+    this.router.navigate(['detail', id]);
   }
 
   getReport() {

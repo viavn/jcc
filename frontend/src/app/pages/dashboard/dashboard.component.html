@@ -13,7 +13,7 @@
       </mat-form-field>
     </div>
 
-    <button
+    <!-- <button
       class="export-button"
       mat-raised-button
       color="primary"
@@ -22,37 +22,47 @@
     >
       <mat-icon>file_download</mat-icon>
       Obter planilha
-    </button>
+    </button> -->
   </div>
 
   <div class="table-pagination-container mat-elevation-z8">
     <div class="example-container">
       <mat-table [dataSource]="dataSource" matSort>
-        <!-- Family Id -->
-        <ng-container matColumnDef="familyAcronym">
+        <!-- Family Code -->
+        <ng-container matColumnDef="familyCode">
           <mat-header-cell *matHeaderCellDef mat-sort-header>
             Família
           </mat-header-cell>
           <mat-cell *matCellDef="let element">
-            {{ element.familyAcronym }}
+            {{ element.familyCode }}
           </mat-cell>
         </ng-container>
 
         <!-- Name Column -->
         <ng-container matColumnDef="name">
           <mat-header-cell *matHeaderCellDef mat-sort-header>
-            Nome Criança
+            Criança
           </mat-header-cell>
           <mat-cell *matCellDef="let element"> {{ element.name }} </mat-cell>
         </ng-container>
 
-        <!-- Responsible Column -->
-        <ng-container matColumnDef="legalResponsible">
+        <!-- Delivered Gifts Column -->
+        <ng-container matColumnDef="deliveredGifts">
           <mat-header-cell *matHeaderCellDef mat-sort-header>
-            Responsável
+            Presentes entregues
           </mat-header-cell>
           <mat-cell *matCellDef="let element">
-            {{ element.legalResponsible }}
+            {{ element.deliveredGifts }}
+          </mat-cell>
+        </ng-container>
+
+        <!-- Gifts Remaining Column -->
+        <ng-container matColumnDef="remainingGifts">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            Faltam
+          </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            {{ element.remainingGifts }}
           </mat-cell>
         </ng-container>
 
