@@ -66,4 +66,8 @@ export class CreateAccountComponent {
           });
         });
   }
+
+  cancel(): void {
+    this.router.navigateByUrl('/manage-accounts');
+  }
 }

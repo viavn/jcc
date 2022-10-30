@@ -33,10 +33,7 @@ export class AuthService {
   }
 
   saveUserToSessionStorage(user: User): void {
-    const sessionUser: User = {
-      ...user,
-      password: '',
-    }
+    const sessionUser = new User(user.id, user.login, '', user.userType);
     this.sessionStorageService.save(this.sessionStorageKey, JSON.stringify(sessionUser));
   }
 
@@ -54,13 +51,13 @@ export class AuthService {
     return user.userType === UserType.ADMIN;
   }
 
-  getUserInSessionStorage(): User | undefined {
+  getUserInSessionStorage(): User {
     const sessionItem = this.sessionStorageService.getItem(this.sessionStorageKey);
     if (sessionItem) {
-      return JSON.parse(sessionItem) as User;
+      const sessionObj = JSON.parse(sessionItem);
+      return new User(sessionObj.id, sessionObj.login, sessionObj.password, sessionObj.userType);
     }
-
-    return undefined;
+    throw new Error('Dados do session storage não encontrados');
   }
 
   cleanAuthFromStorage() {

@@ -91,4 +91,8 @@ export class EditAccountComponent implements OnInit {
           });
         });
   }
+
+  cancel(): void {
+    this.router.navigateByUrl('/manage-accounts');
+  }
 }

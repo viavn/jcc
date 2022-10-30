@@ -5,6 +5,9 @@ import { environment } from 'src/environments/environment';
 import { CreateUserModel } from './models/CreateUserModel';
 import { GetUsersModel } from './models/GetUsersModel';
 
+type GetUsers = { data: GetUsersModel[] };
+type GetUser = { data: GetUsersModel };
+
 @Injectable({
   providedIn: 'root'
 })
@@ -42,28 +45,13 @@ export class UserService {
 
   getUsers(): Observable<GetUsersModel[]> {
     const url = `${this.RESOURCE_URL}`;
-    return this.http.get<any>(url)
-      .pipe(map(request => {
-        return request.data.map((u: any) => ({
-          id: u.id,
-          login: u.login,
-          name: u.name,
-          isDeleted: u.isDeleted,
-          userType: u.userType,
-        } as GetUsersModel));
-      }));
+    return this.http.get<GetUsers>(url)
+      .pipe(map(({ data }) => data));
   }
 
   getUserById(id: string): Observable<GetUsersModel> {
     const url = `${this.RESOURCE_URL}/${id}`;
-    return this.http.get<any>(url)
-      .pipe(map(({ data }) => ({
-        id: data.id,
-        login: data.login,
-        name: data.name,
-        isDeleted: data.isDeleted,
-        userType: data.userType,
-      } as GetUsersModel
-      )));
+    return this.http.get<GetUser>(url)
+      .pipe(map(({ data }) => data));
   }
 }

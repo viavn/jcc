@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy } from '@angular/core';
-import { Subscription, timer } from 'rxjs';
+import { Subject, takeUntil, timer } from 'rxjs';
 import { SystemNotification, NotificationType } from '../../services/notification/models/SystemNotification'
 
 @Component({
@@ -9,7 +9,8 @@ import { SystemNotification, NotificationType } from '../../services/notificatio
 })
 export class SnackbarComponent implements OnDestroy {
 
-  private subject = new Subscription();
+  private destroySubject = new Subject<void>();
+  private destroy$ = this.destroySubject.asObservable();
 
   systemNotification: SystemNotification = {
     Message: '',
@@ -35,19 +36,18 @@ export class SnackbarComponent implements OnDestroy {
     if (value && value.ShowNotification) {
       this.systemNotification = { ...value };
 
-      const timerSubscription = timer(this.systemNotification.ShowtimeInMilliseconds)
+      timer(this.systemNotification.ShowtimeInMilliseconds)
+        .pipe(takeUntil(this.destroy$))
         .subscribe(
           () => {
             this.systemNotification.ShowNotification = false;
             this.systemNotification.ShowtimeInMilliseconds = 0;
           });
-
-      this.subject.add(timerSubscription);
     }
   }
 
   ngOnDestroy(): void {
-    this.subject.unsubscribe();
+    this.destroySubject.unsubscribe();
   }
 
   close() {

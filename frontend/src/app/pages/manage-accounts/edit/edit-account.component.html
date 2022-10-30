@@ -55,6 +55,17 @@
   </div>
 
   <div class="form-actions">
-    <button mat-raised-button color="warn" type="button" (click)="disableUser()">Inativar</button>
+    <button mat-raised-button color="default" type="button" (click)="cancel()">
+      Cancelar
+    </button>
+
+    <button
+      mat-raised-button
+      color="warn"
+      type="button"
+      (click)="disableUser()"
+    >
+      Inativar
+    </button>
   </div>
 </form>

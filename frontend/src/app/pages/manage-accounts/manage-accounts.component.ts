@@ -1,9 +1,10 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
+import { catchError, EMPTY, Subject, takeUntil } from 'rxjs';
 import { SpinnerDialogComponent } from 'src/app/components/spinner-dialog/spinner-dialog.component';
 import { UserType } from 'src/app/services/auth/enums/UserType';
 import { User } from 'src/app/services/auth/models/User';
@@ -17,13 +18,16 @@ import { UserService } from 'src/app/services/user/user.service';
   templateUrl: './manage-accounts.component.html',
   styleUrls: ['./manage-accounts.component.scss']
 })
-export class ManageAccountsComponent implements OnInit, AfterViewInit {
+export class ManageAccountsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   displayedColumns: string[] = ['login', 'name', 'isAdmin', 'isDeleted'];
   dataSource = new MatTableDataSource<GetUsersModel>([]);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+
+  private destroySubject = new Subject<void>();
+  private destroy$ = this.destroySubject.asObservable();
 
   constructor(
     private router: Router,
@@ -38,12 +42,9 @@ export class ManageAccountsComponent implements OnInit, AfterViewInit {
     const spinnerDialog = this.openSpinnerDialog();
 
     this.userService.getUsers()
-      .subscribe(
-        users => {
-          this.dataSource.data = [...users];
-          spinnerDialog.close();
-        },
-        error => {
+      .pipe(
+        takeUntil(this.destroy$),
+        catchError(error => {
           spinnerDialog.close();
           console.log('Erro ao obter usuários', error)
           this.notificationService.emitMessage({
@@ -52,7 +53,20 @@ export class ManageAccountsComponent implements OnInit, AfterViewInit {
             ShowtimeInMilliseconds: 5000,
             Type: NotificationType.ERROR,
           });
+
+          return EMPTY;
+        })
+      )
+      .subscribe(
+        users => {
+          this.dataSource.data = [...users];
+          spinnerDialog.close();
         });
+  }
+
+  ngOnDestroy(): void {
+    this.destroySubject.next();
+    this.destroySubject.complete();
   }
 
   ngAfterViewInit() {

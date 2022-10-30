@@ -1,8 +1,10 @@
 ﻿using JccApi.Entities;
 using JccApi.Infrastructure.Repository.Abstractions;
 using JccApi.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,6 +22,7 @@ namespace JccApi.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(ApiResult<IEnumerable<GetUsersResponse>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
         {
             var users = await _userRepository.GetUsers();
@@ -32,11 +35,13 @@ namespace JccApi.Controllers
                 IsDeleted = user.IsDeleted,
             });
 
-            return Ok(usersResponse);
+            return Ok(new ApiResult<IEnumerable<GetUsersResponse>>(usersResponse));
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAll(Guid id)
+        [ProducesResponseType(typeof(ApiResult<GetUsersResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetUserById(Guid id)
         {
             var user = await _userRepository.GetUserById(id);
             if (user is null)
@@ -44,14 +49,14 @@ namespace JccApi.Controllers
                 return NotFound();
             }
 
-            return Ok(new GetUsersResponse
+            return Ok(new ApiResult<GetUsersResponse>(new GetUsersResponse
             {
                 Id = user.Id,
                 Login = user.Login,
                 Name = user.Name,
                 UserType = (Enums.UserType)user.UserTypeId,
                 IsDeleted = user.IsDeleted,
-            });
+            }));
         }
 
         [HttpPost]
