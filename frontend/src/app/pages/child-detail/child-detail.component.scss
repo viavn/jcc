@@ -3,16 +3,11 @@
   box-sizing: border-box;
 }
 
-.column {
-  font-weight: bold;
-}
-
-.example-form {
-  min-width: 150px;
+.child-detail-form {
   width: 100%;
 }
 
-.example-full-width {
+.full-width {
   width: 100%;
 }
 
@@ -25,8 +20,19 @@ td {
   margin-bottom: 8px;
 }
 
-table {
-  width: 100%;
+.god-parents-table_container {
+  overflow: auto;
+}
+
+.mat-header-cell,
+.mat-cell {
+  min-width: 100px;
+  box-sizing: border-box;
+}
+
+.mat-header-cell:nth-child(1),
+.mat-cell:nth-child(1) {
+  max-width: 80px;
 }
 
 .form-actions {
