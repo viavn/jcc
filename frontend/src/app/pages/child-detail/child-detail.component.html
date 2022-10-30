@@ -1,3 +1,13 @@
+<div class="back-button-container">
+  <button
+    mat-raised-button
+    color="default"
+    type="button"
+    (click)="backToDashboard()"
+  >
+    Voltar
+  </button>
+</div>
 <div *ngIf="child" class="child-form-container">
   <div>
     <form class="child-detail-form" [formGroup]="childFormGroup">

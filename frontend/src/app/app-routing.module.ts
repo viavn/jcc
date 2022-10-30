@@ -13,14 +13,18 @@ const routes: Routes = [
   { path: 'home', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'user', component: UserDetailComponent, canActivate: [AuthGuard] },
-
   {
     path: 'manage-accounts',
     loadChildren: () => import('./pages/manage-accounts/manage-accounts.module')
       .then(m => m.ManageAccountsModule),
     canActivate: [AdminAuthGuard]
   },
-
+  {
+    path: 'families',
+    loadChildren: () => import('./pages/families/families.routes')
+      .then(m => m.FamilyRoutingModule),
+    // canActivate: [AdminAuthGuard]
+  },
   { path: 'detail/:id', component: ChildDetailComponent, canActivate: [AuthGuard] },
   { path: '**', component: NotFoundComponent },
 ];

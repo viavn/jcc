@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { MatTable } from '@angular/material/table';
 import { GiftViewModel, GiftViewModel as GodParentViewModel } from './viewModelds/GiftViewModel';
@@ -46,6 +46,7 @@ export class ChildDetailComponent implements OnInit, OnDestroy {
     private notificationService: NotificationService,
     private giftTypeService: GiftTypeService,
     private godParentService: GodParentService,
+    private router: Router,
   ) {
     this.childFormGroup = this.createChildFormGroup();
     this.giftsFormGroup = this.createGiftFormGroup();
@@ -325,6 +326,10 @@ export class ChildDetailComponent implements OnInit, OnDestroy {
       giftType: row.gift.giftType.id,
     });
     this.giftsFormGroup.get('giftType')?.disable();
+  }
+
+  backToDashboard(): void {
+    this.router.navigate(['/manage-accounts']);
   }
 
   private createChildFormGroup(): FormGroup {
