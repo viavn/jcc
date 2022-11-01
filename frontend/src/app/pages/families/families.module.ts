@@ -1,21 +1,21 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from "@angular/core";
 import { ReactiveFormsModule } from '@angular/forms';
-import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
 import { MaterialModule } from 'src/app/shared/modules/material/material.module';
-import { FamilyComponent } from './families.component';
+import { FamiliesRoutingModule } from './families.routes';
+import { FamiliesComponent } from './families/families.component';
+import { ListFamiliesComponent } from './list-families/list-families.component';
 
 @NgModule({
-  declarations: [
-    FamilyComponent,
-    NotFoundComponent,
-  ],
   imports: [
-    MaterialModule,
     CommonModule,
+    FamiliesRoutingModule,
+    MaterialModule,
     ReactiveFormsModule,
   ],
-  providers: [],
-  exports: []
+  declarations: [
+    FamiliesComponent,
+    ListFamiliesComponent,
+  ],
 })
 export class FamilyModule { }

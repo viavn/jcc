@@ -9,23 +9,22 @@ import { LoginComponent } from './pages/login/login.component';
 import { UserDetailComponent } from './pages/user-detail/user-detail.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'home', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'user', component: UserDetailComponent, canActivate: [AuthGuard] },
   {
     path: 'manage-accounts',
     loadChildren: () => import('./pages/manage-accounts/manage-accounts.module')
-      .then(m => m.ManageAccountsModule),
+    .then(m => m.ManageAccountsModule),
     canActivate: [AdminAuthGuard]
   },
   {
     path: 'families',
-    loadChildren: () => import('./pages/families/families.routes')
-      .then(m => m.FamilyRoutingModule),
+    loadChildren: () => import('./pages/families/families.module').then(m => m.FamilyModule),
     // canActivate: [AdminAuthGuard]
   },
   { path: 'detail/:id', component: ChildDetailComponent, canActivate: [AuthGuard] },
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: '**', component: NotFoundComponent },
 ];
 

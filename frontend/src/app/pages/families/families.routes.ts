@@ -1,18 +1,22 @@
 import { Routes, RouterModule } from "@angular/router";
 import { NgModule } from '@angular/core';
-import { FamilyComponent } from "./families.component";
-import { NotFoundComponent } from "src/app/components/not-found/not-found.component";
+import { ListFamiliesComponent } from "./list-families/list-families.component";
+import { FamiliesComponent } from "./families/families.component";
 
 const routes: Routes = [
   {
-    path: '', component: FamilyComponent,
-    // children: [
-    //   { path: 'edit/:id', component: EditAccountComponent },
-    //   { path: 'create', component: CreateAccountComponent },
-    //   { path: '', component: ManageAccountsComponent },
-    // ]
+    path: '',
+    component: FamiliesComponent,
+    children: [
+      {
+        path: '',
+        // canActivateChild: [AuthGuard],
+        children: [
+          { path: '', component: ListFamiliesComponent }
+        ]
+      }
+    ]
   },
-  { path: '**', component: NotFoundComponent },
 ];
 
 @NgModule({
@@ -21,4 +25,4 @@ const routes: Routes = [
   ],
   exports: [RouterModule]
 })
-export class FamilyRoutingModule { }
+export class FamiliesRoutingModule { }

@@ -49,18 +49,24 @@
   <div class="spacer"></div>
 
   <ng-container *ngIf="showLogout">
+    <div class="families">
+      <span (click)="families()"
+        ><mat-icon aria-label="Listagem de Famílias">family_restroom</mat-icon></span
+      >
+    </div>
+
     <div class="manage_accounts" *ngIf="showManageAccounts">
       <span (click)="manageAccounts()"
-        ><mat-icon>manage_accounts</mat-icon></span
+        ><mat-icon aria-label="Gerenciamento de usuários">manage_accounts</mat-icon></span
       >
     </div>
 
     <div class="settings">
-      <span (click)="userSettings()"><mat-icon>settings</mat-icon></span>
+      <span (click)="userSettings()"><mat-icon aria-label="Minhas informações">settings</mat-icon></span>
     </div>
 
     <div class="logout">
-      <span (click)="logout()"><mat-icon>logout</mat-icon></span>
+      <span (click)="logout()"><mat-icon aria-label="Sair do sistema">logout</mat-icon></span>
     </div>
   </ng-container>
 </div>

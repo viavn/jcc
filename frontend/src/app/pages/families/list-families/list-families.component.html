@@ -1,0 +1,67 @@
+<div class="table-container">
+  <div class="table-header-container">
+    <div class="filter-container">
+      <mat-form-field appearance="standard">
+        <mat-label>Filtro</mat-label>
+        <input
+          id="filter-input"
+          matInput
+          (keyup)="applyFilter($event)"
+          placeholder="Ex. João"
+          #input
+        />
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="table-pagination-container mat-elevation-z8">
+    <div class="example-container">
+      <mat-table [dataSource]="dataSource" matSort>
+        <!-- Family Code -->
+        <ng-container matColumnDef="code">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            Família
+          </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            {{ element.code }}
+          </mat-cell>
+        </ng-container>
+
+        <!-- Membro Família -->
+        <ng-container matColumnDef="memberName">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            Membro
+          </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            {{ element.memberName }}
+          </mat-cell>
+        </ng-container>
+
+        <!-- Address Column -->
+        <ng-container matColumnDef="address">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            Endereço
+          </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{ element.address }} </mat-cell>
+        </ng-container>
+
+        <mat-header-row
+          *matHeaderRowDef="displayedColumns; sticky: true"
+        ></mat-header-row>
+        <mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          (click)="onRowClicked(row)"
+        ></mat-row>
+
+        <!-- Row shown when there is no matching data. -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" colspan="4">Nenhum registro encontrado</td>
+        </tr>
+      </mat-table>
+    </div>
+    <mat-paginator
+      [pageSizeOptions]="[10, 25, 50, 100]"
+      aria-label="Select page of users"
+    ></mat-paginator>
+  </div>
+</div>

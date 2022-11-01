@@ -57,4 +57,8 @@ export class AppComponent implements OnInit, OnDestroy {
   manageAccounts(): void {
     this.router.navigate(['/manage-accounts']);
   }
+
+  families(): void {
+    this.router.navigate(['/families']);
+  }
 }
