@@ -1,0 +1,151 @@
+<div class="back-button-container">
+  <button
+    mat-raised-button
+    color="default"
+    type="button"
+    (click)="backToListPage()"
+  >
+    Voltar
+  </button>
+</div>
+
+<div class="form-container">
+  <div>
+    <form
+      [formGroup]="familyFormGroup"
+      (ngSubmit)="onSubmitFamily(familyFormElement)"
+      #familyFormElement="ngForm"
+    >
+      <div>
+        <mat-form-field class="full-width" appearance="outline">
+          <mat-label>Código</mat-label>
+          <input matInput formControlName="code" />
+        </mat-form-field>
+
+        <mat-form-field class="full-width" appearance="outline">
+          <mat-label>Número contato</mat-label>
+          <input matInput formControlName="contactNumber" type="tel" />
+        </mat-form-field>
+
+        <mat-form-field class="full-width" appearance="outline">
+          <mat-label>Endereço</mat-label>
+          <input matInput formControlName="address" />
+        </mat-form-field>
+
+        <mat-form-field class="full-width" appearance="outline">
+          <mat-label>Comentário</mat-label>
+          <textarea matInput formControlName="comment"></textarea>
+        </mat-form-field>
+      </div>
+
+      <div class="form-actions">
+        <button
+          mat-raised-button
+          color="default"
+          type="button"
+          (click)="cancel(familyFormElement)"
+        >
+          Cancelar
+        </button>
+
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="!familyFormGroup.valid"
+        >
+          Criar
+        </button>
+      </div>
+    </form>
+
+    <form
+      class="example-form"
+      [formGroup]="familyMemberFormGroup"
+      (ngSubmit)="onSubmitMember(familyMembmerFormElement)"
+      #familyMembmerFormElement="ngForm"
+    >
+      <h2>Membros família</h2>
+      <div>
+        <mat-form-field class="full-width" appearance="outline">
+          <mat-label>Tipo Membro</mat-label>
+          <mat-select formControlName="type" name="Tipo Membro">
+            <mat-option>&nbsp;</mat-option>
+            <!-- <mat-option
+              *ngFor="let type of giftTypes$ | async"
+              [value]="type.id"
+            >
+              {{ type.description }}
+            </mat-option> -->
+            <mat-option [value]="1">Mãe</mat-option>
+            <mat-option [value]="2">Pai</mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="familyMemberFormGroup.get('type')?.hasError('required')"
+            >Selecione um tipo de membro</mat-error
+          >
+        </mat-form-field>
+
+        <mat-form-field class="full-width" appearance="outline">
+          <mat-label>Nome</mat-label>
+          <input matInput formControlName="name" />
+        </mat-form-field>
+      </div>
+
+      <div class="form-actions">
+        <button
+          mat-raised-button
+          color="default"
+          type="button"
+          (click)="cancelMember(familyMembmerFormElement)"
+        >
+          Cancelar
+        </button>
+
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="!familyMemberFormGroup.valid"
+        >
+          Adicionar
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="god-parents-table_container mat-elevation-z8">
+    <mat-table [dataSource]="members">
+      <!-- Member Type -->
+      <ng-container matColumnDef="type">
+        <mat-header-cell *matHeaderCellDef>Tipo Membro</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.member.type }}</mat-cell>
+      </ng-container>
+
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef>Nome</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{
+          element.member.name
+        }}</mat-cell>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef>Ações</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <button
+            mat-icon-button
+            aria-label="Excluir"
+            (click)="removeMember($event, element)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    </mat-table>
+  </div>
+</div>

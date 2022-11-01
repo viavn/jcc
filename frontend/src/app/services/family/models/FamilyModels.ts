@@ -41,7 +41,12 @@ export interface CreateFamilyRequest extends BaseFamilyRequest {
 }
 
 export interface MemberRequest {
-  id: number;
+  id: string;
   name: string;
   type: number;
+}
+
+export interface MemberViewModel {
+  rowId: number;
+  member: MemberRequest;
 }

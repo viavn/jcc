@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
 import { MatTable } from '@angular/material/table';
 import { GiftViewModel, GiftViewModel as GodParentViewModel } from './viewModelds/GiftViewModel';
-import { Child, CreateGiftRequest, GetChildrenByIdResponse, GiftResponse, GodParent, GodParentResponse, TypeResponse } from 'src/app/services/child/models/Child';
+import { CreateGiftRequest, GetChildrenByIdResponse, GodParentResponse, TypeResponse } from 'src/app/services/child/models/Child';
 import { ChildService } from 'src/app/services/child/child.service';
 import { MatDialog } from '@angular/material/dialog';
 import { NotificationService } from 'src/app/services/notification/notification.service';

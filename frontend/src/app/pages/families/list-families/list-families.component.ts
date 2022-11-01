@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, of, Subject, takeUntil } from 'rxjs';
 import { SpinnerDialogComponent } from 'src/app/components/spinner-dialog/spinner-dialog.component';
 import { FamilyService } from 'src/app/services/family/family.service';
@@ -29,6 +29,7 @@ export class ListFamiliesComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private familyService: FamilyService,
     private router: Router,
+    private route: ActivatedRoute,
     public dialog: MatDialog,
     private notificationService: NotificationService,
   ) { }
@@ -79,5 +80,9 @@ export class ListFamiliesComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
+  }
+
+  create(): void {
+    this.router.navigate(['create'], { relativeTo: this.route });
   }
 }

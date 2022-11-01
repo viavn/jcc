@@ -19,6 +19,9 @@ namespace JccApi.Application.Validators
                 .NotEmpty().WithMessage("Endereço é obrigatório")
                 .MaximumLength(500).WithMessage("Endereço deve conter no máximo 500 caracteres.");
 
+            RuleFor(fam => fam.Members)
+                .NotEmpty().WithMessage("Obrigatório cadastrar ao menos um membro");
+
             RuleForEach(fam => fam.Members).ChildRules(member =>
             {
                 member.RuleFor(mem => mem.Name)
