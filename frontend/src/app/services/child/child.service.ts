@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { map, Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { AuthService } from '../auth/auth.service';
-import { CreateGiftRequest, DashChildModel, GetChildrenByIdResponse } from './models/Child';
+import { CreateChildRequest, CreateGiftRequest, DashChildModel, GetChildrenByIdResponse } from './models/Child';
 
 type GetChildrenResponse = { data: DashChildModel[] };
 type GetByIdResponse = { data: GetChildrenByIdResponse };
@@ -41,6 +41,21 @@ export class ChildService {
     return this.http.get(url, {
       responseType: 'blob'
     });
+  }
+
+  create(request: Partial<CreateChildRequest>): Observable<any> {
+    const url = `${this.RESOURCE_URL}`;
+    return this.http.post<any>(url, request, this.httpOptions);
+  }
+
+  update(request: Partial<CreateChildRequest>): Observable<any> {
+    const url = `${this.RESOURCE_URL}/${request.id}`;
+    return this.http.put<any>(url, request, this.httpOptions);
+  }
+
+  delete(id: string): Observable<any> {
+    const url = `${this.RESOURCE_URL}/${id}`;
+    return this.http.delete<any>(url, this.httpOptions);
   }
 
   deliverGift(childId: string, godParentId: string, gifTypeId: number): Observable<any> {

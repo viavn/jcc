@@ -1,16 +1,19 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTable } from '@angular/material/table';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { catchError, EMPTY, Observable, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { SpinnerDialogComponent } from 'src/app/components/spinner-dialog/spinner-dialog.component';
-import { TypeResponse } from 'src/app/services/child/models/Child';
+import { ChildService } from 'src/app/services/child/child.service';
+import { CreateChildRequest, TypeResponse } from 'src/app/services/child/models/Child';
 import { FamilyService } from 'src/app/services/family/family.service';
-import { BaseFamilyRequest, CreateFamilyRequest, FamilyByIdResponse, MemberRequest, MemberViewModel } from 'src/app/services/family/models/FamilyModels';
+import { BaseFamilyRequest, ChildViewModel, CreateFamilyRequest, FamilyByIdResponse, MemberRequest, MemberViewModel } from 'src/app/services/family/models/FamilyModels';
+import { GenreService } from 'src/app/services/genre/genre.service';
 import { MemberTypeService } from 'src/app/services/member-type/member-type.service';
 import { NotificationType } from 'src/app/services/notification/models/SystemNotification';
 import { NotificationService } from 'src/app/services/notification/notification.service';
+import { DeletionDialogComponent } from '../deletion-dialog/deletion-dialog.component';
 
 @Component({
   selector: 'app-create-family',
@@ -23,20 +26,34 @@ export class CreateFamilyComponent implements OnInit, OnDestroy {
 
   private memberTypes: TypeResponse[] = [];
   private family!: FamilyByIdResponse;
+  private genres: TypeResponse[] = [];
+
+  displayedMemberColumns: string[] = ['type', 'name', 'actions'];
+  members: MemberViewModel[] = [];
+
+  displayedChildrenColumns: string[] = ['genre', 'name', 'age', 'clotheSize', 'shoeSize', 'actions'];
+  children: ChildViewModel[] = [];
 
   familyFormGroup: FormGroup;
   familyMemberFormGroup: FormGroup;
-  displayedColumns: string[] = ['type', 'name', 'actions'];
-  members: MemberViewModel[] = [];
+  childFormGroup: FormGroup;
+
   memberTypes$!: Observable<TypeResponse[]>;
+  genres$!: Observable<TypeResponse[]>;
   familySubmitBtnText = 'Criar';
   memberSubmitBtnText = 'Criar';
+  childSubmitBtnText = 'Criar';
 
-  @ViewChild(MatTable) table!: MatTable<MemberViewModel>;
+  genreControl = new FormControl({ value: null, disabled: true }, Validators.required);
+
+  @ViewChild('membersTable') memberTable!: MatTable<MemberViewModel>;
+  @ViewChild('childrenTable') childTable!: MatTable<ChildViewModel>;
 
   constructor(
     private familyService: FamilyService,
+    private childService: ChildService,
     private memberTypeService: MemberTypeService,
+    private genreService: GenreService,
     private route: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder,
@@ -45,6 +62,7 @@ export class CreateFamilyComponent implements OnInit, OnDestroy {
   ) {
     this.familyFormGroup = this.createFamilyFormGroup();
     this.familyMemberFormGroup = this.createFamilyMemberFormGroup();
+    this.childFormGroup = this.createChildFormGroup(true);
   }
 
   ngOnInit(): void {
@@ -55,6 +73,16 @@ export class CreateFamilyComponent implements OnInit, OnDestroy {
       }),
       catchError(error => {
         console.error('Erro ao obter tipos dos membros da família', error);
+        return of([]);
+      }));
+
+    this.genres$ = this.genreService.get().pipe(
+      takeUntil(this.destroy$),
+      tap((response) => {
+        this.genres = [...response]
+      }),
+      catchError(error => {
+        console.error('Erro ao obter gêneros', error);
         return of([]);
       }));
 
@@ -93,7 +121,10 @@ export class CreateFamilyComponent implements OnInit, OnDestroy {
       .subscribe(family => {
         this.familySubmitBtnText = 'Atualizar';
         this.family = family;
+
         this.familyFormGroup = this.createFamilyFormGroup(family);
+        this.childFormGroup = this.createChildFormGroup(false);
+
         this.members = family.members.map((member, index) => {
           return {
             rowId: index + 1,
@@ -105,7 +136,14 @@ export class CreateFamilyComponent implements OnInit, OnDestroy {
             }
           }
         });
-        this.table.renderRows();
+        this.children = family.children.map((child, index) => {
+          return {
+            rowId: index + 1,
+            child: { ...child },
+          }
+        });
+        this.memberTable.renderRows();
+        this.childTable.renderRows();
         spinnerDialogRef.close();
       });
   }
@@ -219,7 +257,7 @@ export class CreateFamilyComponent implements OnInit, OnDestroy {
               }
             });
             this.familyFormGroup.reset(this.family);
-            this.table.renderRows();
+            this.memberTable.renderRows();
             this.familySubmitBtnText = 'Atualizar';
             spinnerDialogRef.close();
           });
@@ -227,11 +265,11 @@ export class CreateFamilyComponent implements OnInit, OnDestroy {
   }
 
   onSubmitMember(familyMemberFormElement: FormGroupDirective): void {
-    const sortedGifts = this.members.sort((a, b) => a.rowId - b.rowId);
+    const sortedMembers = this.members.sort((a, b) => a.rowId - b.rowId);
     let newRowId = 1;
 
-    if (sortedGifts.length > 0) {
-      newRowId = sortedGifts[sortedGifts.length - 1].rowId + 1;
+    if (sortedMembers.length > 0) {
+      newRowId = sortedMembers[sortedMembers.length - 1].rowId + 1;
     }
 
     const memberFormValue = this.familyMemberFormGroup.value;
@@ -278,7 +316,7 @@ export class CreateFamilyComponent implements OnInit, OnDestroy {
               personName: memberFormValue.name,
             });
             familyMemberFormElement.resetForm({});
-            this.table.renderRows();
+            this.memberTable.renderRows();
             spinnerDialogRef.close();
           });
     } else if (this.family && memberFormValue.id) {
@@ -326,7 +364,7 @@ export class CreateFamilyComponent implements OnInit, OnDestroy {
             this.memberSubmitBtnText = 'Criar';
             this.familyMemberFormGroup.get('type')?.enable();
             familyMemberFormElement.resetForm({});
-            this.table.renderRows();
+            this.memberTable.renderRows();
             spinnerDialogRef.close();
           });
     } else if (!this.family && memberFormValue.id) {
@@ -339,7 +377,7 @@ export class CreateFamilyComponent implements OnInit, OnDestroy {
       this.memberSubmitBtnText = 'Criar';
       this.familyMemberFormGroup.get('type')?.enable();
       familyMemberFormElement.resetForm({});
-      this.table.renderRows();
+      this.memberTable.renderRows();
     } else {
       this.members.push({
         rowId: newRowId,
@@ -351,7 +389,7 @@ export class CreateFamilyComponent implements OnInit, OnDestroy {
         personName: memberFormValue.name,
       });
 
-      this.table.renderRows();
+      this.memberTable.renderRows();
       familyMemberFormElement.resetForm({});
     }
   }
@@ -393,11 +431,11 @@ export class CreateFamilyComponent implements OnInit, OnDestroy {
           () => {
             spinnerDialogRef.close();
             this.members = this.members.filter(mem => mem.rowId !== row.rowId);
-            this.table.renderRows();
+            this.memberTable.renderRows();
           });
     } else {
       this.members = this.members.filter(mem => mem.rowId !== row.rowId);
-      this.table.renderRows();
+      this.memberTable.renderRows();
     }
   }
 
@@ -409,6 +447,195 @@ export class CreateFamilyComponent implements OnInit, OnDestroy {
       type: row.member.type
     });
     this.familyMemberFormGroup.get('type')?.disable();
+  }
+
+  onSubmitChild(childFormElement: FormGroupDirective): void {
+    const sortedChildren = this.children.sort((a, b) => a.rowId - b.rowId);
+    let newRowId = 1;
+
+    if (sortedChildren.length > 0) {
+      newRowId = sortedChildren[sortedChildren.length - 1].rowId + 1;
+    }
+
+    const childFormValue = this.childFormGroup.value;
+    const genreIndex = this.genres.findIndex(g => g.id === childFormValue.genre);
+
+    if (this.family && !childFormValue.id) {
+      const spinnerDialogRef = this.dialog.open(SpinnerDialogComponent, {
+        disableClose: true,
+      });
+
+      const request: Partial<CreateChildRequest> = {
+        familyId: this.family.id,
+        name: childFormValue.name,
+        age: childFormValue.age,
+        clotheSize: childFormValue.clotheSize,
+        shoeSize: childFormValue.shoeSize,
+        genre: this.genreControl.value,
+      };
+      this.childService.create(request)
+        .pipe(
+          takeUntil(this.destroy$),
+          catchError(response => {
+            console.error('Erro ao criar criança', response);
+            const message = response.error.data?.length > 0
+              ? response.error.data[0]
+              : 'Um erro ocorreu ao criar criança. Tente novamente!';
+
+            this.notificationService.emitMessage({
+              Message: message,
+              ShowNotification: true,
+              ShowtimeInMilliseconds: 5000,
+              Type: NotificationType.ERROR,
+            });
+            spinnerDialogRef.close();
+            return EMPTY;
+          })
+        )
+        .subscribe(
+          (response) => {
+            this.children.push({
+              rowId: newRowId,
+              child: {
+                id: response.id,
+                name: childFormValue.name,
+                age: childFormValue.age,
+                clotheSize: childFormValue.clotheSize,
+                shoeSize: childFormValue.shoeSize,
+                genre: {
+                  id: childFormValue.genre,
+                  description: this.genres[genreIndex].description
+                }
+              }
+            });
+
+            this.childTable.renderRows();
+            childFormElement.resetForm({});
+            spinnerDialogRef.close();
+          });
+    } else {
+      const spinnerDialogRef = this.dialog.open(SpinnerDialogComponent, {
+        disableClose: true,
+      });
+
+      const request: Partial<CreateChildRequest> = {
+        id: childFormValue.id,
+        name: childFormValue.name,
+        age: childFormValue.age,
+        clotheSize: childFormValue.clotheSize,
+        shoeSize: childFormValue.shoeSize,
+        genre: this.genreControl.value,
+      };
+      this.childService.update(request)
+        .pipe(
+          takeUntil(this.destroy$),
+          catchError(response => {
+            console.error('Erro ao atualizar criança', response);
+            const message = response.error.data?.length > 0
+              ? response.error.data[0]
+              : 'Um erro ocorreu ao atualizar criança. Tente novamente!';
+
+            this.notificationService.emitMessage({
+              Message: message,
+              ShowNotification: true,
+              ShowtimeInMilliseconds: 5000,
+              Type: NotificationType.ERROR,
+            });
+            spinnerDialogRef.close();
+            return EMPTY;
+          })
+        )
+        .subscribe(
+          () => {
+            const childIndex = this.children.findIndex(c => c.child.id === request.id);
+            this.children[childIndex] = {
+              ...this.children[childIndex],
+              child: {
+                id: childFormValue.id,
+                name: childFormValue.name,
+                age: childFormValue.age,
+                clotheSize: childFormValue.clotheSize,
+                shoeSize: childFormValue.shoeSize,
+                genre: {
+                  id: childFormValue.genre,
+                  description: this.genres[genreIndex].description
+                },
+              }
+            };
+
+            this.childSubmitBtnText = 'Criar';
+            childFormElement.resetForm({});
+            this.childTable.renderRows();
+            spinnerDialogRef.close();
+          });
+    }
+  }
+
+  cancelChild(childFormElement: FormGroupDirective): void {
+    childFormElement.resetForm({});
+    this.childSubmitBtnText = 'Criar';
+  }
+
+  removeChild(event: any, row: ChildViewModel): void {
+    event.stopPropagation();
+
+    if (!!row.child.id) {
+      this.dialog.open(DeletionDialogComponent, {
+        disableClose: true,
+        data: { text: 'Deseja excluir esta criança, inclusive seus presentes apadrinhados?' }
+      }).afterClosed().subscribe((result: boolean) => {
+        if (result) {
+          this.deleteChild(row);
+        }
+      });
+    } else {
+      this.children = this.children.filter(c => c.rowId !== row.rowId);
+      this.childTable.renderRows();
+    }
+  }
+
+  private deleteChild(row: ChildViewModel) {
+    const spinnerDialogRef = this.dialog.open(SpinnerDialogComponent, {
+      disableClose: true,
+    });
+
+    this.childService.delete(row.child.id)
+      .pipe(
+        takeUntil(this.destroy$),
+        catchError(response => {
+          console.error('Erro ao excluir criança', response);
+          const message = response.error.data?.length > 0
+            ? response.error.data[0]
+            : 'Um erro ocorreu ao remover criança. Tente novamente!';
+
+          this.notificationService.emitMessage({
+            Message: message,
+            ShowNotification: true,
+            ShowtimeInMilliseconds: 5000,
+            Type: NotificationType.ERROR,
+          });
+          spinnerDialogRef.close();
+          return EMPTY;
+        })
+      )
+      .subscribe(
+        () => {
+          this.children = this.children.filter(mem => mem.rowId !== row.rowId);
+          this.childTable.renderRows();
+          spinnerDialogRef.close();
+        });
+  }
+
+  onRowChildClicked({ child }: ChildViewModel): void {
+    this.childSubmitBtnText = 'Atualizar';
+    this.childFormGroup.patchValue({
+      id: child.id,
+      genre: child.genre.id,
+      name: child.name,
+      age: child.age,
+      clotheSize: child.clotheSize,
+      shoeSize: child.shoeSize,
+    });
   }
 
   private createFamilyFormGroup(family?: FamilyByIdResponse): FormGroup {
@@ -426,6 +653,23 @@ export class CreateFamilyComponent implements OnInit, OnDestroy {
       id: [''],
       name: [null, Validators.required],
       type: [null, Validators.required],
+    });
+  }
+
+  private createChildFormGroup(disableControls: boolean): FormGroup {
+    if (disableControls) {
+      this.genreControl.disable();
+    } else {
+      this.genreControl.enable();
+    }
+
+    return this.fb.group({
+      id: [''],
+      genre: this.genreControl,
+      name: [{ value: null, disabled: disableControls }, Validators.required],
+      age: [{ value: null, disabled: disableControls }, Validators.required],
+      clotheSize: [{ value: null, disabled: disableControls }, Validators.required],
+      shoeSize: [{ value: null, disabled: disableControls }, Validators.required],
     });
   }
 }

@@ -21,6 +21,9 @@ export interface ChildResponse {
   id: string;
   name: string;
   age: string;
+  clotheSize: string;
+  shoeSize: string;
+  genre: TypeResponse;
 }
 
 export interface FamilyMemberResponse {
@@ -50,4 +53,9 @@ export interface MemberViewModel {
   rowId: number;
   member: MemberRequest;
   personName: string;
+}
+
+export interface ChildViewModel {
+  rowId: number;
+  child: ChildResponse;
 }

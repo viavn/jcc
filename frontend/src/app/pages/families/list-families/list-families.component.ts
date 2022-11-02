@@ -92,8 +92,8 @@ export class ListFamiliesComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.dialog.open(DeletionDialogComponent, {
       disableClose: true,
+      data: { text: 'Deseja excluir esta família, inclusive seus membros e crianças cadastradas?' }
     }).afterClosed().subscribe((result: boolean) => {
-      console.log(result);
       if (result) {
         this.delete(id);
       }

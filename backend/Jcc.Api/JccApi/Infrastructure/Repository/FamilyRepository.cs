@@ -47,6 +47,7 @@ namespace JccApi.Infrastructure.Repository
                 .Include(f => f.Members)
                 .ThenInclude(m => m.LegalPersonType)
                 .Include(f => f.Children)
+                .ThenInclude(c => c.GenreType)
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 

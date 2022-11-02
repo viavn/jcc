@@ -19,6 +19,9 @@ namespace JccApi.Models
             public Guid Id { get; set; }
             public string Name { get; set; }
             public string Age { get; set; }
+            public string ClotheSize { get; init; }
+            public string ShoeSize { get; init; }
+            public TypeResponse Genre { get; init; }
         }
     }
 }

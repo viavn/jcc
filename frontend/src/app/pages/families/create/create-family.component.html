@@ -63,8 +63,8 @@
     <form
       class="example-form member_form"
       [formGroup]="familyMemberFormGroup"
-      (ngSubmit)="onSubmitMember(familyMembmerFormElement)"
-      #familyMembmerFormElement="ngForm"
+      (ngSubmit)="onSubmitMember(familyMemberFormElement)"
+      #familyMemberFormElement="ngForm"
     >
       <h2>Membros família</h2>
       <div>
@@ -96,7 +96,7 @@
           mat-raised-button
           color="default"
           type="button"
-          (click)="cancelMember(familyMembmerFormElement)"
+          (click)="cancelMember(familyMemberFormElement)"
         >
           Cancelar
         </button>
@@ -107,14 +107,14 @@
           type="submit"
           [disabled]="!familyMemberFormGroup.valid"
         >
-        {{ memberSubmitBtnText }}
+          {{ memberSubmitBtnText }}
         </button>
       </div>
     </form>
   </div>
 
   <div class="god-parents-table_container mat-elevation-z8">
-    <mat-table [dataSource]="members">
+    <mat-table [dataSource]="members" #membersTable="matTable">
       <!-- Member Type -->
       <ng-container matColumnDef="type">
         <mat-header-cell *matHeaderCellDef>Tipo Membro</mat-header-cell>
@@ -141,11 +141,141 @@
         </mat-cell>
       </ng-container>
 
-      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-header-row
+        *matHeaderRowDef="displayedMemberColumns"
+      ></mat-header-row>
       <mat-row
-        *matRowDef="let row; columns: displayedColumns"
+        *matRowDef="let row; columns: displayedMemberColumns"
         (click)="onRowMemberClicked(row)"
       ></mat-row>
     </mat-table>
+  </div>
+</div>
+
+<div class="form-container child-form_container">
+  <div class="wrapper">
+    <form
+      class="example-form"
+      [formGroup]="childFormGroup"
+      (ngSubmit)="onSubmitChild(childFormElement)"
+      #childFormElement="ngForm"
+    >
+      <h2>Crianças</h2>
+      <div>
+        <mat-form-field class="full-width" appearance="outline">
+          <mat-label>Sexo</mat-label>
+          <mat-select [formControl]="genreControl" name="genre">
+            <mat-option>&nbsp;</mat-option>
+            <mat-option *ngFor="let type of genres$ | async" [value]="type.id">
+              {{ type.description }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="full-width" appearance="outline">
+          <mat-label>Nome</mat-label>
+          <input matInput formControlName="name" />
+        </mat-form-field>
+
+        <mat-form-field class="full-width" appearance="outline">
+          <mat-label>Idade</mat-label>
+          <input matInput formControlName="age" />
+        </mat-form-field>
+
+        <mat-form-field class="full-width" appearance="outline">
+          <mat-label>Tamanho roupa</mat-label>
+          <input matInput formControlName="clotheSize" />
+        </mat-form-field>
+
+        <mat-form-field class="full-width" appearance="outline">
+          <mat-label>Tamanho calçado</mat-label>
+          <input matInput formControlName="shoeSize" />
+        </mat-form-field>
+      </div>
+
+      <div class="form-actions">
+        <button
+          mat-raised-button
+          color="default"
+          type="button"
+          (click)="cancelChild(childFormElement)"
+        >
+          Cancelar
+        </button>
+
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="!childFormGroup.valid"
+        >
+          {{ childSubmitBtnText }}
+        </button>
+      </div>
+    </form>
+
+    <div class="god-parents-table_container mat-elevation-z8">
+      <mat-table [dataSource]="children" #childrenTable="matTable">
+        <!-- Genre -->
+        <ng-container matColumnDef="genre">
+          <mat-header-cell *matHeaderCellDef>Sexo</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{
+            element.child.genre.description
+          }}</mat-cell>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef>Nome</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{
+            element.child.name
+          }}</mat-cell>
+        </ng-container>
+
+        <!-- Age Column -->
+        <ng-container matColumnDef="age">
+          <mat-header-cell *matHeaderCellDef>Idade</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{ element.child.age }}</mat-cell>
+        </ng-container>
+
+        <!-- Clothe Size Column -->
+        <ng-container matColumnDef="clotheSize">
+          <mat-header-cell *matHeaderCellDef>Tam. Roupa</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{
+            element.child.clotheSize
+          }}</mat-cell>
+        </ng-container>
+
+        <!-- Shoe Size Column -->
+        <ng-container matColumnDef="shoeSize">
+          <mat-header-cell *matHeaderCellDef>Tam. Calçado</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{
+            element.child.shoeSize
+          }}</mat-cell>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <mat-header-cell *matHeaderCellDef>Ações</mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            <button
+              mat-icon-button
+              aria-label="Excluir"
+              (click)="removeChild($event, element)"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row
+          *matHeaderRowDef="displayedChildrenColumns"
+        ></mat-header-row>
+        <mat-row
+          *matRowDef="let row; columns: displayedChildrenColumns"
+          (click)="onRowChildClicked(row)"
+        ></mat-row>
+      </mat-table>
+    </div>
   </div>
 </div>

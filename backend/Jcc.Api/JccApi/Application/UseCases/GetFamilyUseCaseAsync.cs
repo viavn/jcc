@@ -42,6 +42,9 @@ namespace JccApi.Application
                     Id = c.Id,
                     Age = c.Age,
                     Name = c.Name,
+                    ClotheSize = c.ClotheSize,
+                    ShoeSize = c.ShoeSize,
+                    Genre = new TypeResponse(c.GenreType.Id, c.GenreType.Description),
                 }).OrderBy(c => c.Age),
             };
         }

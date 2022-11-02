@@ -70,3 +70,13 @@ export interface CreateGiftRequest {
   typeId: number;
   godParent: Partial<GodParentResponse>;
 }
+
+export interface CreateChildRequest {
+  id: string;
+  familyId: string;
+  name: string;
+  age: string;
+  clotheSize: string;
+  shoeSize: string;
+  genre: number;
+}
