@@ -7,18 +7,17 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, EMPTY, Subject, takeUntil } from 'rxjs';
 import { SpinnerDialogComponent } from 'src/app/components/spinner-dialog/spinner-dialog.component';
 import { UserType } from 'src/app/services/auth/enums/UserType';
-import { User } from 'src/app/services/auth/models/User';
 import { NotificationType } from 'src/app/services/notification/models/SystemNotification';
 import { NotificationService } from 'src/app/services/notification/notification.service';
 import { GetUsersModel } from 'src/app/services/user/models/GetUsersModel';
 import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
-  selector: 'app-manage-accounts',
-  templateUrl: './manage-accounts.component.html',
-  styleUrls: ['./manage-accounts.component.scss']
+  selector: 'app-list-accounts',
+  templateUrl: './list-accounts.component.html',
+  styleUrls: ['./list-accounts.component.scss']
 })
-export class ManageAccountsComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ListAccountsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   displayedColumns: string[] = ['login', 'name', 'isAdmin', 'isDeleted'];
   dataSource = new MatTableDataSource<GetUsersModel>([]);

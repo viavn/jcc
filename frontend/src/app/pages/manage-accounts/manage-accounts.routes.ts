@@ -1,17 +1,17 @@
 import { Routes, RouterModule } from "@angular/router";
 import { NgModule } from '@angular/core';
-import { ManageAccountsComponent } from "./manage-accounts.component";
 import { EditAccountComponent } from "./edit/edit-account.component";
-import { ManageAccountsAppRootComponent } from "./manage-accounts-root.component";
 import { CreateAccountComponent } from "./create/create-account.component";
+import { ManageAccountsComponent } from "./manage-accounts/manage-accounts.component";
+import { ListAccountsComponent } from "./list-accounts/list-accounts.component";
 
 const routes: Routes = [
   {
-    path: '', component: ManageAccountsAppRootComponent,
+    path: '', component: ManageAccountsComponent,
     children: [
       { path: 'edit/:id', component: EditAccountComponent },
       { path: 'create', component: CreateAccountComponent },
-      { path: '', component: ManageAccountsComponent },
+      { path: '', component: ListAccountsComponent },
     ]
   }
 ];

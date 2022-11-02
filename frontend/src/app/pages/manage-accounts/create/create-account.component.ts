@@ -1,28 +1,34 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { catchError, EMPTY, Observable, of, Subject, takeUntil, tap } from 'rxjs';
 import { SpinnerDialogComponent } from 'src/app/components/spinner-dialog/spinner-dialog.component';
-import { UserType } from 'src/app/services/auth/enums/UserType';
+import { TypeResponse } from 'src/app/services/child/models/Child';
 import { NotificationType } from 'src/app/services/notification/models/SystemNotification';
 import { NotificationService } from 'src/app/services/notification/notification.service';
 import { CreateUserModel } from 'src/app/services/user/models/CreateUserModel';
 import { UserService } from 'src/app/services/user/user.service';
+import { UserTypeService } from 'src/app/services/userType/user-type.service';
 
 @Component({
   selector: 'app-create-account',
   templateUrl: './create-account.component.html',
   styleUrls: ['./create-account.component.scss']
 })
-export class CreateAccountComponent {
+export class CreateAccountComponent implements OnInit, OnDestroy {
   accountFormGroup: FormGroup;
-  private readonly userTypeDictionary = new Map<number, string>();
+  userTypes$!: Observable<TypeResponse[]>;
+
+  private destroySubject = new Subject<void>();
+  private destroy$ = this.destroySubject.asObservable();
 
   constructor(
+    private userService: UserService,
+    private userTypeService: UserTypeService,
+    private notificationService: NotificationService,
     private router: Router,
     public dialog: MatDialog,
-    private notificationService: NotificationService,
-    private userService: UserService,
     private fb: FormBuilder,
   ) {
     this.accountFormGroup = this.fb.group({
@@ -31,14 +37,20 @@ export class CreateAccountComponent {
       name: ['', Validators.required],
       userType: [null, Validators.required],
     });
-
-    this.userTypeDictionary.set(UserType.ADMIN, 'Administrador');
-    this.userTypeDictionary.set(UserType.REGULAR, 'Normal');
   }
 
-  private getUserTypeDescription(userType: UserType): string {
-    let description = this.userTypeDictionary.get(userType);
-    return !!description ? description : 'Desconhecido';
+  ngOnInit(): void {
+    this.userTypes$ = this.userTypeService.get().pipe(
+      takeUntil(this.destroy$),
+      catchError(error => {
+        console.error('Erro ao obter tipos de usuários', error);
+        return of([]);
+      }));
+  }
+
+  ngOnDestroy(): void {
+    this.destroySubject.next();
+    this.destroySubject.complete();
   }
 
   onCreateUser(): void {
@@ -51,23 +63,31 @@ export class CreateAccountComponent {
     };
 
     this.userService.createUser(createUserModel)
-      .subscribe(() => {
-        this.router.navigateByUrl('/manage-accounts');
-        spinnerDialogRef.close();
-      },
-        error => {
-          spinnerDialogRef.close();
-          console.log('Erro ao criar usuário', error)
+      .pipe(
+        takeUntil(this.destroy$),
+        catchError(response => {
+          console.error('Erro ao criar usuário', response);
           this.notificationService.emitMessage({
-            Message: 'Um erro ocorreu ao criar o usuário. Tente novamente!',
+            Message: 'Um erro ocorreu ao criar usuário. Tente novamente!',
             ShowNotification: true,
             ShowtimeInMilliseconds: 5000,
             Type: NotificationType.ERROR,
           });
-        });
+          spinnerDialogRef.close();
+          return EMPTY;
+        })
+      )
+      .subscribe(() => {
+        this.router.navigateByUrl('/manage-accounts');
+        spinnerDialogRef.close();
+      });
   }
 
   cancel(): void {
+    this.accountFormGroup.reset({});
+  }
+
+  backToListUser(): void {
     this.router.navigateByUrl('/manage-accounts');
   }
 }

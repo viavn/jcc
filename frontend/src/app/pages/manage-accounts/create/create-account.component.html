@@ -1,3 +1,14 @@
+<div class="back-button-container">
+  <button
+    mat-raised-button
+    color="accent"
+    type="button"
+    (click)="backToListUser()"
+  >
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+</div>
+
 <form
   class="example-form"
   [formGroup]="accountFormGroup"
@@ -27,21 +38,15 @@
     </div>
 
     <div>
-      <mat-label>Tipo Usuário</mat-label>
-      <mat-radio-group formControlName="userType" class="example-radio-group">
-        <mat-radio-button
-          class="example-margin"
-          [value]="1"
-          class="example-radio-button"
-          >Admin</mat-radio-button
-        >
-        <mat-radio-button
-          class="example-margin"
-          [value]="2"
-          class="example-radio-button"
-          >Normal</mat-radio-button
-        >
-      </mat-radio-group>
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Tipo Usuário</mat-label>
+        <mat-select formControlName="userType" name="Tipo Usuário">
+          <mat-option>&nbsp;</mat-option>
+          <mat-option *ngFor="let type of userTypes$ | async" [value]="type.id">
+            {{ type.description }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
     </div>
   </div>
 

@@ -18,7 +18,7 @@ namespace JccApi.Entities
             Login = login;
             Name = name;
             Password = password;
-            UserTypeId = (int)UserTypeId;
+            UserTypeId = (int)userType;
             IsDeleted = false;
         }
 

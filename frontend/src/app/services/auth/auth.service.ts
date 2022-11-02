@@ -48,7 +48,7 @@ export class AuthService {
       return false
     }
 
-    return user.userType === UserType.ADMIN;
+    return user.isUserAdmin;
   }
 
   getUserInSessionStorage(): User {

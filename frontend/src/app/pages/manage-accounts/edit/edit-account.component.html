@@ -16,34 +16,15 @@
     </div>
 
     <div>
-      <mat-form-field class="example-full-width" appearance="outline">
+      <mat-form-field class="full-width" appearance="outline">
         <mat-label>Tipo Usuário</mat-label>
-        <input matInput formControlName="userType" id="account_user_type" />
+        <mat-select formControlName="userType" name="Tipo Usuário">
+          <mat-option>&nbsp;</mat-option>
+          <mat-option *ngFor="let type of userTypes$ | async" [value]="type.id">
+            {{ type.description }}
+          </mat-option>
+        </mat-select>
       </mat-form-field>
-    </div>
-
-    <div>
-      <mat-label>Tipo Usuário</mat-label>
-      <mat-radio-group formControlName="userType" class="example-radio-group">
-        <mat-radio-button
-          class="example-margin"
-          value="Administrador"
-          class="example-radio-button"
-          >Admin</mat-radio-button
-        >
-        <mat-radio-button
-          class="example-margin"
-          value="Normal"
-          class="example-radio-button"
-          >Normal</mat-radio-button
-        >
-        <mat-radio-button
-          class="example-margin"
-          value="Desconhecido"
-          class="example-radio-button"
-          >Desconhecido</mat-radio-button
-        >
-      </mat-radio-group>
     </div>
 
     <div class="example-radio-group">
@@ -56,7 +37,7 @@
 
   <div class="form-actions">
     <button mat-raised-button color="default" type="button" (click)="cancel()">
-      Cancelar
+      Voltar
     </button>
 
     <button

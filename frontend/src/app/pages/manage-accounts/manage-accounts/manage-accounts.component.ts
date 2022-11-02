@@ -4,4 +4,4 @@ import { Component } from "@angular/core";
     selector: 'manage-accounts-app-root',
     template: '<router-outlet></router-outlet>'
 })
-export class ManageAccountsAppRootComponent { }
+export class ManageAccountsComponent { }
