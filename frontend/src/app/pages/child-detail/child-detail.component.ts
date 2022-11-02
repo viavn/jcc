@@ -61,7 +61,7 @@ export class ChildDetailComponent implements OnInit, OnDestroy {
       catchError(error => {
         console.error('Erro ao obter tipos dos presentes', error);
         return of([]);
-      }))
+      }));
 
     const spinnerDialogRef = this.dialog.open(SpinnerDialogComponent, {
       disableClose: true,

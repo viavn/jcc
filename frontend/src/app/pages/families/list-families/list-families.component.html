@@ -20,7 +20,7 @@
       type="button"
       (click)="create()"
     >
-      <mat-icon>perm_identity</mat-icon>
+      <mat-icon>family_restroom</mat-icon>
       Nova família
     </button>
   </div>
@@ -55,6 +55,20 @@
           </mat-header-cell>
           <mat-cell *matCellDef="let element"> {{ element.address }} </mat-cell>
         </ng-container>
+
+        <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef>Ações</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <button
+            mat-icon-button
+            aria-label="Excluir"
+            (click)="removeFamily($event, element)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
 
         <mat-header-row
           *matHeaderRowDef="displayedColumns; sticky: true"

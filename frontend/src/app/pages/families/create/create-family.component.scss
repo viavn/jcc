@@ -5,6 +5,12 @@
 .form-container {
   margin-bottom: 24px;
   box-sizing: border-box;
+
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    row-gap: 16px;
+  }
 }
 
 .full-width {

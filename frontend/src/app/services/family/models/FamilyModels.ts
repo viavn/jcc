@@ -49,4 +49,5 @@ export interface MemberRequest {
 export interface MemberViewModel {
   rowId: number;
   member: MemberRequest;
+  personName: string;
 }

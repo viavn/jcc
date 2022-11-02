@@ -61,7 +61,8 @@ namespace JccApi.Controllers
                 return NotFound();
             }
 
-            return Ok(family);
+            var result = new ApiResult<FamilyByIdResponse>(family);
+            return Ok(result);
         }
 
         [HttpPost]
@@ -72,7 +73,8 @@ namespace JccApi.Controllers
             try
             {
                 var guid = await _createFamilyUseCase.Execute(request);
-                return CreatedAtAction(nameof(GetFamily), new { id = guid }, request);
+                var family = await _getFamilyUseCaseAsync.Execute(guid);
+                return CreatedAtAction(nameof(GetFamily), new { id = guid }, family);
             }
             catch (FluentValidation.ValidationException ex)
             {

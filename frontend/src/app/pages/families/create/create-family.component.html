@@ -1,21 +1,22 @@
 <div class="back-button-container">
   <button
     mat-raised-button
-    color="default"
+    color="accent"
     type="button"
     (click)="backToListPage()"
   >
-    Voltar
+    <mat-icon>arrow_back</mat-icon>
   </button>
 </div>
 
 <div class="form-container">
-  <div>
+  <div class="wrapper">
     <form
       [formGroup]="familyFormGroup"
-      (ngSubmit)="onSubmitFamily(familyFormElement)"
+      (ngSubmit)="onSubmitFamily()"
       #familyFormElement="ngForm"
     >
+      <h2>Família</h2>
       <div>
         <mat-form-field class="full-width" appearance="outline">
           <mat-label>Código</mat-label>
@@ -43,7 +44,7 @@
           mat-raised-button
           color="default"
           type="button"
-          (click)="cancel(familyFormElement)"
+          (click)="cancel()"
         >
           Cancelar
         </button>
@@ -54,13 +55,13 @@
           type="submit"
           [disabled]="!familyFormGroup.valid"
         >
-          Criar
+          {{ familySubmitBtnText }}
         </button>
       </div>
     </form>
 
     <form
-      class="example-form"
+      class="example-form member_form"
       [formGroup]="familyMemberFormGroup"
       (ngSubmit)="onSubmitMember(familyMembmerFormElement)"
       #familyMembmerFormElement="ngForm"
@@ -71,14 +72,12 @@
           <mat-label>Tipo Membro</mat-label>
           <mat-select formControlName="type" name="Tipo Membro">
             <mat-option>&nbsp;</mat-option>
-            <!-- <mat-option
-              *ngFor="let type of giftTypes$ | async"
+            <mat-option
+              *ngFor="let type of memberTypes$ | async"
               [value]="type.id"
             >
               {{ type.description }}
-            </mat-option> -->
-            <mat-option [value]="1">Mãe</mat-option>
-            <mat-option [value]="2">Pai</mat-option>
+            </mat-option>
           </mat-select>
           <mat-error
             *ngIf="familyMemberFormGroup.get('type')?.hasError('required')"
@@ -108,7 +107,7 @@
           type="submit"
           [disabled]="!familyMemberFormGroup.valid"
         >
-          Adicionar
+        {{ memberSubmitBtnText }}
         </button>
       </div>
     </form>
@@ -119,15 +118,13 @@
       <!-- Member Type -->
       <ng-container matColumnDef="type">
         <mat-header-cell *matHeaderCellDef>Tipo Membro</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{ element.member.type }}</mat-cell>
+        <mat-cell *matCellDef="let element">{{ element.member.name }}</mat-cell>
       </ng-container>
 
       <!-- Name Column -->
       <ng-container matColumnDef="name">
         <mat-header-cell *matHeaderCellDef>Nome</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{
-          element.member.name
-        }}</mat-cell>
+        <mat-cell *matCellDef="let element">{{ element.personName }}</mat-cell>
       </ng-container>
 
       <!-- Actions Column -->
@@ -145,7 +142,10 @@
       </ng-container>
 
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+      <mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        (click)="onRowMemberClicked(row)"
+      ></mat-row>
     </mat-table>
   </div>
 </div>

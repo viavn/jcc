@@ -72,7 +72,7 @@ namespace JccApi.Infrastructure.Repository
 
         public async Task<int> MembersQuantity(Guid id)
         {
-            return await _context.Families.AsNoTracking().SelectMany(f => f.Members).CountAsync();
+            return await _context.Families.AsNoTracking().Where(fam => fam.Id == id).SelectMany(f => f.Members).CountAsync();
         }
     }
 }

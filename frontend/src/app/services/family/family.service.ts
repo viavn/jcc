@@ -60,7 +60,7 @@ export class FamilyService {
   }
 
   deleteMember(familyId: string, memberId: string): Observable<any> {
-    const url = `${this.RESOURCE_URL}/${familyId}/${memberId}`;
+    const url = `${this.RESOURCE_URL}/${familyId}/members/${memberId}`;
     return this.http.delete<any>(url, this.httpOptions);
   }
 }

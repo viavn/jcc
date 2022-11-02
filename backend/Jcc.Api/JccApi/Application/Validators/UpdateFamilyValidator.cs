@@ -7,7 +7,7 @@ namespace JccApi.Application.Validators
     {
         public UpdateFamilyValidator()
         {
-            RuleFor(fam => fam.Id).Empty().WithMessage("Id é obrigatório");
+            RuleFor(fam => fam.Id).NotEmpty().WithMessage("Id é obrigatório");
 
             RuleFor(fam => fam.Code)
                .NotEmpty().WithMessage("Código é obrigatório")

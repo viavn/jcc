@@ -1,0 +1,27 @@
+<h2 mat-dialog-title>Atenção</h2>
+<mat-dialog-content class="mat-typography">
+  <h3>Esta ação não pode ser desfeita.</h3>
+  <h3>
+    Deseja excluir esta família, inclusive seus membros e crianças cadastradas?
+  </h3>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button
+    mat-button
+    cdkFocusInitial
+    [mat-dialog-close]="false"
+    mat-dialog-close
+  >
+    Não
+  </button>
+
+  <button
+    mat-raised-button
+    color="warn"
+    type="button"
+    [mat-dialog-close]="true"
+    mat-dialog-close
+  >
+    Sim
+  </button>
+</mat-dialog-actions>
