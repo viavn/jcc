@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, CanLoad, Route, Router, RouterStateSnapshot } from '@angular/router';
-import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Injectable({
@@ -14,12 +13,11 @@ export class AuthGuard implements CanActivate, CanLoad {
 
   canActivate(
     route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean> | boolean {
-
+    state: RouterStateSnapshot): boolean {
     return this.verifyAuthentication();
   }
 
-  canLoad(route: Route): Observable<boolean> | Promise<boolean> | boolean {
+  canLoad(route: Route): boolean {
     return this.verifyAuthentication();
   }
 

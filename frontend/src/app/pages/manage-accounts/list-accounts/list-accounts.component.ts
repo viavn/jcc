@@ -45,7 +45,7 @@ export class ListAccountsComponent implements OnInit, AfterViewInit, OnDestroy {
         takeUntil(this.destroy$),
         catchError(error => {
           spinnerDialog.close();
-          console.log('Erro ao obter usuários', error)
+          console.error('Erro ao obter usuários', error)
           this.notificationService.emitMessage({
             Message: 'Um erro ocorreu ao obter usuários. Tente novamente!',
             ShowNotification: true,

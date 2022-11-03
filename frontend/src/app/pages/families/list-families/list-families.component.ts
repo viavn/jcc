@@ -44,7 +44,7 @@ export class ListFamiliesComponent implements OnInit, AfterViewInit, OnDestroy {
       .pipe(
         takeUntil(this.destroy$),
         catchError((error: any) => {
-          console.log('Erro ao obter famílias', error)
+          console.error('Erro ao obter famílias', error)
           this.notificationService.emitMessage({
             Message: 'Um erro ocorreu ao obter as famílias. Tente novamente!',
             ShowNotification: true,

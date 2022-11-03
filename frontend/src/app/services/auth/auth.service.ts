@@ -18,7 +18,7 @@ export class AuthService {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
 
-  private readonly loginRealized = new Subject<boolean>();
+  private readonly loginRealized = new Subject<void>();
   loginRealized$ = this.loginRealized.asObservable();
 
   constructor(
@@ -38,17 +38,21 @@ export class AuthService {
   }
 
   isUserInSessionStorage(): boolean {
-    const sessionItem = this.sessionStorageService.getItem(this.sessionStorageKey);
-    return sessionItem && JSON.parse(sessionItem);
+    try {
+      this.getUserInSessionStorage();
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 
   isUserAdmin(): boolean {
-    const user = this.getUserInSessionStorage();
-    if (!user) {
-      return false
+    try {
+      const user = this.getUserInSessionStorage();
+      return user.isUserAdmin;
+    } catch (error) {
+      return false;
     }
-
-    return user.isUserAdmin;
   }
 
   getUserInSessionStorage(): User {
@@ -69,6 +73,6 @@ export class AuthService {
   }
 
   emitUserHasLoggedIn(): void {
-    this.loginRealized.next(true);
+    this.loginRealized.next();
   }
 }

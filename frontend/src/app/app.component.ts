@@ -13,7 +13,7 @@ export class AppComponent implements OnInit, OnDestroy {
   title = 'JCC App';
   homeLink = '/';
   showLogout = false;
-  showManageAccounts = false;
+  userIsAdmin = false;
 
   private destroySubject = new Subject<void>();
   destroy$ = this.destroySubject.asObservable();
@@ -27,16 +27,21 @@ export class AppComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.showLogout = this.authService.isUserInSessionStorage();
-
     this.authService.loginRealized$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(value => {
-        this.showLogout = value;
-
-        const user = this.authService.getUserInSessionStorage();
-        this.showManageAccounts = user.isUserAdmin;
+      .pipe(
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        try {
+          this.showLogout = true;
+          const user = this.authService.getUserInSessionStorage();
+          this.userIsAdmin = user.isUserAdmin;
+        } catch (error) {
+          this.router.navigate(['/login']);
+        }
       })
+
+    this.authService.emitUserHasLoggedIn();
   }
 
   ngOnDestroy(): void {

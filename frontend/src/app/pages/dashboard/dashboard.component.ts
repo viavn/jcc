@@ -4,7 +4,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { catchError, of, Subject, takeUntil } from 'rxjs';
+import { catchError, EMPTY, of, Subject, takeUntil } from 'rxjs';
 import { SpinnerDialogComponent } from 'src/app/components/spinner-dialog/spinner-dialog.component';
 import { NotificationType } from 'src/app/services/notification/models/SystemNotification';
 import { NotificationService } from 'src/app/services/notification/notification.service';
@@ -43,7 +43,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
       .pipe(
         takeUntil(this.destroy$),
         catchError((error: any) => {
-          console.log('Erro ao obter crianças', error)
+          console.error('Erro ao obter crianças', error)
           this.notificationService.emitMessage({
             Message: 'Um erro ocorreu ao obter as crianças. Tente novamente!',
             ShowNotification: true,
@@ -88,6 +88,21 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
     this.childService.getChildrenReport()
+      .pipe(
+        takeUntil(this.destroy$),
+        catchError(error => {
+          spinnerDialogRef.close();
+          console.error('Erro ao obter relatório', error)
+          this.notificationService.emitMessage({
+            Message: 'Um erro ocorreu ao obter o relatório. Tente novamente!',
+            ShowNotification: true,
+            ShowtimeInMilliseconds: 5000,
+            Type: NotificationType.ERROR,
+          });
+
+          return EMPTY;
+        })
+      )
       .subscribe(data => {
         spinnerDialogRef.close();
         const blob = new Blob([data], { type: 'application/octet-stream' });
@@ -101,16 +116,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
           link.click();
           document.body.removeChild(link);
         }
-      },
-        error => {
-          spinnerDialogRef.close();
-          console.log('Erro ao obter relatório', error)
-          this.notificationService.emitMessage({
-            Message: 'Um erro ocorreu ao obter o relatório. Tente novamente!',
-            ShowNotification: true,
-            ShowtimeInMilliseconds: 5000,
-            Type: NotificationType.ERROR,
-          });
-        });
+      });
   }
 }

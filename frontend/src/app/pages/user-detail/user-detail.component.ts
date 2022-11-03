@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { catchError, EMPTY, Subject, takeUntil } from 'rxjs';
 import { SpinnerDialogComponent } from 'src/app/components/spinner-dialog/spinner-dialog.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { User } from 'src/app/services/auth/models/User';
@@ -14,10 +15,13 @@ import { UserService } from 'src/app/services/user/user.service';
   templateUrl: './user-detail.component.html',
   styleUrls: ['./user-detail.component.scss']
 })
-export class UserDetailComponent implements OnInit {
+export class UserDetailComponent implements OnInit, OnDestroy {
 
   loginFormGroup!: FormGroup;
   hidePassword = true;
+
+  private destroySubject = new Subject<void>();
+  private destroy$ = this.destroySubject.asObservable();
 
   constructor(
     private fb: FormBuilder,
@@ -44,6 +48,11 @@ export class UserDetailComponent implements OnInit {
     }
   }
 
+  ngOnDestroy(): void {
+    this.destroySubject.next();
+    this.destroySubject.complete();
+  }
+
   onSubmit(): void {
     const spinnerDialogRef = this.dialog.open(SpinnerDialogComponent, {
       disableClose: true,
@@ -52,6 +61,21 @@ export class UserDetailComponent implements OnInit {
     const userFormValues = this.loginFormGroup.value;
 
     this.userService.changeUserPassword(userFormValues.userId, userFormValues.password)
+      .pipe(
+        takeUntil(this.destroy$),
+        catchError(error => {
+          console.error('Erro ao mudar senha', error);
+          spinnerDialogRef.close();
+          this.notificationService.emitMessage({
+            Message: 'Um erro ocorreu ao tentar alterar a senha. Tente novamente!',
+            ShowNotification: true,
+            ShowtimeInMilliseconds: 5000,
+            Type: NotificationType.ERROR,
+          });
+
+          return EMPTY;
+        })
+      )
       .subscribe(() => {
         this.notificationService.emitMessage({
           Message: 'Senha alterada com sucesso!',
@@ -61,17 +85,7 @@ export class UserDetailComponent implements OnInit {
         });
         spinnerDialogRef.close();
         this.router.navigateByUrl('/');
-      },
-        error => {
-          console.error('Erro ao mudar senha', error);
-          spinnerDialogRef.close();
-          this.notificationService.emitMessage({
-            Message: 'Um erro ocorreu ao tentar alterar a senha. Tente novamente!',
-            ShowNotification: true,
-            ShowtimeInMilliseconds: 5000,
-            Type: NotificationType.ERROR,
-          });
-        });
+      });
   }
 
   private createUserFormGroup(user: User): FormGroup {

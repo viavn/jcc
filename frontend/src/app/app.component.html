@@ -49,13 +49,13 @@
   <div class="spacer"></div>
 
   <ng-container *ngIf="showLogout">
-    <div class="families">
+    <div class="families" *ngIf="userIsAdmin">
       <span (click)="families()"
         ><mat-icon aria-label="Listagem de Famílias">family_restroom</mat-icon></span
       >
     </div>
 
-    <div class="manage_accounts" *ngIf="showManageAccounts">
+    <div class="manage_accounts" *ngIf="userIsAdmin">
       <span (click)="manageAccounts()"
         ><mat-icon aria-label="Gerenciamento de usuários">manage_accounts</mat-icon></span
       >
