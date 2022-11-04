@@ -26,3 +26,11 @@ Além do mais, o projeto foi implantado no Heroku.
 * Criança
   * Visualização dos detalhes da criança
   * Cadastro de padrinho/madrinha
+
+docker tag jccapi registry.heroku.com/jccapi/web
+docker push registry.heroku.com/jccapi/web
+heroku container:release web --app jccapi
+
+docker tag jccfrontend registry.heroku.com/jccfrontend/web
+docker push registry.heroku.com/jccfrontend/web
+heroku container:release web --app jccfrontend
