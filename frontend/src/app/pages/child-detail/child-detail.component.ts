@@ -329,7 +329,7 @@ export class ChildDetailComponent implements OnInit, OnDestroy {
   }
 
   backToDashboard(): void {
-    this.router.navigate(['/manage-accounts']);
+    this.router.navigate(['/']);
   }
 
   private createChildFormGroup(): FormGroup {
