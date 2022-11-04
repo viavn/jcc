@@ -10,7 +10,7 @@ BEGIN
    END IF;
    
    IF not exists (select 1 from gift_type as g where g.description = 'Brinquedo') THEN
-      INSERT INTO public.gift_type(id, description) VALUES (3, Brinquedo');
+      INSERT INTO public.gift_type(id, description) VALUES (3, 'Brinquedo');
    END IF;
 END
 $do$
