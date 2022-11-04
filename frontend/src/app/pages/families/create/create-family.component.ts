@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTable } from '@angular/material/table';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { catchError, EMPTY, Observable, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { BehaviorSubject, catchError, EMPTY, Observable, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { SpinnerDialogComponent } from 'src/app/components/spinner-dialog/spinner-dialog.component';
 import { ChildService } from 'src/app/services/child/child.service';
 import { CreateChildRequest, TypeResponse } from 'src/app/services/child/models/Child';
@@ -23,6 +23,9 @@ import { DeletionDialogComponent } from '../deletion-dialog/deletion-dialog.comp
 export class CreateFamilyComponent implements OnInit, OnDestroy {
   private destroySubject = new Subject<void>();
   private destroy$ = this.destroySubject.asObservable();
+
+  private toggleChildrenTabSubject = new BehaviorSubject<boolean>(true);
+  toggleChildrenTab$ = this.toggleChildrenTabSubject.asObservable();
 
   private memberTypes: TypeResponse[] = [];
   private family!: FamilyByIdResponse;
@@ -44,8 +47,6 @@ export class CreateFamilyComponent implements OnInit, OnDestroy {
   memberSubmitBtnText = 'Criar';
   childSubmitBtnText = 'Criar';
 
-  genreControl = new FormControl({ value: null, disabled: true }, Validators.required);
-
   @ViewChild('membersTable') memberTable!: MatTable<MemberViewModel>;
   @ViewChild('childrenTable') childTable!: MatTable<ChildViewModel>;
 
@@ -62,7 +63,7 @@ export class CreateFamilyComponent implements OnInit, OnDestroy {
   ) {
     this.familyFormGroup = this.createFamilyFormGroup();
     this.familyMemberFormGroup = this.createFamilyMemberFormGroup();
-    this.childFormGroup = this.createChildFormGroup(true);
+    this.childFormGroup = this.createChildFormGroup();
   }
 
   ngOnInit(): void {
@@ -123,7 +124,8 @@ export class CreateFamilyComponent implements OnInit, OnDestroy {
         this.family = family;
 
         this.familyFormGroup = this.createFamilyFormGroup(family);
-        this.childFormGroup = this.createChildFormGroup(false);
+        this.childFormGroup = this.createChildFormGroup();
+        this.toggleChildrenTabSubject.next(false);
 
         this.members = family.members.map((member, index) => {
           return {
@@ -256,6 +258,7 @@ export class CreateFamilyComponent implements OnInit, OnDestroy {
                 }
               }
             });
+            this.toggleChildrenTabSubject.next(false);
             this.familyFormGroup.reset(this.family);
             this.memberTable.renderRows();
             this.familySubmitBtnText = 'Atualizar';
@@ -471,7 +474,7 @@ export class CreateFamilyComponent implements OnInit, OnDestroy {
         age: childFormValue.age,
         clotheSize: childFormValue.clotheSize,
         shoeSize: childFormValue.shoeSize,
-        genre: this.genreControl.value,
+        genre: childFormValue.genre,
       };
       this.childService.create(request)
         .pipe(
@@ -524,7 +527,7 @@ export class CreateFamilyComponent implements OnInit, OnDestroy {
         age: childFormValue.age,
         clotheSize: childFormValue.clotheSize,
         shoeSize: childFormValue.shoeSize,
-        genre: this.genreControl.value,
+        genre: childFormValue.genre,
       };
       this.childService.update(request)
         .pipe(
@@ -656,20 +659,14 @@ export class CreateFamilyComponent implements OnInit, OnDestroy {
     });
   }
 
-  private createChildFormGroup(disableControls: boolean): FormGroup {
-    if (disableControls) {
-      this.genreControl.disable();
-    } else {
-      this.genreControl.enable();
-    }
-
+  private createChildFormGroup(): FormGroup {
     return this.fb.group({
       id: [''],
-      genre: this.genreControl,
-      name: [{ value: null, disabled: disableControls }, Validators.required],
-      age: [{ value: null, disabled: disableControls }, Validators.required],
-      clotheSize: [{ value: null, disabled: disableControls }, Validators.required],
-      shoeSize: [{ value: null, disabled: disableControls }, Validators.required],
+      genre: [null, Validators.required],
+      name: [null, Validators.required],
+      age: [null, Validators.required],
+      clotheSize: [null, Validators.required],
+      shoeSize: [null, Validators.required],
     });
   }
 }

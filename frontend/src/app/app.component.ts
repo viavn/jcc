@@ -1,8 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NotificationService } from './services/notification/notification.service';
-import { Subject, takeUntil } from 'rxjs';
+import { first, Subject, takeUntil, timer } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthService } from './services/auth/auth.service';
+import { MatSidenav } from '@angular/material/sidenav';
+import { MenuItem } from './models/MenuItem';
 
 @Component({
   selector: 'app-root',
@@ -14,11 +16,15 @@ export class AppComponent implements OnInit, OnDestroy {
   homeLink = '/';
   showLogout = false;
   userIsAdmin = false;
+  notification$ = this.notificationService.message$;
+
+  private menuItemsSubject = new Subject<MenuItem[]>();
+  menuItems$ = this.menuItemsSubject.asObservable();
 
   private destroySubject = new Subject<void>();
   destroy$ = this.destroySubject.asObservable();
 
-  notification$ = this.notificationService.message$;
+  @ViewChild('sidenav') sidenav!: MatSidenav;
 
   constructor(
     private notificationService: NotificationService,
@@ -36,12 +42,16 @@ export class AppComponent implements OnInit, OnDestroy {
           this.showLogout = true;
           const user = this.authService.getUserInSessionStorage();
           this.userIsAdmin = user.isUserAdmin;
+          this.loadMenuItems();
+
         } catch (error) {
           this.router.navigate(['/login']);
         }
       })
 
-    this.authService.emitUserHasLoggedIn();
+    if (this.authService.isUserInSessionStorage()) {
+      this.authService.emitUserHasLoggedIn();
+    }
   }
 
   ngOnDestroy(): void {
@@ -50,20 +60,40 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   logout(): void {
+    this.sidenav.close();
     this.showLogout = false;
     this.authService.cleanAuthFromStorage();
     this.router.navigate(['/login']);
   }
 
-  userSettings(): void {
-    this.router.navigate(['/user']);
+  navigateTo(link: string): void {
+    this.sidenav.close();
+    this.router.navigate([link]);
   }
 
-  manageAccounts(): void {
-    this.router.navigate(['/manage-accounts']);
-  }
+  private loadMenuItems() {
+    timer(100).pipe(first())
+      .subscribe(() => {
+        let menuItems: MenuItem[] = [];
+        if (this.userIsAdmin) {
+          menuItems = [{
+            text: 'Famílias',
+            icon: 'family_restroom',
+            link: '/families',
+          },
+          {
+            text: 'Usuários',
+            icon: 'manage_accounts',
+            link: '/manage-accounts',
+          }];
+        }
 
-  families(): void {
-    this.router.navigate(['/families']);
+        menuItems.push({
+          text: 'Alterar senha',
+          icon: 'settings',
+          link: '/user',
+        });
+        this.menuItemsSubject.next(menuItems);
+      });
   }
 }

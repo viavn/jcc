@@ -64,7 +64,7 @@
           type="submit"
           mat-raised-button
           color="primary"
-          class="login-button"
+          [disabled]="loginFormGroup.invalid"
         >
           Entrar
         </button>
