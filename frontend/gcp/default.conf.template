@@ -16,7 +16,7 @@ server {
     root /usr/share/nginx/html;
 
     location /api/ {
-      proxy_pass http://jcc-backend-vrvbt7ev7a-rj.a.run.app;
+      proxy_pass https://jcc-backend-vrvbt7ev7a-rj.a.run.app;
     }
 
     location / {
