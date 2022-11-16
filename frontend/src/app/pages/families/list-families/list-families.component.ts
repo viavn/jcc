@@ -127,7 +127,6 @@ export class ListFamiliesComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe(
         () => {
           this.dataSource.data = this.dataSource.data.filter(f => f.id !== id);
-          // this.table.renderRows();
           spinnerDialogRef.close();
         });
   }

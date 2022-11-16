@@ -47,3 +47,10 @@ td {
 .mat-cell:nth-child(3) {
   max-width: 80px;
 }
+
+.children_table {
+  .mat-header-cell:nth-child(6),
+  .mat-cell:nth-child(6) {
+    max-width: 80px;
+  }
+}

@@ -59,6 +59,7 @@ namespace JccApi.Infrastructure.Repository
         public async Task<IEnumerable<FamilyWithMember>> GetFamiliesWithSingleMember()
         {
             return await _context.Families.Include(f => f.Members).AsNoTracking()
+                .OrderBy(f => f.Code)
                 .Select(f => new FamilyWithMember(f.Id, f.Code, f.Address, f.Members.FirstOrDefault().Name))
                 .ToListAsync();
         }

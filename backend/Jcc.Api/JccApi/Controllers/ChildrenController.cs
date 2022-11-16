@@ -1,4 +1,7 @@
-﻿using JccApi.Application.Abstractions.UseCases;
+﻿using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
+using JccApi.Application.Abstractions.UseCases;
 using JccApi.Entities.Dtos;
 using JccApi.Exceptions;
 using JccApi.Infrastructure.Repository.Abstractions;
@@ -8,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace JccApi.Controllers
@@ -186,166 +190,138 @@ namespace JccApi.Controllers
             }
         }
 
-        // [HttpGet("export")]
-        // public async Task<IActionResult> GetChildrenReport()
-        // {
-        //     var columns = new string[] { "Família", "Criança", "Roupa?", "Calçado?", "Brinquedo?", "Padrinho", "Telefone Padrinho" };
-        //     var children = await _childRepository.GetAllWithGodParents();
+        [HttpGet("export")]
+        public async Task<IActionResult> GetChildrenReport()
+        {
+            var columns = new string[] { "Família", "Criança", "Idade", "Tam. Roupa", "Tam. Calçado", "Qtd. Presentes Entregues", "Qtd. Presentes Faltantes" };
+            var children = await _childRepository.GetAllWithDeliveredInformation();
 
-        //     using (var stream = new MemoryStream())
-        //     {
-        //         using (var workbook = SpreadsheetDocument.Create(stream, SpreadsheetDocumentType.Workbook))
-        //         {
-        //             List<OpenXmlAttribute> attributeList;
-        //             OpenXmlWriter writer;
+            using (var stream = new MemoryStream())
+            {
+                using (var workbook = SpreadsheetDocument.Create(stream, SpreadsheetDocumentType.Workbook))
+                {
+                    List<OpenXmlAttribute> attributeList;
+                    OpenXmlWriter writer;
 
-        //             workbook.AddWorkbookPart();
-        //             WorksheetPart workSheetPart = workbook.WorkbookPart.AddNewPart<WorksheetPart>();
+                    workbook.AddWorkbookPart();
+                    WorksheetPart workSheetPart = workbook.WorkbookPart.AddNewPart<WorksheetPart>();
 
-        //             writer = OpenXmlWriter.Create(workSheetPart);
-        //             writer.WriteStartElement(new Worksheet());
-        //             writer.WriteStartElement(new SheetData());
+                    writer = OpenXmlWriter.Create(workSheetPart);
+                    writer.WriteStartElement(new Worksheet());
+                    writer.WriteStartElement(new SheetData());
 
-        //             attributeList = new List<OpenXmlAttribute>();
-        //             // this is the row index
-        //             int rowIndex = 1;
-        //             attributeList.Add(new OpenXmlAttribute("r", null, rowIndex.ToString()));
+                    attributeList = new List<OpenXmlAttribute>();
+                    // this is the row index
+                    int rowIndex = 1;
+                    attributeList.Add(new OpenXmlAttribute("r", null, rowIndex.ToString()));
 
-        //             writer.WriteStartElement(new Row(), attributeList);
+                    writer.WriteStartElement(new Row(), attributeList);
 
-        //             for (int j = 0; j < columns.Length; ++j)
-        //             {
-        //                 attributeList = new List<OpenXmlAttribute>();
-        //                 // this is the data type ("t"), with CellValues.String ("str")
-        //                 attributeList.Add(new OpenXmlAttribute("t", null, "str"));
+                    for (int j = 0; j < columns.Length; ++j)
+                    {
+                        attributeList = new List<OpenXmlAttribute>();
+                        // this is the data type ("t"), with CellValues.String ("str")
+                        attributeList.Add(new OpenXmlAttribute("t", null, "str"));
 
-        //                 writer.WriteStartElement(new Cell(), attributeList);
-        //                 writer.WriteElement(new CellValue(columns[j]));
+                        writer.WriteStartElement(new Cell(), attributeList);
+                        writer.WriteElement(new CellValue(columns[j]));
 
-        //                 // this is for Cell
-        //                 writer.WriteEndElement();
-        //             }
+                        // this is for Cell
+                        writer.WriteEndElement();
+                    }
 
-        //             // this is for Row
-        //             writer.WriteEndElement();
+                    // this is for Row
+                    writer.WriteEndElement();
 
-        //             // VALUES
-        //             foreach (var child in children)
-        //             {
-        //                 if (!child.GodParents.Any())
-        //                 {
-        //                     rowIndex++;
-        //                     attributeList = new List<OpenXmlAttribute>();
-        //                     // this is the row index
-        //                     attributeList.Add(new OpenXmlAttribute("r", null, rowIndex.ToString()));
+                    // VALUES
+                    foreach (var child in children)
+                    {
+                        rowIndex++;
+                        attributeList = new List<OpenXmlAttribute>();
+                        // this is the row index
+                        attributeList.Add(new OpenXmlAttribute("r", null, rowIndex.ToString()));
 
-        //                     writer.WriteStartElement(new Row(), attributeList);
+                        writer.WriteStartElement(new Row(), attributeList);
 
-        //                     // ### Primeira célula
-        //                     attributeList = CreateCell(writer, child.FamilyAcronym);
-        //                     writer.WriteEndElement();
-        //                     // ### FIM Primeira célula
+                        // ### 1a célula
+                        attributeList = CreateCell(writer, child.FamilyCode);
+                        writer.WriteEndElement();
+                        // ### FIM 1a célula
 
-        //                     // ### Segunda célula
-        //                     attributeList = CreateCell(writer, child.Name);
-        //                     writer.WriteEndElement();
-        //                     // ### FIM Segunda célula
+                        // ### 2a célula
+                        attributeList = CreateCell(writer, child.Name);
+                        writer.WriteEndElement();
+                        // ### FIM 2a célula
 
-        //                     // this is for Row
-        //                     writer.WriteEndElement();
-        //                 }
-        //                 else
-        //                 {
-        //                     foreach (var godParent in child.GodParents)
-        //                     {
-        //                         rowIndex++;
-        //                         attributeList = new List<OpenXmlAttribute>();
-        //                         // this is the row index
-        //                         attributeList.Add(new OpenXmlAttribute("r", null, rowIndex.ToString()));
+                        // ### 3a célula
+                        attributeList = CreateCell(writer, child.Age);
+                        writer.WriteEndElement();
+                        // ### FIM 3a célula
 
-        //                         writer.WriteStartElement(new Row(), attributeList);
+                        // ### 4a célula
+                        attributeList = CreateCell(writer, child.ClotheSize);
+                        writer.WriteEndElement();
+                        // ### FIM 4a célula
 
-        //                         // ### 1a célula
-        //                         attributeList = CreateCell(writer, child.FamilyAcronym);
-        //                         writer.WriteEndElement();
-        //                         // ### FIM 1a célula
+                        // ### 5a célula
+                        attributeList = CreateCell(writer, child.ShoeSize);
+                        writer.WriteEndElement();
+                        // ### FIM 5a célula
 
-        //                         // ### 2a célula
-        //                         attributeList = CreateCell(writer, child.Name);
-        //                         writer.WriteEndElement();
-        //                         // ### FIM 2a célula
+                        // ### 6a célula
+                        attributeList = CreateCell(writer, child.DeliveredGifts.ToString());
+                        writer.WriteEndElement();
+                        // ### FIM 6a célula
 
-        //                         // ### 3a célula
-        //                         attributeList = CreateCell(writer, godParent.IsClothesSelected ? "x" : string.Empty);
-        //                         writer.WriteEndElement();
-        //                         // ### FIM 3a célula
+                        // ### 7a célula
+                        attributeList = CreateCell(writer, child.RemainingGifts.ToString());
+                        writer.WriteEndElement();
+                        // ### FIM 7a célula
 
-        //                         // ### 4a célula
-        //                         attributeList = CreateCell(writer, godParent.IsShoesSelected ? "x" : string.Empty);
-        //                         writer.WriteEndElement();
-        //                         // ### FIM 4a célula
+                        // this is for Row
+                        writer.WriteEndElement();
+                    }
 
-        //                         // ### 5a célula
-        //                         attributeList = CreateCell(writer, godParent.IsGiftSelected ? "x" : string.Empty);
-        //                         writer.WriteEndElement();
-        //                         // ### FIM 5a célula
+                    // this is for SheetData
+                    writer.WriteEndElement();
+                    // this is for Worksheet
+                    writer.WriteEndElement();
+                    writer.Close();
 
-        //                         // ### 6a célula
-        //                         attributeList = CreateCell(writer, godParent.Name);
-        //                         writer.WriteEndElement();
-        //                         // ### FIM 6a célula
+                    writer = OpenXmlWriter.Create(workbook.WorkbookPart);
+                    writer.WriteStartElement(new Workbook());
+                    writer.WriteStartElement(new Sheets());
 
-        //                         // ### 7a célula
-        //                         attributeList = CreateCell(writer, godParent.Phone);
-        //                         writer.WriteEndElement();
-        //                         // ### FIM 7a célula
+                    writer.WriteElement(new Sheet()
+                    {
+                        Name = "Sheet1",
+                        SheetId = 1,
+                        Id = workbook.WorkbookPart.GetIdOfPart(workSheetPart)
+                    });
 
-        //                         // this is for Row
-        //                         writer.WriteEndElement();
-        //                     }
-        //                 }
-        //             }
+                    writer.WriteEndElement(); // Write end for WorkSheet Element
+                    writer.WriteEndElement(); // Write end for WorkBook Element
+                    writer.Close();
 
-        //             // this is for SheetData
-        //             writer.WriteEndElement();
-        //             // this is for Worksheet
-        //             writer.WriteEndElement();
-        //             writer.Close();
+                    workbook.Close();
 
-        //             writer = OpenXmlWriter.Create(workbook.WorkbookPart);
-        //             writer.WriteStartElement(new Workbook());
-        //             writer.WriteStartElement(new Sheets());
+                    return File(
+                        stream.ToArray(),
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "criancas.xlsx");
+                }
+            }
 
-        //             writer.WriteElement(new Sheet()
-        //             {
-        //                 Name = "Sheet1",
-        //                 SheetId = 1,
-        //                 Id = workbook.WorkbookPart.GetIdOfPart(workSheetPart)
-        //             });
+            static List<OpenXmlAttribute> CreateCell(OpenXmlWriter writer, string cellValue)
+            {
+                List<OpenXmlAttribute> attributeList = new List<OpenXmlAttribute>();
+                attributeList.Add(new OpenXmlAttribute("t", null, "str"));
 
-        //             writer.WriteEndElement(); // Write end for WorkSheet Element
-        //             writer.WriteEndElement(); // Write end for WorkBook Element
-        //             writer.Close();
-
-        //             workbook.Close();
-
-        //             return File(
-        //                 stream.ToArray(),
-        //                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        //                 "criancas.xlsx");
-        //         }
-        //     }
-
-        //     static List<OpenXmlAttribute> CreateCell(OpenXmlWriter writer, string cellValue)
-        //     {
-        //         List<OpenXmlAttribute> attributeList = new List<OpenXmlAttribute>();
-        //         attributeList.Add(new OpenXmlAttribute("t", null, "str"));
-
-        //         writer.WriteStartElement(new Cell(), attributeList);
-        //         writer.WriteElement(new CellValue(cellValue));
-        //         return attributeList;
-        //     }
-        // }
+                writer.WriteStartElement(new Cell(), attributeList);
+                writer.WriteElement(new CellValue(cellValue));
+                return attributeList;
+            }
+        }
 
         //     [HttpPost("batch")]
         //     public async Task<IActionResult> AddChild([FromBody] List<ChildModel> requests)

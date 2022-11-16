@@ -57,7 +57,17 @@ namespace JccApi.Infrastructure.Repository
             var query = from child in _context.Children.AsNoTracking()
                         let giftsDelivered = child.Gifts.Where(g => g.IsDelivered).Count()
                         let remainingToBeInserted = giftTypes.Except(child.Gifts.Select(g => g.TypeId)).Count()
-                        select new ChildGiftDto(child.Id, child.Name, child.Family.Code, giftsDelivered, remainingToBeInserted);
+                        orderby child.Family.Code, child.Name
+                        select new ChildGiftDto(
+                            child.Id,
+                            child.Name,
+                            child.Family.Code,
+                            giftsDelivered,
+                            remainingToBeInserted,
+                            child.Age,
+                            child.ShoeSize,
+                            child.ClotheSize
+                        );
 
             return await query.ToListAsync();
         }

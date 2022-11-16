@@ -27,6 +27,8 @@ Além do mais, o projeto foi implantado no Heroku.
   * Visualização dos detalhes da criança
   * Cadastro de padrinho/madrinha
 
+https://arctype.com/blog/uuid-generator/
+
 docker tag jccapi registry.heroku.com/jccapi/web
 docker push registry.heroku.com/jccapi/web
 heroku container:release web --app jccapi

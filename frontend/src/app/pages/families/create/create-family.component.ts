@@ -223,7 +223,7 @@ export class CreateFamilyComponent implements OnInit, OnDestroy {
     } else {
       const request: CreateFamilyRequest = {
         ...baseRequest,
-        members: this.members.map(({ member }: MemberViewModel) => ({ ...member })),
+        members: this.members.map(item => ({ ...item.member, name: item.personName })),
       };
       this.familyService.create(request)
         .pipe(
