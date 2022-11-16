@@ -35,6 +35,7 @@ namespace JccApi.Extensions
         {
             return Environment.GetEnvironmentVariable("DbConnectionString");
         }
+        
 
         // private static string GetHerokuConnectionString()
         // {
