@@ -4,6 +4,7 @@ namespace JccApi.Enums
     {
         Shoe = 1,
         Clothe = 2,
-        Toy = 3
+        Toy = 3,
+        FoodChest = 4
     }
 }

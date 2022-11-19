@@ -53,6 +53,7 @@ namespace JccApi.Infrastructure.Repository
                 (int)JccApi.Enums.GiftType.Clothe,
                 (int)JccApi.Enums.GiftType.Shoe,
                 (int)JccApi.Enums.GiftType.Toy,
+                (int)JccApi.Enums.GiftType.FoodChest,
             };
             var query = from child in _context.Children.AsNoTracking()
                         let giftsDelivered = child.Gifts.Where(g => g.IsDelivered).Count()
