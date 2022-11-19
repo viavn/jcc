@@ -160,7 +160,7 @@ export class ChildDetailComponent implements OnInit, OnDestroy {
     } else {
       // Criando presente
       const giftCreated = this.gifts.findIndex(row => row.gift.giftType.id === giftFormValue.giftType);
-      if (giftCreated > 0) {
+      if (giftCreated > -1) {
         spinnerDialogRef.close();
         this.notificationService.emitMessage({
           Message: 'Presente já foi apadrinhado. Escolha outro tipo para apadrinhar!',
@@ -195,7 +195,7 @@ export class ChildDetailComponent implements OnInit, OnDestroy {
             console.error('Erro ao apadrinhar criança', response);
             const message = response.error.data?.length > 0
               ? response.error.data[0]
-              : 'Um erro ocorreu ao remover madrinha/padrinho. Tente novamente!';
+              : 'Um erro ocorreu ao apadrinhar a criança. Tente novamente!';
 
             this.notificationService.emitMessage({
               Message: message,

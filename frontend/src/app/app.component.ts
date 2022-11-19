@@ -16,7 +16,6 @@ export class AppComponent implements OnInit, OnDestroy {
   homeLink = '/';
   showLogout = false;
   userIsAdmin = false;
-  notification$ = this.notificationService.message$;
 
   private menuItemsSubject = new Subject<MenuItem[]>();
   menuItems$ = this.menuItemsSubject.asObservable();

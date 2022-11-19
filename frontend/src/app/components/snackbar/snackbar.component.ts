@@ -1,5 +1,5 @@
-import { Component, Input, OnDestroy } from '@angular/core';
-import { Subject, takeUntil, timer } from 'rxjs';
+import { Component, Inject } from '@angular/core';
+import { MatSnackBarRef, MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
 import { SystemNotification, NotificationType } from '../../services/notification/models/SystemNotification'
 
 @Component({
@@ -7,17 +7,12 @@ import { SystemNotification, NotificationType } from '../../services/notificatio
   templateUrl: './snackbar.component.html',
   styleUrls: ['./snackbar.component.scss']
 })
-export class SnackbarComponent implements OnDestroy {
+export class SnackbarComponent {
 
-  private destroySubject = new Subject<void>();
-  private destroy$ = this.destroySubject.asObservable();
-
-  systemNotification: SystemNotification = {
-    Message: '',
-    ShowNotification: false,
-    ShowtimeInMilliseconds: 0,
-    Type: NotificationType.INFO,
-  };
+  constructor(
+    private _snackbarRef: MatSnackBarRef<SnackbarComponent>,
+    @Inject(MAT_SNACK_BAR_DATA) public data: SystemNotification,
+  ) { }
 
   private readonly notificationTypeMap = new Map<NotificationType, string>([
     [NotificationType.ERROR, 'report_problem'],
@@ -31,35 +26,15 @@ export class SnackbarComponent implements OnDestroy {
     [NotificationType.INFO, 'informartion'],
   ]);
 
-  @Input()
-  set notification(value: SystemNotification | undefined) {
-    if (value && value.ShowNotification) {
-      this.systemNotification = { ...value };
-
-      timer(this.systemNotification.ShowtimeInMilliseconds)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(
-          () => {
-            this.systemNotification.ShowNotification = false;
-            this.systemNotification.ShowtimeInMilliseconds = 0;
-          });
-    }
-  }
-
-  ngOnDestroy(): void {
-    this.destroySubject.unsubscribe();
-  }
-
   close() {
-    this.systemNotification.ShowNotification = false;
+    this._snackbarRef.dismiss();
   }
 
   get notificationText() {
-    return this.notificationTypeMap.get(this.systemNotification.Type) || '';
+    return this.notificationTypeMap.get(this.data.Type) || '';
   }
 
   get getCssClassByNotificationType() {
-    return this.notificationTypeCssMap.get(this.systemNotification.Type) || '';
+    return this.notificationTypeCssMap.get(this.data.Type) || '';
   }
-
 }

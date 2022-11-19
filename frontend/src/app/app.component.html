@@ -21,10 +21,6 @@
 
   <mat-sidenav-content>
     <div class="sidenav_content" role="main">
-      <div class="snackbar_container" *ngIf="notification$ | async as notification">
-        <app-snackbar [notification]="notification"></app-snackbar>
-      </div>
-
       <!-- Resources -->
       <div class="page_container">
         <router-outlet></router-outlet>
