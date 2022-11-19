@@ -73,18 +73,25 @@ export class AppComponent implements OnInit, OnDestroy {
   private loadMenuItems() {
     timer(100).pipe(first())
       .subscribe(() => {
-        let menuItems: MenuItem[] = [];
+        let menuItems: MenuItem[] = [{
+          text: 'Crianças',
+          icon: 'face',
+          link: '/',
+        }];
+
         if (this.userIsAdmin) {
-          menuItems = [{
-            text: 'Famílias',
-            icon: 'family_restroom',
-            link: '/families',
-          },
-          {
-            text: 'Usuários',
-            icon: 'manage_accounts',
-            link: '/manage-accounts',
-          }];
+          menuItems = [
+            ...menuItems,
+            {
+              text: 'Famílias',
+              icon: 'family_restroom',
+              link: '/families',
+            },
+            {
+              text: 'Usuários',
+              icon: 'manage_accounts',
+              link: '/manage-accounts',
+            }];
         }
 
         menuItems.push({
